@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+
+ <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'sha256-DYaPq6ZCiZe4izKkQqiHTr5Mg3lLWe7fjTXSwzlxYu8=' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.gstatic.com;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com;
+    img-src 'self' data: https:;
+    connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.gstatic.com https://*.firebaseapp.com;
+    frame-src 'self' https://*.firebaseapp.com https://*.googleapis.com;
+  ">
+
+<!-- ✅ Zoom desativado a pedido do usuário -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#ff5a36">
+<title>GYM WORKOUT</title>
+<script>
+    (function() {
+      // Tenta pegar o tema salvo no celular
+      const savedTheme = localStorage.getItem('gym_theme');
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
+      if (savedTheme === 'dark' || (!savedTheme || savedTheme === 'auto') && systemDark) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+
+<link rel="manifest" href="manifest.json?v=10">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=9">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gym Workout">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+
+<script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+</head>
+<body>
+
+<!-- ============= SPLASH ============= -->
+<div id="splash" role="status" aria-label="Carregando o aplicativo">
+  <div class="splash-content">
+    <h1>GYM WORKOUT</h1>
+    <p>Sinta o prazer em ter o seu treino nas suas mãos.</p>
+  </div>
+</div>
+
+<!-- ============= AUTH (preenchido dinamicamente em ui.js/authView) ============= -->
+<div id="auth" hidden></div>
+
+<!-- ============= APP ============= -->
+<div id="app" hidden>
+
+  <header>
+    <div class="header-top">
+      <button class="ic-menu" id="menu" aria-label="Abrir menu">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+      <div class="app-title">GYM WORKOUT</div>
+      <div style="width:44px;" aria-hidden="true"></div>
+    </div>
+    <div class="month-header" id="mes" aria-live="polite"></div>
+  </header>
+
+  <div id="app-body">
+
+    <!-- WIDGET DE ÁGUA — comportamento: clique abre o drawer de água -->
+    <div class="top-widgets">
+      <div id="waterWidget" class="water-widget">
+        <div class="water-glass" id="waterGlass">
+          <div class="water-lottie-container" id="waterLottieContainer">
+            <canvas id="waterCanvas" aria-hidden="true"></canvas>
+          </div>
+        </div>
+        <div class="water-info">
+          <span id="waterText" aria-live="polite">0 / 3000ml</span>
+          <button class="btn-water" id="btnAddWater" aria-label="Adicionar 250 mililitros de água">+ 250ml</button>
+         <span id="waterAnnouncement" class="sr-only" aria-live="polite"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALENDÁRIO HORIZONTAL -->
+    <div class="top-centered" id="top-calendar-area">
+      <div class="strip" id="strip" role="group" aria-label="Calendário de treinos"></div>
+    </div>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div id="main" role="main"></div>
+  </div>
+
+  <!-- BALÃO DE FALA DO MASCOTE -->
+  <div id="mascotBalloon" class="mascot-balloon" role="status" aria-live="polite">
+    <span id="mascotSpeechText"></span>
+  </div>
+
+  <!-- MASCOTE -->
+  <button id="mascotBtn" aria-label="Perfil do mascote" style="display:none;">
+    <div id="lottieFire" aria-hidden="true"></div>
+    <div id="mascotHealthBar" aria-hidden="true"><div id="mascotHealthFill"></div></div>
+  </button>
+
+  <!-- OVERLAY + DRAWER -->
+  <div class="ov" id="ov" aria-hidden="true"></div>
+  <aside class="drawer" id="dr" role="dialog" aria-modal="true" aria-label="Menu lateral"></aside>
+
+  <!-- TIMER DE DESCANSO -->
+  <div id="restTimerUI" role="timer" aria-live="assertive" aria-label="Tempo de descanso">
+    <span id="timerDisplay">01:00</span>
+    <button class="btn-stop-timer" id="btnStopTimer">Parar</button>
+  </div>
+
+  <!-- ALARME -->
+  <div id="alarmOverlay" role="alertdialog" aria-modal="true" aria-labelledby="alarmTitle" aria-describedby="alarmDesc">
+    <h1 id="alarmTitle">TEMPO!</h1>
+    <p id="alarmDesc">Seu descanso acabou. Bora pra próxima série!</p>
+    <button class="btn-alarm" id="btnDismissAlarm">OK, VOLTAR AO TREINO</button>
+  </div>
+
+  <!-- ===== MODAIS ===== -->
+  <div class="modal" id="md" role="dialog" aria-modal="true" aria-labelledby="mdTitle">
+    <h2 id="mdTitle">Treino concluído!</h2>
+    <button class="btn btn-secondary" id="mFoto">Anexar foto</button>
+    <button class="btn btn-primary" id="mSave">Salvar</button>
+  </div>
+
+  <div class="modal" id="mdW" role="dialog" aria-modal="true" aria-labelledby="mdWTitle">
+    <h2 id="mdWTitle">Carga do Exercício</h2>
+    <p id="wName" style="margin-top:-8px; color:var(--mu); font-size:14px; margin-bottom:12px;"></p>
+    <div style="display: flex; gap: 8px;">
+      <input type="number" id="wInput" placeholder="Ex: 45" step="0.1" style="flex: 1;" autocomplete="off" inputmode="decimal" aria-label="Carga do exercício">
+      <select id="wUnit" style="width: 100px; margin-top: 8px;" aria-label="Unidade da carga">
+        <option value="kg">kg</option>
+        <option value="lbs">lbs</option>
+        <option value="pl">placa</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" id="wSave" style="margin-top:12px;">Salvar Carga</button>
+  </div>
+
+  <div class="modal" id="mdName" role="dialog" aria-modal="true" aria-labelledby="mdNameTitle">
+    <h2 id="mdNameTitle">Como você gostaria de ser chamado?</h2>
+    <p style="color:var(--mu); font-size:14px; margin-top:-8px;">Este nome aparecerá no seu perfil.</p>
+    <input type="text" id="nameInput" placeholder="Ex: Vinícius" maxlength="20" style="margin-top:12px;" autocomplete="given-name" aria-label="Seu nome">
+    <button class="btn btn-primary" id="saveName" style="margin-top:12px;">Salvar Nome</button>
+  </div>
+
+  <div class="modal" id="mdAvatar" role="dialog" aria-modal="true" aria-labelledby="mdAvatarTitle">
+    <h2 id="mdAvatarTitle">Sua Foto de Perfil</h2>
+    <div style="display:flex; gap:8px; margin-top:12px;">
+      <button class="btn btn-secondary" id="btnChangeAvatar" style="flex:1;">Alterar Foto de Perfil</button>
+      <button class="btn btn-danger" id="btnRemoveAvatar" style="flex:1;">Remover Foto</button>
+    </div>
+  </div>
+
+  <div class="modal" id="mdWelcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+    <h1 id="welcomeTitle" style="text-align:center; color:var(--ac); font-size:24px; margin-bottom:10px;">SEJA BEM VINDO (A) <br><span id="welcomeName"></span>!</h1>
+    <p id="welcomeQuote" style="text-align:center; font-size:16px; font-style:italic; margin-bottom:20px;"></p>
+    <button class="btn btn-primary" id="btnCloseWelcome">Vamos Treinar!</button>
+  </div>
+
+  <!-- ✅ NOVO MODAL DE EXCLUSÃO DE CONTA -->
+  <div class="modal" id="mdDeleteAccount" role="dialog" aria-modal="true" aria-labelledby="mdDelTitle">
+    <h2 id="mdDelTitle" style="color:var(--danger);">Excluir Conta</h2>
+    <p style="color:var(--mu); font-size:14px; margin-top:-8px; margin-bottom:20px;">
+      Isso apagará <strong>permanentemente</strong> seu perfil, histórico de treinos e todas as fotos. Essa ação não pode ser desfeita.
+    </p>
+    
+    <!-- ✅ NOVO: Campo de senha -->
+    <input type="password" id="deletePasswordInput" placeholder="Digite sua senha para confirmar" style="margin-bottom: 16px; border-color: var(--danger);">
+    
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <button class="btn btn-danger" id="btnConfirmDelete">SIM, EXCLUIR TUDO</button>
+      <button class="btn btn-secondary" id="btnCancelDelete">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- ===== TELA DO MASCOTE ===== -->
+  <div id="mascotScreen" aria-labelledby="mascotTitle">
+    <div class="evo-header">
+      <button class="ic" id="mascotBack" style="font-size:18px" aria-label="Voltar">←</button>
+      <h2 id="mascotTitle">Perfil do Mascote</h2>
+    </div>
+    <div class="config-section">
+      <h3>Dados do Mascote</h3>
+      <label for="mascotNameInput" style="font-size:12px;color:var(--mu)">Nome do Mascote</label>
+      <input type="text" id="mascotNameInput" placeholder="Ex: Foguinho">
+
+      <label for="guardianNameInput" style="font-size:12px;color:var(--mu); display:block; margin-top:8px;">Nome do Responsável</label>
+      <input type="text" id="guardianNameInput" placeholder="Ex: Maria">
+
+      <div style="display:flex; gap:16px; margin-top:20px; text-align:center;">
+        <div style="flex:1; background:var(--bg); padding:12px; border-radius:12px; border:1px solid var(--bd);">
+          <span style="font-size:12px; color:var(--mu); font-weight:700; text-transform:uppercase;">Sequência</span>
+          <div id="mascotStreakDisplay" style="font-size:20px; font-weight:800; color:var(--success); margin-top:4px;">0 dias</div>
+        </div>
+        <div style="flex:1; background:var(--bg); padding:12px; border-radius:12px; border:1px solid var(--bd);">
+          <span style="font-size:12px; color:var(--mu); font-weight:700; text-transform:uppercase;">Falhas</span>
+          <div id="mascotMissesDisplay" style="font-size:20px; font-weight:800; color:var(--danger); margin-top:4px;">0 dias</div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;">
+        <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--mu); font-weight:800; margin-bottom:4px;">
+          <span>FRIO</span>
+          <span>FERVENDO</span>
+        </div>
+        <div style="width:100%; height:12px; background:var(--bd); border-radius:6px; overflow:hidden;">
+          <div id="mascotProfileBar" style="height:100%; width:0%; background:linear-gradient(90deg, #6b7380, #ffa500, #ff4500); transition:width 0.3s;"></div>
+        </div>
+        <div style="text-align:center; font-size:12px; color:var(--mu); margin-top:8px;" id="mascotStatusText">Me ajude até ficar saudável!</div>
+      </div>
+
+      <button class="btn btn-primary" id="saveMascotData" style="margin-top:24px;">Salvar Dados</button>
+    </div>
+  </div>
+
+  <!-- ===== TELA DE EVOLUÇÃO ===== -->
+  <div id="evoScreen" aria-labelledby="evoTitle">
+    <div class="evo-header">
+      <button class="ic" id="evoBack" style="font-size:18px" aria-label="Voltar">←</button>
+      <h2 id="evoTitle">Evolução de Carga</h2>
+    </div>
+    <div id="evoList"></div>
+    <div id="evoChartArea" style="display:none;">
+      <div class="chart-container">
+        <canvas id="myChart" role="img" aria-label="Gráfico de evolução de carga"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TELA DE CONFIGURAÇÃO ===== -->
+  <div id="configScreen" aria-labelledby="configTitle">
+    <div class="evo-header">
+      <button class="ic" id="configBack" style="font-size:18px" aria-label="Voltar">←</button>
+      <h2 id="configTitle">Configurar Treinos</h2>
+    </div>
+    <div id="configContent"></div>
+  </div>
+
+  <!-- ===== SELETOR DE TREINO ===== -->
+  <div id="workoutSelectorScreen" aria-labelledby="selectorTitle">
+    <div class="evo-header">
+      <button class="ic" id="selectorBack" style="font-size:18px" aria-label="Voltar">←</button>
+      <h2 id="selectorTitle">Escolha o Treino</h2>
+    </div>
+    <p style="text-align:center; color:var(--mu); margin-bottom:20px;">Selecione o treino que você vai fazer hoje.</p>
+    <div id="selectorContent" style="display:flex; flex-direction:column; gap:16px;"></div>
+  </div>
+
+</div>
+<!-- ============= TELA DE EVOLUÇÃO (CELEBRATION) ============= -->
+<div id="celebrationOverlay">
+  <!-- O confete agora fica solto para cobrir a tela inteira -->
+  <div id="celebrationLottieContainer"></div>
+
+  <div id="celebrationContent">
+    <!-- Mascote central -->
+    <div id="celebrationMascotContainer"></div>
+
+    <!-- Texto em Arco (ViewBox ajustado para não cortar o texto) -->
+    <svg id="arcText" viewBox="0 0 400 200">
+      <path id="arcPath" d="M 50,180 A 150,150 0 0,1 350,180" fill="transparent" />
+      <text><textPath href="#arcPath" startOffset="50%" text-anchor="middle">PARABÉNS!</textPath></text>
+    </svg>
+  </div>
+</div>
+
+<!-- ============= FILE INPUTS ============= -->
+<input type="file" accept="image/*" id="fi" hidden aria-label="Anexar imagem">
+<input type="file" accept="image/*" id="fiAvatar" hidden aria-label="Escolher foto de perfil">
+
+<!-- ============= TOASTS ============= -->
+<div id="toast-container" role="status" aria-live="polite" aria-atomic="false"></div>
+
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>
