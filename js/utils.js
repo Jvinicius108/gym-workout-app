@@ -12,6 +12,12 @@ export const uidg = () => Date.now().toString(36) + Math.random().toString(36).s
 export const mi = d => (d.getDay() + 6) % 7;
 export const LT = () => (state.P && state.P.tipo ? state.P.tipo : "ABC").split("");
 
+export const vibrate = (pattern) => {
+  if ('vibrate' in navigator) {
+    try { navigator.vibrate(pattern); } catch(e) {}
+  }
+};
+
 export function getLabel(letter) {
   if (state.P && state.P.customTitles && state.P.customTitles[letter]) {
     return state.P.customTitles[letter];
@@ -87,7 +93,6 @@ export function showToast(message, type = 'info') {
   setTimeout(() => toast.remove(), 3500);
 }
 
-// ✅ NOVO: Função para não perder o foco e o cursor ao re-renderizar
 export function safeRender(targetId, html) {
   const el = document.getElementById(targetId);
   if (!el) return;
@@ -110,7 +115,6 @@ export function safeRender(targetId, html) {
   }
 }
 
-// ✅ NOVO: Ícones centralizados
 export const Icons = {
   play: `<svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M8 5v14l11-7z"/></svg>`,
   arrowLeft: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`,

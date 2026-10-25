@@ -34,16 +34,13 @@ export const state = {
   waterGoal: 3000,
   waterSize: 250,
   waterType: "copo",
-  // ✅ NOVO: valor local otimista enquanto o write do Firestore está em trânsito.
-  // Serve para evitar flicker quando o usuário clica +250ml rapidamente — sem
-  // recorrer a Math.max, que bloqueava qualquer diminuição vinda do servidor.
   pendingWater: null,
   waterReminder: false,
   waterReminderTime: 60,
   lastWaterDate: "",
   showWaterSizeInput: false,
   showWaterGoalInput: false,
-  pendingEvolution: null
+  pendingEvolution: null,
 };
 
 export function resetState() {
@@ -73,12 +70,11 @@ export function resetState() {
   state.waterGoal = 3000;
   state.waterSize = 250;
   state.waterType = "copo";
-  state.pendingWater = null; // ✅ NOVO
+  state.pendingWater = null;
   state.waterReminder = false;
   state.waterReminderTime = 60;
   state.lastWaterDate = "";
   state.pendingEvolution = null;
-
   state.isUpdate = false;
   state.ob = { step: 0, tipo: "", freq: 0, qty: 0, days: [] };
   state.timerEndTime = null;

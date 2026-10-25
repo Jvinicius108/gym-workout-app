@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gym-workout-v27';
+const CACHE_NAME = 'gym-workout-v51';
 
 const ASSETS = [
   './',
@@ -7,6 +7,7 @@ const ASSETS = [
   './manifest.json',
   './js/app.js',
   './js/config.js',
+  './js/theme-init.js',
   './js/congratulations.json',
   './js/celebration_confetti.json',
   './js/db.js',
@@ -19,6 +20,15 @@ const ASSETS = [
   './js/water.js',
   './js/quotes.js',
   './js/mascot_quotes.js',
+  './js/helpers.js',
+  './js/streak.js',
+  './js/sync.js',
+  './js/auth.js',
+  './js/water-reminder.js',
+  './js/handlers/water.js',
+  './js/handlers/drawer.js',
+  './js/handlers/workout.js',
+  './js/handlers/onboarding.js',
   './js/success.json',
   './js/failure.json',
   './js/flame.json',
@@ -37,7 +47,6 @@ self.addEventListener('install', (e) => {
       );
     })
   );
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', (e) => {
@@ -60,53 +69,58 @@ self.addEventListener('message', (event) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  // Ignora requisições do Firebase e métodos que não sejam GET
-  if (e.request.url.includes('firestore.googleapis.com') || e.request.url.includes('googleapis.com') || e.request.method !== 'GET') {
-      return; 
+  const url = e.request.url;
+
+  if (
+    e.request.method !== 'GET' ||
+    url.includes('firestore.googleapis.com') ||
+    url.includes('identitytoolkit.googleapis.com') ||
+    url.includes('securetoken.googleapis.com') ||
+    url.includes('firebaseio.com') ||
+    url.includes('firebaseapp.com')
+  ) {
+    return;
   }
 
-  // ✅ CORREÇÃO: Estratégia diferente para a página HTML (Network First com Timeout)
   if (e.request.mode === 'navigate') {
     e.respondWith(
       Promise.race([
-        fetch(e.request).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
+        fetch(e.request, { cache: 'no-store' }).then((networkResponse) => {
+          if (networkResponse && networkResponse.ok) {
             const clone = networkResponse.clone();
             caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
           }
           return networkResponse;
         }),
-        // Se a rede demorar mais de 3 segundos, cai no catch e usa o cache
         new Promise((_, reject) => setTimeout(reject, 3000))
       ]).catch(() => {
         return caches.match(e.request).then((cached) => {
-          if (cached) return cached;
-          return caches.match('./index.html'); // Fallback final
+          return cached || caches.match('./index.html');
         });
       })
     );
     return;
   }
 
-  // ✅ Para CSS, JS, imagens e JSON, mantemos o Cache First (Stale-While-Revalidate)
   e.respondWith(
     caches.match(e.request).then((cachedResponse) => {
       const fetchPromise = fetch(e.request).then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200) {
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(e.request, responseClone);
-          });
+        const canCache = networkResponse && (
+          (networkResponse.status >= 200 && networkResponse.status < 300) ||
+          networkResponse.type === 'opaque'
+        );
+        if (canCache) {
+          const clone = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
         }
         return networkResponse;
-      }).catch(() => {
-        return new Response('Offline', { status: 503, statusText: 'Offline' });
-      });
+      }).catch(() => new Response('Offline', { status: 503 }));
 
       return cachedResponse || fetchPromise;
     })
   );
 });
+
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   event.waitUntil(
