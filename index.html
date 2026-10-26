@@ -67,7 +67,7 @@
         <span aria-hidden="true"></span>
       </button>
       <div class="app-title">GYM WORKOUT</div>
-      <div style="width:44px;" aria-hidden="true"></div>
+      <div class="header-spacer" aria-hidden="true"></div>
     </div>
     <div class="month-header" id="mes" aria-live="polite"></div>
   </header>
@@ -173,6 +173,29 @@
     </div>
   </div>
 
+  <!-- MODAL PARA ESCOLHER O EXERCÍCIO DO SUPERSET -->
+  <div class="modal" id="mdLinkExercise" role="dialog" aria-modal="true" aria-labelledby="mdLinkTitle">
+    <h2 id="mdLinkTitle" style="color: #ffd700;">🔗 Linkar Exercício</h2>
+    <p style="color:var(--mu); font-size:14px; margin-top:-8px; margin-bottom:16px;">
+      Escolha qual exercício você quer fazer junto com <strong id="linkBaseName"></strong> sem descansar.
+    </p>
+    <div id="linkExerciseList" style="display:flex; flex-direction:column; gap:8px; max-height:50vh; overflow-y:auto;"></div>
+    <button class="btn btn-secondary" id="cancelLink" style="margin-top:16px;">Cancelar</button>
+  </div>
+
+  <!-- MODAL DE AVISO DE SUPERSET NO INÍCIO DO TREINO -->
+  <div class="modal" id="mdSupersetWarning" role="dialog" aria-modal="true" aria-labelledby="mdSuperTitle">
+    <div style="text-align:center; padding: 10px 0;">
+      <div style="font-size: 48px; margin-bottom: 12px;">⛓️</div>
+      <h2 id="mdSuperTitle" style="color: #ffd700; margin-bottom: 12px;">Este treino tem Supersets!</h2>
+      <p style="color:var(--tx); font-size: 15px; line-height: 1.5; margin-bottom: 24px;">
+        Os exercícios com borda <strong style="color: #ffd700;">Dourada</strong> devem ser feitos <strong>um seguido do outro</strong>, sem descanso entre eles.<br><br>
+        Só inicie o descanso após concluir todos os exercícios do grupo.
+      </p>
+      <button class="btn btn-primary" id="btnCloseSupersetWarning" style="background: linear-gradient(135deg, #ffd700, #ff8c00); color: #000; font-weight: 800;">ENTENDI, BORA TREINAR!</button>
+    </div>
+  </div>
+
   <!-- ===== TELAS SECUNDÁRIAS ===== -->
   <div id="mascotScreen" aria-labelledby="mascotTitle">
     <div class="evo-header">
@@ -255,6 +278,11 @@
       <text><textPath href="#arcPath" startOffset="50%" text-anchor="middle">PARABÉNS!</textPath></text>
     </svg>
   </div>
+</div>
+
+<!-- ===== VISUALIZADOR DE GIF (LIGHTBOX) ===== -->
+<div id="gifLightbox" class="gif-lightbox">
+  <img id="gifLightboxImg" src="" alt="Exercício ampliado">
 </div>
 
 <!-- ===== FILE INPUTS ===== -->

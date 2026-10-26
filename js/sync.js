@@ -122,6 +122,14 @@ function tryShowApp() {
   return true;
 }
 
+// 🔥 FUNÇÃO CIRÚRGICA PARA EVITAR PISCAR A TELA
+function checkIfCanRenderBackground() {
+  // Se estiver em Configurações, Evolução, Mascote ou Seletor, NÃO re-renderiza o fundo!
+  if (state.inConfigMode || state.inMascotMode || state.inSelectorMode) return false;
+  if ($("evoScreen") && $("evoScreen").classList.contains("on")) return false;
+  return true;
+}
+
 export async function boot(user) {
   try {
     state.uid = user.uid;
@@ -141,7 +149,6 @@ export async function boot(user) {
     state.F_loaded = false;
     resetPhotoCache();
 
-    // Foto upload pendente (offline) — tenta sincronizar assim que logar
     processPhotoUploadQueue().catch(() => {});
 
     unsubUser = onSnapshot(userDoc(), async (s) => {
@@ -221,20 +228,28 @@ export async function boot(user) {
       const newWater = pWaterSig(state.P);
 
       scheduleRender(() => {
-        if (isUserTypingInternal()) {
-          if (prevWater !== newWater) updateWaterUI();
-          if (prevMain !== newMain) updateMascotVisuals();
-          return;
-        }
-        if (prevCal !== newCal) {
-          theme(); strip(); main();
-          if ($("dr").classList.contains("on") && $("dr").dataset.view === "main") drawer();
-        } else if (prevMain !== newMain) {
-          theme(); main();
-          if ($("dr").classList.contains("on") && $("dr").dataset.view === "main") drawer();
-        }
+        // Atualiza a água na tela (sempre pode, é rápido)
         if (prevWater !== newWater) updateWaterUI();
+
+        // Atualiza o mascote na tela
         if (prevMain !== newMain) updateMascotVisuals();
+
+        // Se o usuário estiver digitando, aborta a renderização pesada!
+        if (isUserTypingInternal()) return;
+
+        // Só renderiza o fundo se não estivermos em uma tela secundária
+        if (checkIfCanRenderBackground()) {
+          if (prevCal !== newCal) {
+            theme(); strip(); main();
+          } else if (prevMain !== newMain) {
+            theme(); main();
+          }
+        }
+        
+        // Atualiza o menu lateral se ele estiver aberto
+        if ($("dr").classList.contains("on") && $("dr").dataset.view === "main") {
+          drawer();
+        }
       });
     });
 
@@ -250,8 +265,12 @@ export async function boot(user) {
       const newFSig = fSig(state.F);
       if (prevFSig !== newFSig) {
         calculateStreakAndMisses();
-        if (!document.querySelector('.animating')) strip();
-        main();
+        
+        // Só atualiza o fundo se o usuário não estiver numa tela secundária
+        if (checkIfCanRenderBackground() && !isUserTypingInternal()) {
+          if (!document.querySelector('.animating')) strip();
+          main();
+        }
         updateMascotVisuals();
       }
     });

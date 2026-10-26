@@ -56,7 +56,7 @@ export const refresh = () => {
 };
 
 export const fechaModal = () => {
-  const modais = ["md", "mdW", "mdName", "mdAvatar", "mdWelcome", "mdDeleteAccount"];
+  const modais = ["md", "mdW", "mdName", "mdAvatar", "mdWelcome", "mdDeleteAccount", "mdLinkExercise", "mdSupersetWarning"];
   modais.forEach(id => {
     const el = $(id);
     if (el) el.classList.remove("on");

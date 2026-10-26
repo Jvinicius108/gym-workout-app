@@ -299,9 +299,9 @@ header{
 /* =========================================
    10. MENU LATERAL (DRAWER)
    ========================================= */
-.ov { position: fixed; inset: 0; background: rgba(0,0,0,.6); backdrop-filter: blur(4px); z-index: 100; display: none; }
+.ov { position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:60;display:none }
 .ov.on { display: block; }
-.drawer{ position:fixed;top:0;bottom:0;left:0;width:min(340px,90vw); background:var(--bg);z-index:105;transform:translateX(-102%); transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);overflow-y:auto; padding:calc(24px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px)); box-shadow: 10px 0 30px rgba(0,0,0,0.2); }
+.drawer{ position:fixed;top:0;bottom:0;left:0;width:min(340px,90vw); background:var(--bg);z-index:70;transform:translateX(-102%); transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);overflow-y:auto; padding:calc(24px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px)); box-shadow:10px 0 30px rgba(0,0,0,0.2); }
 .drawer.on{transform:none}
 .drawer h3{margin:28px 0 12px;font-size:0.75rem;color:var(--mu);text-transform:uppercase;letter-spacing:1px; font-weight: 700;}
 .menu-header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; padding: 0 4px; }
@@ -456,7 +456,8 @@ input:focus { outline: none; border-color: var(--ac); }
 /* =========================================
    14. MODAIS
    ========================================= */
-.modal { position: fixed; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); max-width: 420px; margin: auto; background: var(--card); border-radius: var(--r-xl); padding: 24px; z-index: 110; display: none; box-shadow: 0 20px 40px rgba(0,0,0,0.4); border: 1px solid var(--bd); }
+.modal{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:420px;margin:auto;background:var(--card);border-radius:var(--r-xl);padding:24px;z-index:80;display:none;box-shadow:0 20px 40px rgba(0,0,0,0.4); border: 1px solid var(--bd);}
+.modal.on{display:block; animation: slideUp 0.3s ease-out; }
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 .modal h2{margin:0 0 16px;font-size:1.25rem; font-family: var(--font-head); font-weight: 800;}
 .modal .btn{width:100%;padding:16px;font-weight:700;}
@@ -706,3 +707,148 @@ input:focus { outline: none; border-color: var(--ac); }
     filter: drop-shadow(0 0 10px #ff4500) drop-shadow(0 0 20px #ff8c00); 
     letter-spacing: 3px; 
 }
+
+/* =========================================
+   26. CLASSES UTILITÁRIAS (Fase 2)
+   ========================================= */
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mt-20 { margin-top: 20px; }
+.mt-24 { margin-top: 24px; }
+.mt-40 { margin-top: 40px; }
+
+.flex-row { display: flex; align-items: center; }
+.flex-col { display: flex; flex-direction: column; }
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+
+.flex-1 { flex: 1; }
+.text-center { text-align: center; }
+.w-100 { width: 100%; }
+
+/* =========================================
+   27. CLASSES DO MENU LATERAL (DRAWER)
+   ========================================= */
+.drawer-top-bar { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+.drawer-header { margin-top: -24px; }
+.menu-btn-content { display: flex; align-items: center; gap: 12px; }
+.menu-btn-arrow { color: var(--mu); }
+.drawer-spacer { flex: 1; }
+
+.water-header { display: flex; align-items: center; margin-bottom: 24px; gap: 12px; }
+.water-header .ic { border: none; background: transparent; padding: 0; }
+.water-separator { margin-top: 24px; border-top: 1px solid var(--bd); padding-top: 20px; }
+.water-reminder-text { font-size: 12px; color: var(--mu); margin-top: 16px; text-align: center; }
+.btn-water-action { margin-top: 16px; padding: 18px; font-size: 15px; font-weight: 700; color: var(--water); border-color: var(--water); }
+.btn-reminder-toggle { padding: 18px; font-size: 15px; font-weight: 700; }
+.justify-center { justify-content: center; }
+.mt-0 { margin-top: 0; }
+.mb-8 { margin-bottom: 8px; }
+.mb-12 { margin-bottom: 12px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-20 { margin-bottom: 20px; }
+.text-mu { color: var(--mu); }
+.text-sm { font-size: 14px; }
+.text-xs { font-size: 12px; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.fw-700 { font-weight: 700; }
+.fw-800 { font-weight: 800; }
+.italic { font-style: italic; }
+.text-success { color: var(--success); }
+.text-ac { color: var(--ac); }
+.p-16 { padding: 16px; }
+.p-24 { padding: 24px; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.mb-0 { margin-bottom: 0; }
+.mb-24 { margin-bottom: 24px; }
+.text-4xl { font-size: 48px; }
+
+/* Layout do Treino em Execução */
+.workout-container { width: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; }
+.workout-date { text-align: center; color: var(--mu); font-size: 14px; margin-bottom: 12px; font-weight: 500; }
+.ex-text-done { text-decoration: line-through; opacity: 0.5; }
+.ex-title-row { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+
+/* Header do index.html */
+.header-spacer { width: 44px; }
+
+/* Fundo do card de prova (Imagem) */
+.proof-img { width: 100%; height: 250px; object-fit: contain; }
+
+/* =========================================
+   28. LIGHTBOX DE GIF (Modo Espelho)
+   ========================================= */
+.gif-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85); /* Fundo escuro semi-transparente */
+  backdrop-filter: blur(4px);
+  z-index: 99999; /* Fica acima de TUDO */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s;
+  cursor: pointer; /* Para o usuário saber que pode clicar para fechar */
+}
+
+.gif-lightbox.on {
+  opacity: 1;
+  visibility: visible;
+}
+
+.gif-lightbox img {
+  max-width: 95vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transform: scale(0.9);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.gif-lightbox.on img {
+  transform: scale(1); /* Efeito de zoom ao abrir */
+}
+
+/* =========================================
+   29. SUPERSETS (BI-SETS)
+   ========================================= */
+.superset-card {
+    border: 2px solid #ffd700 !important; /* Borda Dourada */
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2) !important; /* Brilho suave */
+    background: linear-gradient(to right, rgba(255, 215, 0, 0.05), transparent) !important;
+}
+
+.superset-badge {
+    background: #ffd700;
+    color: #000;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 5px rgba(255,215,0,0.3);
+}
+
+.link-choice-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px;
+    background: var(--bg);
+    border: 1px solid var(--bd);
+    border-radius: var(--r-md);
+    color: var(--tx);
+    font-weight: 600;
+    transition: 0.2s;
+    text-align: left;
+}
+.link-choice-btn:active { background: var(--bd); transform: scale(0.98); }
+.link-choice-btn.selected { border-color: #ffd700; background: rgba(255,215,0,0.1); }

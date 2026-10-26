@@ -146,11 +146,11 @@ export function onboard() {
   if (state.ob.step === 0) {
     h = '<div class="auth" style="max-width:none;padding-left:0;padding-right:0"><div style="padding:0 8px"><div class="steps">Passo 1 de 4</div><h1>Qual é o seu tipo de treino?</h1><p>Deslize e escolha. Você pode mudar depois nas configurações.</p></div><div class="exs" style="padding:0 8px">' + Object.keys(TIPOS).map(t => '<button class="tp" data-obt="' + t + '"><b>' + t + '</b><span>' + TIPOS[t] + '</span><em>Escolher</em></button>').join("") + '</div></div>';
   } else if (state.ob.step === 1) {
-    h = '<div class="auth"><button class="back-btn" data-back="0">' + Icons.arrowLeft + ' Voltar</button><div class="steps" style="text-align:center">Passo 2 de 4</div><h1>QUANTAS VEZES NA SEMANA COSTUMA TREINAR?</h1><p>Isso vira a sua meta semanal.</p><div class="nums">' + [1,2,3,4,5,6].map(n => '<button data-obf="' + n + '">' + n + '</button>').join("") + '</div></div>';
+    h = '<div class="auth"><button class="back-btn" data-back="0">' + Icons.arrowLeft + ' Voltar</button><div class="steps text-center">Passo 2 de 4</div><h1>QUANTAS VEZES NA SEMANA COSTUMA TREINAR?</h1><p>Isso vira a sua meta semanal.</p><div class="nums">' + [1,2,3,4,5,6].map(n => '<button data-obf="' + n + '">' + n + '</button>').join("") + '</div></div>';
   } else if (state.ob.step === 2) {
-    h = '<div class="auth">' + (state.isUpdate ? '' : '<button class="back-btn" data-back="1">' + Icons.arrowLeft + ' Voltar</button>') + '<div class="steps" style="text-align:center">' + (state.isUpdate ? 'Atualização do Aplicativo' : 'Passo 3 de 4') + '</div><h1>QUANTOS DIAS VOCÊ REPOUSA NA SEMANA?</h1><p>Escolha de 1 a 4 dias de descanso.</p><div class="nums">' + [1,2,3,4].map(n => '<button data-obqty="' + n + '">' + n + '</button>').join("") + '</div></div>';
+    h = '<div class="auth">' + (state.isUpdate ? '' : '<button class="back-btn" data-back="1">' + Icons.arrowLeft + ' Voltar</button>') + '<div class="steps text-center">' + (state.isUpdate ? 'Atualização do Aplicativo' : 'Passo 3 de 4') + '</div><h1>QUANTOS DIAS VOCÊ REPOUSA NA SEMANA?</h1><p>Escolha de 1 a 4 dias de descanso.</p><div class="nums">' + [1,2,3,4].map(n => '<button data-obqty="' + n + '">' + n + '</button>').join("") + '</div></div>';
   } else {
-    h = '<div class="auth">' + (state.isUpdate ? '' : '<button class="back-btn" data-back="2">' + Icons.arrowLeft + ' Voltar</button>') + '<div class="steps" style="text-align:center">' + (state.isUpdate ? 'Atualização do Aplicativo' : 'Passo 4 de 4') + '</div><h1>QUAIS SÃO SEUS DIAS DE REPOUSO?</h1><p>Selecione exatamente <b>' + state.ob.qty + '</b> dia(s).</p><div class="dg">' + DF.map((n,i) => '<button data-obd="' + i + '" style="' + (state.ob.days.includes(i) ? 'border-color:var(--ac);color:var(--ac)' : '') + '">' + n + '</button>').join("") + '</div><button class="btn btn-primary" id="saveRest" style="margin-top:20px" ' + (state.ob.days.length === state.ob.qty ? '' : 'disabled') + '>Confirmar</button></div>';
+    h = '<div class="auth">' + (state.isUpdate ? '' : '<button class="back-btn" data-back="2">' + Icons.arrowLeft + ' Voltar</button>') + '<div class="steps text-center">' + (state.isUpdate ? 'Atualização do Aplicativo' : 'Passo 4 de 4') + '</div><h1>QUAIS SÃO SEUS DIAS DE REPOUSO?</h1><p>Selecione exatamente <b>' + state.ob.qty + '</b> dia(s).</p><div class="dg">' + DF.map((n,i) => '<button data-obd="' + i + '" style="' + (state.ob.days.includes(i) ? 'border-color:var(--ac);color:var(--ac)' : '') + '">' + n + '</button>').join("") + '</div><button class="btn btn-primary mt-20" id="saveRest" ' + (state.ob.days.length === state.ob.qty ? '' : 'disabled') + '>Confirmar</button></div>';
   }
   $("auth").innerHTML = h;
 }
@@ -365,7 +365,7 @@ export function main() {
   const createdAt = state.P.createdAt || 0;
   const createdKey = createdAt ? key(new Date(createdAt)) : null;
   if (createdKey && state.sel < createdKey) {
-    $("main").innerHTML = `<div class="panel"><div class="fail-card" style="opacity: 0.55;"><div style="color: var(--mu); font-size: 48px;">🔒</div><h2 style="color: var(--mu); margin-top: 16px;">Antes do início</h2><p class="s" style="color: var(--mu);">Este dia é anterior à criação da sua conta.</p></div></div>`;
+    $("main").innerHTML = `<div class="panel"><div class="fail-card text-mu" style="opacity: 0.55;"><div class="text-4xl">🔒</div><h2 class="text-mu mt-16">Antes do início</h2><p class="s text-mu">Este dia é anterior à criação da sua conta.</p></div></div>`;
     return;
   }
   const d = pd(state.sel);
@@ -378,28 +378,29 @@ export function main() {
   let h = '';
   const dn = d.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
   const meta = '<div class="goal">Meta da semana: ' + semana() + ' de ' + state.P.freq + ' treino' + (state.P.freq > 1 ? "s" : "") + '</div>';
+  
   if (!state.inWorkoutMode) {
     h += '<div class="panel">';
     if (isFailed) {
-      h += `<div class="fail-card"><div class="fail-icon-container"><div class="fail-icon">${Icons.x}</div></div><h2 class="fail-title">Dia Perdido</h2><p class="s" style="margin-bottom: 24px;">${dn}</p><div class="fail-message">"Poxa, você falhou hoje.<br>Cuidado, o seu mascote precisa que você mantenha o foco para que ele sobreviva!"</div></div>`;
+      h += `<div class="fail-card"><div class="fail-icon-container"><div class="fail-icon">${Icons.x}</div></div><h2 class="fail-title">Dia Perdido</h2><p class="s mb-24">${dn}</p><div class="fail-message">"Poxa, você falhou hoje.<br>Cuidado, o seu mascote precisa que você mantenha o foco para que ele sobreviva!"</div></div>`;
     } else if (state.F[state.sel]) {
-      h += '<h2 style="color:var(--success);">Treino Concluído ' + Icons.check + '</h2>';
+      h += '<h2 class="text-success">Treino Concluído ' + Icons.check + '</h2>';
       h += '<p class="s">' + dn + '</p>';
-      let proofImg = state.F[state.sel].fid ? (state.cache[state.F[state.sel].fid] ? '<img class="proof" src="' + state.cache[state.F[state.sel].fid] + '" alt="">' : '<img class="proof" data-f="' + state.F[state.sel].fid + '" alt="">') : '';
+      let proofImg = state.F[state.sel].fid ? (state.cache[state.F[state.sel].fid] ? '<img class="proof" src="' + state.cache[state.F[state.sel].fid] + '" data-zoom="true" alt="">' : '<img class="proof" data-f="' + state.F[state.sel].fid + '" data-zoom="true" alt="">') : '';
       h += proofImg;
       if (state.F[state.sel].duration) h += '<div class="duration-text">' + Icons.clock + ' Você treinou por ' + esc(state.F[state.sel].duration) + '</div>';
-      h += '<button class="btn btn-ghost" id="undo" style="display:block; margin:16px auto;">Desfazer Treino</button>';
+      h += '<button class="btn btn-ghost mt-16 mx-auto" id="undo">Desfazer Treino</button>';
     } else if (isRest && !state.forcedLetter) {
       const quoteIdx = Math.abs(Math.floor(d.getTime() / 86400000)) % quotes.length;
       const randomQuote = quotes[quoteIdx];
       h += '<h2>Descanso ' + Icons.moon + '</h2>';
       h += '<p class="s">' + dn + '</p>';
       h += meta;
-      h += '<div class="preview-list" style="text-align:center; font-style:italic; color:var(--mu); border:none; background:transparent; padding: 10px 20px; font-size: 16px; line-height: 1.6;">"' + randomQuote + '"</div>';
+      h += '<div class="preview-list text-mu italic" style="border:none; background:transparent; padding: 10px 20px; font-size: 16px; line-height: 1.6;">"' + randomQuote + '"</div>';
       if (isFuture) {
-        h += '<div style="text-align:center; color:var(--mu); padding:16px 20px; font-style:italic; font-size:14px;">Você só pode iniciar treinos a partir de hoje.</div>';
+        h += '<div class="text-center text-mu italic text-sm p-16">Você só pode iniciar treinos a partir de hoje.</div>';
       } else {
-        h += `<div class="card-btns"><button class="btn btn-primary" id="btn-workout-rest" style="display: flex; align-items: center; justify-content: center; gap: 8px;">INICIAR TREINO ${Icons.play}</button></div>`;
+        h += `<div class="card-btns"><button class="btn btn-primary" id="btn-workout-rest" style="gap: 8px;">INICIAR TREINO ${Icons.play}</button></div>`;
       }
     } else {
       h += '<h2>Treino ' + esc(getLabel(l)) + '</h2>';
@@ -407,46 +408,64 @@ export function main() {
       h += meta;
       const exs = state.P.ex[l] || [];
       if (isFuture) {
-        h += `<div style="text-align:center; color:var(--mu); padding:32px 20px; font-style:italic;">Você só pode iniciar treinos a partir de hoje.</div>`;
+        h += `<div class="text-center text-mu italic" style="padding:32px 20px;">Você só pode iniciar treinos a partir de hoje.</div>`;
       } else if (exs.length === 0) {
-        h += `<div class="empty" style="padding:32px 20px;"><p style="margin:0 0 12px; font-size:16px; color:var(--tx);">Nenhum exercício no Treino ${esc(getLabel(l))}.</p><p style="margin:0 0 20px; color:var(--mu); font-size:14px;">Adicione exercícios nas configurações.</p></div>`;
-        h += `<div class="card-btns"><button class="btn btn-primary" id="btn-open-config" style="width:100%;">ADICIONAR EXERCÍCIOS</button></div>`;
+        h += `<div class="empty" style="padding:32px 20px;"><p class="mb-12 fw-500 text-base">Nenhum exercício no Treino ${esc(getLabel(l))}.</p><p class="text-mu text-sm mb-20">Adicione exercícios nas configurações.</p></div>`;
+        h += `<div class="card-btns"><button class="btn btn-primary w-100" id="btn-open-config">ADICIONAR EXERCÍCIOS</button></div>`;
       } else {
         let carouselHTML = '';
         [...exs, ...exs].forEach((e) => {
-          let imgHtml = e.gif ? `<img src="${esc(e.gif)}" alt="">` : (e.f ? (state.cache[e.f] ? `<img src="${state.cache[e.f]}" alt="">` : `<img data-f="${e.f}" alt="">`) : `<div class="ph">${Icons.dumbbellLarge}</div>`);
+          let imgHtml = e.gif 
+            ? `<img src="${esc(e.gif)}" data-zoom="true" alt="">` 
+            : (e.f 
+                ? (state.cache[e.f] 
+                    ? `<img src="${state.cache[e.f]}" data-zoom="true" alt="">` 
+                    : `<img data-f="${e.f}" data-zoom="true" alt="">`) 
+                : `<div class="ph">${Icons.dumbbellLarge}</div>`);
           carouselHTML += `<div class="carousel-item">${imgHtml}<span>${esc(e.name)}</span></div>`;
         });
         h += `<div class="preview-carousel"><div class="carousel-track">${carouselHTML}</div></div>`;
-        h += '<div style="text-align:center; color:var(--mu); font-size:14px; margin-top:16px; font-weight: 500;">Toque na data acima e no botão <span style="color:var(--ac);font-weight:800;">▶</span> para iniciar.</div>';
-        h += `<div class="card-btns"><button class="btn btn-secondary" id="btn-change-workout" style="display: flex; align-items: center; justify-content: center; gap: 8px;">MUDAR TREINO</button></div>`;
+        h += '<div class="text-center text-mu text-sm mt-16 fw-500">Toque na data acima e no botão <span class="text-ac fw-800">▶</span> para iniciar.</div>';
+        h += `<div class="card-btns"><button class="btn btn-secondary" id="btn-change-workout" style="gap: 8px;">MUDAR TREINO</button></div>`;
       }
     }
     h += '</div>';
   } else {
-    h += '<div style="width: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column;">';
+    h += '<div class="workout-container">';
     h += '<div class="wk-head">';
     h += '<button class="wk-back" data-exit="1">' + Icons.arrowLeft + ' Voltar</button>';
     h += '<h2>Treino ' + esc(getLabel(l)) + '</h2>';
     h += '<div></div>';
     h += '</div>';
-    h += '<div style="text-align:center; color:var(--mu); font-size:14px; margin-bottom:12px; font-weight: 500;">' + dn + '</div>';
+    h += '<div class="workout-date">' + dn + '</div>';
     h += '<div id="workoutTimerDisplay">' + (state.workoutStartTime ? formatDuration(Date.now() - state.workoutStartTime) : "00:00:00") + '</div>';
+    
     const ex = state.P.ex[l] || [];
     if (ex.length) {
-      h += '<div class="exs vertical" style="margin-bottom: 20px;">' + ex.map((e, i) => {
-        let imgHtml = e.gif ? `<img class="im" src="${esc(e.gif)}" alt="">` : (e.f ? (state.cache[e.f] ? `<img class="im" src="${state.cache[e.f]}" alt="">` : `<img class="im" data-f="${e.f}" alt="">`) : `<div class="im" style="display:flex;align-items:center;justify-content:center">${Icons.dumbbellLarge}</div>`);
+      h += '<div class="exs vertical mb-20">' + ex.map((e, i) => {
+        // VERIFICA SE TEM SUPERSET
+        const hasSuperset = !!e.supersetId;
+        
+        let imgHtml = e.gif 
+          ? `<img class="im" src="${esc(e.gif)}" data-zoom="true" alt="Ver execução">` 
+          : (e.f 
+              ? (state.cache[e.f] 
+                  ? `<img class="im" src="${state.cache[e.f]}" data-zoom="true" alt="Ver execução">` 
+                  : `<img class="im" data-f="${e.f}" data-zoom="true" alt="Ver execução">`) 
+              : `<div class="im" style="display:flex;align-items:center;justify-content:center">${Icons.dumbbellLarge}</div>`);
+        
         const isDone = state.completedExs.has(i);
-        const textStyle = isDone ? 'text-decoration: line-through; opacity: 0.5;' : '';
-        return '<div class="ex">' + imgHtml +
+        const textStyle = isDone ? 'ex-text-done' : '';
+        
+        return '<div class="ex ' + (hasSuperset ? 'superset-card' : '') + '">' + imgHtml +
           '<div class="ex-info">' +
-            '<div style="display:flex; align-items:center; gap:12px; margin-bottom: 6px;">' +
+            '<div class="ex-title-row">' +
               '<button class="chk-btn '+(isDone?'done':'')+'" data-chk="'+i+'" aria-label="Concluir '+esc(e.name)+'" aria-pressed="'+isDone+'">' + Icons.check + '</button>' +
-              '<div style="flex:1; min-width:0; '+textStyle+'"><b>'+esc(e.name)+'</b></div>' +
+              '<div class="flex-1 '+textStyle+'"><b>'+esc(e.name)+'</b> ' + (hasSuperset ? '<span class="superset-badge">Bi-set</span>' : '') + '</div>' +
             '</div>' +
-            '<div style="'+textStyle+'">' +
+            '<div class="'+textStyle+'">' +
               (e.sets?'<span>'+esc(e.sets)+'</span>':'') +
-              (e.w?'<span style="color:var(--ac);font-weight:600;">Carga: '+esc(e.w)+' '+esc(e.wu || 'kg')+'</span>':'') +
+              (e.w?'<span class="text-ac fw-600">Carga: '+esc(e.w)+' '+esc(e.wu || 'kg')+'</span>':'') +
             '</div>' +
             '<div class="ex-actions">' +
               '<button class="btn-carga btn-weight" data-weight="'+i+'">' + Icons.scale + ' Carga</button>' +
@@ -454,17 +473,18 @@ export function main() {
             '</div>' +
           '</div></div>';
       }).join("") + '</div>';
+      
       const f = state.F[state.sel];
       if (f) {
-        let proofImg = f.fid ? (state.cache[f.fid] ? '<img class="proof" src="' + state.cache[f.fid] + '" alt="">' : '<img class="proof" data-f="' + f.fid + '" alt="">') : '';
-        h += '<button class="btn btn-secondary" disabled style="margin-top: 10px; padding: 18px; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px;">' + Icons.check + ' CONCLUÍDO</button>' + proofImg;
+        let proofImg = f.fid ? (state.cache[f.fid] ? '<img class="proof" src="' + state.cache[f.fid] + '" data-zoom="true" alt="">' : '<img class="proof" data-f="' + f.fid + '" data-zoom="true" alt="">') : '';
+        h += '<button class="btn btn-secondary mt-12" disabled style="padding: 18px; font-size: 1rem; gap: 8px;">' + Icons.check + ' CONCLUÍDO</button>' + proofImg;
         if (f.duration) h += '<div class="duration-text">' + Icons.clock + ' Você treinou por ' + esc(f.duration) + '</div>';
-        h += '<button class="btn btn-ghost" id="undo" style="margin-bottom: 0;">Desfazer</button>';
+        h += '<button class="btn btn-ghost mb-0" id="undo">Desfazer</button>';
       } else {
-        h += '<button class="btn btn-primary" id="done" data-letter="' + l + '" style="margin-top: 16px; margin-bottom: 0; padding: 18px; font-size: 1rem;">CONCLUÍDO</button>';
+        h += '<button class="btn btn-primary mt-16 mb-0" id="done" data-letter="' + l + '" style="padding: 18px; font-size: 1rem;">CONCLUÍDO</button>';
       }
     } else {
-      h += `<div class="empty" style="padding:32px 20px; text-align:center;"><p style="margin:0 0 8px; font-size:16px; color:var(--tx); font-weight:700;">Este treino está vazio.</p><p style="margin:0 0 20px; color:var(--mu); font-size:14px;">Adicione exercícios nas configurações.</p></div>`;
+      h += `<div class="empty text-center" style="padding:32px 20px;"><p class="mb-8 text-base fw-700">Este treino está vazio.</p><p class="text-mu text-sm mb-20">Adicione exercícios nas configurações.</p></div>`;
       h += `<button class="btn btn-secondary" data-exit="1">VOLTAR</button>`;
     }
     h += '</div>';
@@ -482,7 +502,13 @@ export function renderWorkoutSelector() {
         let carouselHTML = '';
         if (exs.length > 0) {
             exs.forEach((e) => {
-                let imgHtml = e.gif ? `<img src="${esc(e.gif)}" alt="">` : (e.f ? (state.cache[e.f] ? `<img src="${state.cache[e.f]}" alt="">` : `<img data-f="${e.f}" alt="">`) : `<div class="ph">${Icons.dumbbellLarge}</div>`);
+                let imgHtml = e.gif 
+                  ? `<img src="${esc(e.gif)}" data-zoom="true" alt="">` 
+                  : (e.f 
+                      ? (state.cache[e.f] 
+                          ? `<img src="${state.cache[e.f]}" data-zoom="true" alt="">` 
+                          : `<img data-f="${e.f}" data-zoom="true" alt="">`) 
+                      : `<div class="ph">${Icons.dumbbellLarge}</div>`);
                 carouselHTML += `<div class="carousel-item">${imgHtml}<span>${esc(e.name)}</span></div>`;
             });
         }
@@ -492,7 +518,7 @@ export function renderWorkoutSelector() {
                 <small>Treino ${l}</small>
                 <h3>${esc(getLabel(l))}</h3>
             </div>
-            ${carouselHTML ? `<div class="preview-carousel" style="margin:0; padding: 16px 0;"><div class="carousel-track">${carouselHTML}</div></div>` : `<p style="text-align:center; padding: 24px; color: var(--mu); font-weight: 500;">Nenhum exercício cadastrado.</p>`}
+            ${carouselHTML ? `<div class="preview-carousel" style="margin:0; padding: 16px 0;"><div class="carousel-track">${carouselHTML}</div></div>` : `<p class="text-center text-mu fw-500 p-24">Nenhum exercício cadastrado.</p>`}
           </button>
         `;
     });
@@ -503,69 +529,108 @@ export function renderWorkoutSelector() {
 export function drawer() {
   const dr = $("dr");
   let h = "";
+
+  // TELA DE ÁGUA
   if (dr.dataset.view === 'water') {
     const isCopo = state.waterType === 'copo';
     const currentLabel = state.waterGoal >= 1000 ? (state.waterGoal/1000).toFixed(1).replace('.0', '')+'L' : state.waterGoal+'ml';
+    
     h = `
-      <div style="display:flex; align-items:center; margin-bottom: 24px; gap: 12px;">
-         <button class="ic" id="btnWaterBack" style="border:none; background:transparent; padding:0;" aria-label="Voltar">${Icons.arrowLeft}</button>
-         <h2 style="margin:0; font-size:22px;">Meta de Água</h2>
+      <div class="water-header">
+         <button class="ic" id="btnWaterBack" aria-label="Voltar">${Icons.arrowLeft}</button>
+         <h2 class="mt-0">Meta de Água</h2>
       </div>
+      
       <div class="config-section">
         <h3>O que você usa para medir?</h3>
-        <div style="display:flex; gap:12px; margin-bottom: 20px;">
-          <button class="btn ${isCopo ? 'btn-primary' : 'btn-secondary'}" id="btnWaterCopo" style="flex:1; font-size:16px;">Copo</button>
-          <button class="btn ${!isCopo ? 'btn-primary' : 'btn-secondary'}" id="btnWaterGarrafa" style="flex:1; font-size:16px;">Garrafa</button>
+        <div class="flex-row gap-12 mb-20">
+          <button class="btn ${isCopo ? 'btn-primary' : 'btn-secondary'} flex-1" id="btnWaterCopo">Copo</button>
+          <button class="btn ${!isCopo ? 'btn-primary' : 'btn-secondary'} flex-1" id="btnWaterGarrafa">Garrafa</button>
         </div>
     `;
+    
     if (state.showWaterSizeInput) {
         const valSize = isCopo ? state.waterSize : (state.waterSize / 1000).toFixed(2).replace(/\.?0+$/, "");
-        h += `<h3>${isCopo ? 'QUANTAS MLs?' : 'QUANTOS LITROS?'}</h3><input type="number" id="waterSizeInput" value="${valSize}" placeholder="${isCopo ? 'Ex: 250' : 'Ex: 0.25'}" style="font-size: 18px; padding: 16px; margin-bottom: 16px;">`;
+        h += `<h3 class="mt-0">${isCopo ? 'QUANTAS MLs?' : 'QUANTOS LITROS?'}</h3><input type="number" id="waterSizeInput" value="${valSize}" placeholder="${isCopo ? 'Ex: 250' : 'Ex: 0.25'}" class="input-large">`;
     }
+    
     h += `
-        <button class="btn btn-secondary" id="btnEditWaterMode" style="margin-top: 16px; padding: 18px; font-size: 15px; font-weight: 700; color: var(--water); border-color: var(--water);">ALTERAR META DIÁRIA (ATUAL: ${currentLabel})</button>
-        <div style="margin-top: 24px; border-top: 1px solid var(--bd); padding-top: 20px;">
-            <h3>🔔 Lembrete de Água</h3>
-            <button class="btn btn-secondary" id="btnToggleReminder" style="padding: 18px; font-size: 15px; font-weight: 700; color: ${state.waterReminder ? 'var(--success)' : 'var(--mu)'}; border-color: ${state.waterReminder ? 'var(--success)' : 'var(--bd)'};">${state.waterReminder ? '✅ Ativado' : '🔕 Ativar Lembrete'}</button>
-            ${state.waterReminder ? `<p style="font-size: 12px; color: var(--mu); margin-top: 16px; text-align: center;">Avisar a cada:</p><div class="row" style="justify-content: center; margin-top: 8px;">${[30, 60, 120, 180].map(m => `<button class="chip${state.waterReminderTime === m ? ' on' : ''}" data-reminder-time="${m}">${m >= 60 ? (m/60)+'h' : m+'min'}</button>`).join('')}</div>` : ''}
+        <button class="btn btn-secondary btn-water-action" id="btnEditWaterMode">ALTERAR META DIÁRIA (ATUAL: ${currentLabel})</button>
+        
+        <div class="water-separator">
+            <h3 class="mt-0">🔔 Lembrete de Água</h3>
+            <button class="btn btn-secondary btn-reminder-toggle" id="btnToggleReminder" style="color: ${state.waterReminder ? 'var(--success)' : 'var(--mu)'}; border-color: ${state.waterReminder ? 'var(--success)' : 'var(--bd)'};">
+                ${state.waterReminder ? '✅ Ativado' : '🔕 Ativar Lembrete'}
+            </button>
+            
+            ${state.waterReminder ? `
+                <p class="water-reminder-text">Avisar a cada:</p>
+                <div class="row justify-center mt-8">
+                    ${[30, 60, 120, 180].map(m => `<button class="chip${state.waterReminderTime === m ? ' on' : ''}" data-reminder-time="${m}">${m >= 60 ? (m/60)+'h' : m+'min'}</button>`).join('')}
+                </div>
+            ` : ''}
         </div>
     `;
+    
     if (state.showWaterGoalInput) {
         const valGoal = isCopo ? state.waterGoal : (state.waterGoal / 1000).toFixed(2).replace(/\.?0+$/, "");
-        h += `<h3 style="margin-top: 20px;">META DIÁRIA (${isCopo ? 'MLs' : 'Litros'})</h3><input type="number" id="waterGoalInput" value="${valGoal}" placeholder="${isCopo ? 'Ex: 3000' : 'Ex: 3.0'}" style="font-size: 18px; padding: 16px;">`;
+        h += `<h3 class="mt-20">META DIÁRIA (${isCopo ? 'MLs' : 'Litros'})</h3><input type="number" id="waterGoalInput" value="${valGoal}" placeholder="${isCopo ? 'Ex: 3000' : 'Ex: 3.0'}" class="input-large">`;
     }
-    h += `<button class="btn btn-primary" id="saveWaterDrawer" style="margin-top:24px; padding: 18px; font-size: 16px;">SALVAR</button></div>`;
+    
+    h += `<button class="btn btn-primary mt-24" id="saveWaterDrawer">SALVAR</button></div>`;
+    
     safeRender("dr", h);
     return;
   }
+
+  // TELA PRINCIPAL DO MENU
   let displayName = state.P.displayName || state.P.nome;
   let username = state.P.nome;
-  let avatarHtml = state.P.avatar ? `<button class="avatar-btn" id="btnAvatar"><img src="${esc(state.P.avatar)}" alt="Avatar"></button>` : `<button class="avatar-btn" id="btnAvatar">${Icons.user}</button>`;
+  
+  let avatarHtml = state.P.avatar 
+    ? `<button class="avatar-btn" id="btnAvatar"><img src="${esc(state.P.avatar)}" alt="Avatar"></button>` 
+    : `<button class="avatar-btn" id="btnAvatar">${Icons.user}</button>`;
+
   h = `
-    <div style="display:flex; justify-content:flex-end; margin-bottom: 8px;">
-       <button class="ic" id="btnCloseMenu" style="border:none; background:transparent; padding:0;" aria-label="Fechar menu">${Icons.x}</button>
+    <div class="drawer-top-bar">
+       <button class="ic" id="btnCloseMenu" aria-label="Fechar menu">${Icons.x}</button>
     </div>
-    <div class="menu-header" style="margin-top:-24px;">
+
+    <div class="menu-header drawer-header">
       ${avatarHtml}
       <div>
         <div class="menu-name">${esc(displayName)}</div>
         <div class="menu-username">@${esc(username)}</div>
       </div>
     </div>
-    <button class="btn-menu" id="btn-evolution"><span style="display: flex; align-items: center; gap: 12px;">${Icons.chart} Ver Evolução</span> <span style="color: var(--mu);">›</span></button>
-    <button class="btn-menu" id="btn-open-config"><span style="display: flex; align-items: center; gap: 12px;">${Icons.settings} Configurar Treinos</span> <span style="color: var(--mu);">›</span></button>
-    <button class="btn-menu" id="btnWaterSettings"><span style="display: flex; align-items: center; gap: 12px;">${Icons.water} Meta de Água Diária</span> <span style="color: var(--mu);">›</span></button>
+    
+    <button class="btn-menu" id="btn-evolution">
+      <span class="menu-btn-content">${Icons.chart} Ver Evolução</span> <span class="menu-btn-arrow">›</span>
+    </button>
+    
+    <button class="btn-menu" id="btn-open-config">
+      <span class="menu-btn-content">${Icons.settings} Configurar Treinos</span> <span class="menu-btn-arrow">›</span>
+    </button>
+
+    <button class="btn-menu" id="btnWaterSettings">
+      <span class="menu-btn-content">${Icons.water} Meta de Água Diária</span> <span class="menu-btn-arrow">›</span>
+    </button>
+    
     <h3>Dias de repouso</h3>
     <div class="row">${DS.map((n, i) => `<button class="chip${state.P.rest.includes(i) ? " on" : ""}" data-rest2="${i}">${n}</button>`).join("")}</div>
+    
     <h3>Tempo de descanso (s)</h3>
     <div class="row">${[30,45,60,90,120].map(n => `<button class="chip${state.P.restTime === n ? " on" : ""}" data-resttime="${n}">${n}s</button>`).join("")}</div>
+
     <h3>Tema</h3>
     <div class="row">${[["auto","Automático"],["light","Claro"],["dark","Escuro"]].map(t => `<button class="chip${state.P.tema === t[0] ? " on" : ""}" data-th="${t[0]}">${t[1]}</button>`).join("")}</div>
-    <div class="row" style="margin-top:16px">${["Laranja","Azul","Verde","Roxo","Rosa","Vermelho","Amarelo","Ciano","Índigo"].map((name, i) => { const c = AC[i]; return `<button class="sw${state.P.ac === c ? " on" : ""}" style="background:${c}" data-ac="${c}" aria-label="Cor ${name}"></button>`; }).join("")}</div>
-    <div style="flex:1"></div>
-    <button class="btn btn-danger" id="out" style="margin-top:40px;">Sair da Conta</button>
-    <button class="btn btn-ghost" id="btnDeleteAccount" style="margin-top:12px; font-size:12px;">Excluir Conta Permanentemente</button>
+    <div class="row mt-16">${["Laranja","Azul","Verde","Roxo","Rosa","Vermelho","Amarelo","Ciano","Índigo"].map((name, i) => { const c = AC[i]; return `<button class="sw${state.P.ac === c ? " on" : ""}" style="background:${c}" data-ac="${c}" aria-label="Cor ${name}"></button>`; }).join("")}</div>
+    
+    <div class="drawer-spacer"></div>
+    <button class="btn btn-danger mt-40" id="out">Sair da Conta</button>
+    <button class="btn btn-ghost mt-12" id="btnDeleteAccount" style="font-size:12px;">Excluir Conta Permanentemente</button>
   `;
+
   safeRender("dr", h);
 }
 

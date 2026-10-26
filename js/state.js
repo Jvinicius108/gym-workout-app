@@ -41,6 +41,16 @@ export const state = {
   showWaterSizeInput: false,
   showWaterGoalInput: false,
   pendingEvolution: null,
+  
+  // NOVAS VARIÁVEIS PARA O FORMULÁRIO DE EXERCÍCIO
+  editingIsCardio: false,
+  editSets: "",
+  editReps: "",
+  editDuration: "",
+
+  // NOVAS VARIÁVEIS PARA SUPERSETS
+  linkingExIndex: null,
+  hasShownSupersetWarning: false,
 };
 
 export function resetState() {
@@ -78,6 +88,14 @@ export function resetState() {
   state.isUpdate = false;
   state.ob = { step: 0, tipo: "", freq: 0, qty: 0, days: [] };
   state.timerEndTime = null;
+  
+  state.editingIsCardio = false;
+  state.editSets = "";
+  state.editReps = "";
+  state.editDuration = "";
+
+  state.linkingExIndex = null;
+  state.hasShownSupersetWarning = false;
 
   if (state.timerInterval) {
     clearInterval(state.timerInterval);

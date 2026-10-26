@@ -2,12 +2,13 @@ import { state } from '../state.js';
 import { $, LT, showToast } from '../utils.js';
 import { persist } from '../db.js';
 import { authView, onboard, show } from '../ui.js';
-import { go } from '../auth.js';
 
 export async function handleOnboardingAndAuth(t, D) {
   try {
     if (D.tab) { state.tab = D.tab; authView(); return true; }
-    if (t.id === "ago") { go(); return true; }
+    
+    // A linha do "ago" foi removida daqui. Quem cuida do login agora é o app.js (via submit do form).
+
     if (D.back !== undefined) { state.ob.step = +D.back; onboard(); return true; }
     if (D.obt) { state.ob.tipo = D.obt; state.ob.step = 1; onboard(); return true; }
     if (D.obf) { state.ob.freq = +D.obf; state.ob.step = 2; onboard(); return true; }

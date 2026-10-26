@@ -28,6 +28,24 @@ window.addEventListener('error', e => {
 });
 
 document.addEventListener("click", async e => {
+   if (e.target.closest('[data-zoom="true"]')) {
+    const imgElement = e.target.closest('[data-zoom="true"]');
+    const src = imgElement.src || imgElement.dataset.src;
+    
+    if (src) {
+      $("gifLightboxImg").src = src;
+      $("gifLightbox").classList.add("on");
+    }
+    return;
+  }
+
+  // 2. FECHAR O GIF AMPLIADO (clicando em qualquer lugar da tela preta)
+  if (e.target.id === "gifLightbox" || e.target.closest("#gifLightbox") && e.target.tagName !== "IMG") {
+    $("gifLightbox").classList.remove("on");
+    // Limpa a imagem depois que a animação de fechar termina
+    setTimeout(() => { $("gifLightboxImg").src = ""; }, 300);
+    return;
+  }
   const waterWidget = e.target.closest("#waterWidget");
   if (waterWidget && !e.target.closest("#btnAddWater")) {
     e.stopPropagation();
@@ -88,6 +106,13 @@ document.addEventListener("click", async e => {
 
 document.addEventListener("change", e => {
   const t = e.target;
+
+  if (t.id === "exIsCardio") {
+    const isCardio = t.checked;
+    if ($("exStrengthFields")) $("exStrengthFields").style.display = isCardio ? 'none' : 'flex';
+    if ($("exCardioFields")) $("exCardioFields").style.display = isCardio ? 'block' : 'none';
+    return;
+  }
 
   if (t.id === "fiAvatar" && t.files[0]) {
     const file = t.files[0];
