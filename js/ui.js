@@ -1,13 +1,14 @@
 import { state } from './state.js';
-import { $, esc, key, pd, mi, LT, getWorkoutForDate, getLabel, showToast, safeRender, Icons } from './utils.js';
-import { ready, hydrate, persist } from './db.js';
+import { $, esc, key, pd, mi, LT, getWorkoutForDate, getLabel, showToast, safeRender, Icons, isWeekCompensated } from './utils.js';
+import { ready, hydrate, persist, sanitizeName } from './db.js';
 import { startWorkoutTimer, formatDuration } from './timers.js';
 import { DS, DF, AC, TIPOS } from './config.js';
 import { quotes } from './quotes.js';
 import { initWater, setWaterLevel } from './water.js';
 import { mascotQuotes } from './mascot_quotes.js';
 import { openEvolution, drawChart } from './ui-evolution.js';
-import { renderConfigScreen, renderMascotScreen } from './ui-settings.js';
+import { renderConfigScreen, renderMascotScreen, renderSubstitutesScreen, renderAllSubsScreen } from './ui-settings.js';
+import { getSubstitutosPara } from './substitutions.js';
 
 let lottieAnimation = null;
 const dayAnimations = new Map();
@@ -38,11 +39,26 @@ function loadFire(level) {
 }
 
 export function theme() {
+  // ✅ TRAVA DE SEGURANÇA: Se o Painel Admin estiver aberto, ignora a mudança de tema
+  const adminScreen = document.getElementById("adminScreen");
+  if (adminScreen && adminScreen.style.display !== "none") {
+    return; 
+  }
+
   const r = document.documentElement;
   const t = state.P ? state.P.tema : "auto";
-  if (t) localStorage.setItem('gym_theme', t);
-  (!t || t === "auto") ? r.removeAttribute("data-theme") : r.setAttribute("data-theme", t);
+  
+  if (t && t !== 'auto') {
+    localStorage.setItem('gym_theme', t);
+    r.setAttribute("data-theme", t);
+  } else {
+    localStorage.removeItem('gym_theme');
+    r.removeAttribute("data-theme");
+  }
+
+  // ✅ CORREÇÃO: Aplica a cor de destaque (que tinha sido removida por engano)
   r.style.setProperty("--ac", (state.P && state.P.ac) || AC[0]);
+  
   const isDark = t === 'dark' || ((!t || t === 'auto') && window.matchMedia('(prefers-color-scheme: dark)').matches);
   const bgColor = isDark ? '#0f1115' : '#f4f5f7';
   let metaTheme = document.querySelector('meta[name="theme-color"]');
@@ -168,10 +184,14 @@ function dayHtml(d, k0) {
   const isFuture = k > k0;
   const isToday = k === k0;
   const isDone = !!state.F[k];
-  const isFailed = isPast && !isRest && !isDone && state.P.tipo && state.F_loaded && (d.getTime() >= (state.P.createdAt || 0));
+  
+  const isFailed = isPast && !isRest && !isDone && state.P.tipo && state.F_loaded && (d.getTime() >= (state.P.createdAt || 0)) && !isWeekCompensated(d);
+  const isCompensated = isPast && !isRest && !isDone && !isFailed && state.P.tipo && isWeekCompensated(d);
+
   let l = state.F[k]?.letter || (isRest ? null : getWorkoutForDate(d));
   let displayL = l ? getLabel(l) : '💤';
   let extraClass = "", statusHtml = "", animHtml = "";
+  
   if (isDone) {
     const animPlayed = state.P.animSeen?.[k] === "success";
     if (!animPlayed && isToday) {
@@ -193,12 +213,22 @@ function dayHtml(d, k0) {
       extraClass = "circle-day";
     }
   }
+
+  if (isCompensated) {
+    return `<button class="d compensated-day ${isSel ? 'sel' : ''} ${isToday ? 'today' : ''}" data-k="${k}">
+              <small>${DS[mi(d)]}</small>
+              <b>${d.getDate()}</b>
+              <span class="static-status compensated-icon">🛡️</span>
+            </button>`;
+  }
+
   if (extraClass === "circle-day") {
     return `<button class="d circle-day ${isSel ? 'sel' : ''} ${isToday ? 'today' : ''}" data-k="${k}">${statusHtml}</button>`;
   } else if (extraClass === "animating") {
     return `<button class="d animating ${isSel ? 'sel' : ''} ${isToday ? 'today' : ''}" data-k="${k}">${animHtml}</button>`;
   } else {
     let h = '<button class="d' + (isSel ? " sel" : "") + (isToday ? " today" : "") + '" data-k="' + k + '">';
+     h += '<div class="santa-hat"></div>';
     h += '<small>' + DS[mi(d)] + '</small>';
     h += '<b>' + d.getDate() + '</b>';
     h += '<span class="label-txt" style="' + (isSel ? 'color:var(--acx)' : '') + '">' + esc(displayL) + '</span>';
@@ -374,7 +404,10 @@ export function main() {
   const k0 = key(new Date());
   const isPast = state.sel < k0;
   const isFuture = state.sel > k0;
-  const isFailed = isPast && !isRest && !state.F[state.sel] && state.P.tipo && (d.getTime() >= (state.P.createdAt || 0));
+  
+  const isFailed = isPast && !isRest && !state.F[state.sel] && state.P.tipo && (d.getTime() >= (state.P.createdAt || 0)) && !isWeekCompensated(d);
+  const isCompensated = isPast && !isRest && !state.F[state.sel] && !isFailed && state.P.tipo && isWeekCompensated(d);
+  
   let h = '';
   const dn = d.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
   const meta = '<div class="goal">Meta da semana: ' + semana() + ' de ' + state.P.freq + ' treino' + (state.P.freq > 1 ? "s" : "") + '</div>';
@@ -383,6 +416,15 @@ export function main() {
     h += '<div class="panel">';
     if (isFailed) {
       h += `<div class="fail-card"><div class="fail-icon-container"><div class="fail-icon">${Icons.x}</div></div><h2 class="fail-title">Dia Perdido</h2><p class="s mb-24">${dn}</p><div class="fail-message">"Poxa, você falhou hoje.<br>Cuidado, o seu mascote precisa que você mantenha o foco para que ele sobreviva!"</div></div>`;
+    } else if (isCompensated) {
+      h += `<div style="display:flex; flex-direction:column; align-items:center; padding: 40px 24px; text-align:center;">
+              <div style="font-size: 56px; margin-bottom: 20px; filter: drop-shadow(0 0 15px rgba(34,163,90,0.4));">🛡️</div>
+              <h2 style="color: var(--success); margin: 0 0 12px; font-size: 1.5rem; font-family: var(--font-head);">Dia Compensado</h2>
+              <p class="s" style="margin-bottom: 24px;">${dn}</p>
+              <div style="font-family: 'Georgia', 'Times New Roman', serif; font-size: 1.0625rem; font-style: italic; color: var(--tx); line-height: 1.8; padding: 24px; background: rgba(34, 163, 90, 0.05); border-radius: var(--r-lg); border-left: 6px solid var(--success); text-align: left; width: 100%; box-sizing: border-box;">
+                "Você não treinou neste dia, mas sua dedicação nos outros dias da semana garantiu a sua ofensiva. O escudo te protegeu!"
+              </div>
+            </div>`;
     } else if (state.F[state.sel]) {
       h += '<h2 class="text-success">Treino Concluído ' + Icons.check + '</h2>';
       h += '<p class="s">' + dn + '</p>';
@@ -414,7 +456,9 @@ export function main() {
         h += `<div class="card-btns"><button class="btn btn-primary w-100" id="btn-open-config">ADICIONAR EXERCÍCIOS</button></div>`;
       } else {
         let carouselHTML = '';
-        [...exs, ...exs].forEach((e) => {
+        // ✅ Repete os itens 10 vezes para garantir um loop infinito sem bordas
+      const repeatedExs = Array(10).fill(exs).flat();
+      repeatedExs.forEach((e) => {
           let imgHtml = e.gif 
             ? `<img src="${esc(e.gif)}" data-zoom="true" alt="">` 
             : (e.f 
@@ -443,29 +487,66 @@ export function main() {
     const ex = state.P.ex[l] || [];
     if (ex.length) {
       h += '<div class="exs vertical mb-20">' + ex.map((e, i) => {
-        // VERIFICA SE TEM SUPERSET
         const hasSuperset = !!e.supersetId;
+        const swapped = state.activeSwaps && state.activeSwaps[i];
         
-        let imgHtml = e.gif 
-          ? `<img class="im" src="${esc(e.gif)}" data-zoom="true" alt="Ver execução">` 
-          : (e.f 
-              ? (state.cache[e.f] 
-                  ? `<img class="im" src="${state.cache[e.f]}" data-zoom="true" alt="Ver execução">` 
-                  : `<img class="im" data-f="${e.f}" data-zoom="true" alt="Ver execução">`) 
-              : `<div class="im" style="display:flex;align-items:center;justify-content:center">${Icons.dumbbellLarge}</div>`);
+         const dicSubs = getSubstitutosPara(e.name);
+        const hasDicSubs = (dicSubs.principais && dicSubs.principais.length > 0) || (dicSubs.secundarios && dicSubs.secundarios.length > 0);
+        const hasCustomSubs = (e.substitutes || []).length > 0;
+        
+        // ✅ VERIFICAÇÃO CORRETA DO BANCO GLOBAL
+        const key = String(e.name).trim().toLowerCase();
+        const globalDbSubs = state.globalSubstitutes ? (state.globalSubstitutes[key] || []) : [];
+        
+        const hasGlobalSubs = globalDbSubs.length > 0;
+        const hasAnySub = hasDicSubs || hasCustomSubs || hasGlobalSubs;
+        
+        const displayName = swapped ? swapped.name : e.name;
+        const displaySets = swapped ? swapped.sets : e.sets;
+        
+        // ✅ CORREÇÃO: Mostrar a carga do substituto se estiver trocado
+        const displayWeight = swapped 
+            ? (swapped.w ? `Carga: ${esc(swapped.w)} ${esc(swapped.wu || 'kg')}` : '')
+            : (e.w ? `Carga: ${esc(e.w)} ${esc(e.wu || 'kg')}` : '');
+
+        let imgHtml;
+        if (swapped) {
+          let fotoId = swapped.f;
+          if (!fotoId) fotoId = 'global_' + sanitizeName(swapped.name);
+          
+          imgHtml = state.cache[fotoId]
+              ? `<img class="im" src="${state.cache[fotoId]}" data-zoom="true" alt="Ver execução">`
+              : `<img class="im" data-f="${fotoId}" data-zoom="true" alt="Ver execução">`;
+        } else {
+          imgHtml = e.gif 
+            ? `<img class="im" src="${esc(e.gif)}" data-zoom="true" alt="Ver execução">` 
+            : (e.f 
+                ? (state.cache[e.f] 
+                    ? `<img class="im" src="${state.cache[e.f]}" data-zoom="true" alt="Ver execução">` 
+                    : `<img class="im" data-f="${e.f}" data-zoom="true" alt="Ver execução">`) 
+                : `<div class="im" style="display:flex;align-items:center;justify-content:center">${Icons.dumbbellLarge}</div>`);
+        }
         
         const isDone = state.completedExs.has(i);
         const textStyle = isDone ? 'ex-text-done' : '';
         
+        let swapBtn = '';
+        if (hasAnySub) {
+          swapBtn = `<button class="btn-swap" data-swap-ex="${i}" aria-label="Trocar exercício">🔄 ${swapped ? 'Desfazer Troca' : 'Trocar'}</button>`;
+        }
+        
         return '<div class="ex ' + (hasSuperset ? 'superset-card' : '') + '">' + imgHtml +
           '<div class="ex-info">' +
-            '<div class="ex-title-row">' +
-              '<button class="chk-btn '+(isDone?'done':'')+'" data-chk="'+i+'" aria-label="Concluir '+esc(e.name)+'" aria-pressed="'+isDone+'">' + Icons.check + '</button>' +
-              '<div class="flex-1 '+textStyle+'"><b>'+esc(e.name)+'</b> ' + (hasSuperset ? '<span class="superset-badge">Bi-set</span>' : '') + '</div>' +
+            '<div class="ex-title-row" style="justify-content: space-between;">' +
+              '<div style="display:flex; align-items:center; gap:12px;">' +
+                '<button class="chk-btn '+(isDone?'done':'')+'" data-chk="'+i+'" aria-label="Concluir '+esc(displayName)+'" aria-pressed="'+isDone+'">' + Icons.check + '</button>' +
+                '<div class="'+textStyle+'"><b>'+esc(displayName)+'</b> ' + (hasSuperset ? '<span class="superset-badge">Bi-set</span>' : '') + (swapped ? '<span class="swapped-indicator">Substituto</span>' : '') + '</div>' +
+              '</div>' +
+              swapBtn +
             '</div>' +
             '<div class="'+textStyle+'">' +
-              (e.sets?'<span>'+esc(e.sets)+'</span>':'') +
-              (e.w?'<span class="text-ac fw-600">Carga: '+esc(e.w)+' '+esc(e.wu || 'kg')+'</span>':'') +
+              (displaySets?'<span>'+esc(displaySets)+'</span>':'') +
+              (displayWeight ? `<span class="text-ac fw-600">${displayWeight}</span>` : '') +
             '</div>' +
             '<div class="ex-actions">' +
               '<button class="btn-carga btn-weight" data-weight="'+i+'">' + Icons.scale + ' Carga</button>' +
@@ -530,7 +611,6 @@ export function drawer() {
   const dr = $("dr");
   let h = "";
 
-  // TELA DE ÁGUA
   if (dr.dataset.view === 'water') {
     const isCopo = state.waterType === 'copo';
     const currentLabel = state.waterGoal >= 1000 ? (state.waterGoal/1000).toFixed(1).replace('.0', '')+'L' : state.waterGoal+'ml';
@@ -559,7 +639,7 @@ export function drawer() {
         
         <div class="water-separator">
             <h3 class="mt-0">🔔 Lembrete de Água</h3>
-            <button class="btn btn-secondary btn-reminder-toggle" id="btnToggleReminder" style="color: ${state.waterReminder ? 'var(--success)' : 'var(--mu)'}; border-color: ${state.waterReminder ? 'var(--success)' : 'var(--bd)'};">
+            <button class="btn btn-secondary btn-reminder-toggle" id="btnToggleReminder" style="color: ${state.waterReminder ? 'var(--success)' : 'var(--mu)'}; border-color: ${state.waterReminder ? 'var(--success)' : 'var(--bd)'}">
                 ${state.waterReminder ? '✅ Ativado' : '🔕 Ativar Lembrete'}
             </button>
             
@@ -583,7 +663,6 @@ export function drawer() {
     return;
   }
 
-  // TELA PRINCIPAL DO MENU
   let displayName = state.P.displayName || state.P.nome;
   let username = state.P.nome;
   
@@ -629,6 +708,9 @@ export function drawer() {
     <div class="drawer-spacer"></div>
     <button class="btn btn-danger mt-40" id="out">Sair da Conta</button>
     <button class="btn btn-ghost mt-12" id="btnDeleteAccount" style="font-size:12px;">Excluir Conta Permanentemente</button>
+    
+    <!-- ✅ VERSÃO VISÍVEL (O script update-version.js vai substituir isso) -->
+    <div style="text-align: center; font-size: 10px; color: var(--mu); margin-top: 20px; opacity: 0.5;">Versão: v202610281646</div>
   `;
 
   safeRender("dr", h);
@@ -775,4 +857,4 @@ export function resumeMascotFire() {
   }
 }
 
-export { openEvolution, drawChart, renderConfigScreen, renderMascotScreen };
+export { openEvolution, drawChart, renderConfigScreen, renderMascotScreen, renderSubstitutesScreen, renderAllSubsScreen };

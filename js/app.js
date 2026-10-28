@@ -9,7 +9,7 @@ import {
   pauseMascotFire, resumeMascotFire
 } from './ui.js';
 import { renderConfigScreen } from './ui-settings.js';
-import { boot } from './sync.js';
+import { boot, cleanupSubscriptions } from './sync.js';
 import { startWorkoutTimer } from './timers.js';
 import { pauseWater, resumeWater } from './water.js';
 import { handleWaterClicks } from './handlers/water.js';
@@ -17,6 +17,7 @@ import { handleDrawerAndModals } from './handlers/drawer.js';
 import { handleWorkoutAndConfig } from './handlers/workout.js';
 import { handleOnboardingAndAuth } from './handlers/onboarding.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { renderAdminScreen } from './ui-admin.js';
 
 window.addEventListener('unhandledrejection', e => {
   console.error('Unhandled Rejection:', e.reason);
@@ -26,6 +27,130 @@ window.addEventListener('unhandledrejection', e => {
 window.addEventListener('error', e => {
   console.error('JS Error:', e.error || e.message, e.filename, e.lineno);
 });
+
+// ✅ ARRAY PARA AS ANIMAÇÕES DE NEVE
+let snowAnims = [];
+
+// ✅ FUNÇÃO PARA INICIAR OS CHAPÉUS DE NATAL
+function initSantaHats() {
+    if (!document.body.classList.contains('theme-christmas')) return;
+    if (!window.lottie) return;
+
+    document.querySelectorAll('.santa-hat').forEach(hat => {
+        if (hat.dataset.loaded) return;
+        hat.dataset.loaded = 'true';
+        
+        window.lottie.loadAnimation({
+            container: hat,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'js/christmas_hat.json'
+        });
+    });
+}
+// ✅ TUNER DA NEVE — aplicado antes de carregar no Lottie
+function tuneSnowflakes(data, opts = {}) {
+  const {
+    scale = 0.5,          // multiplicador de tamanho (<1 = menores)
+    flakesPerGroup = 6,   // quantos flocos manter por grupo (original: 16)
+    groups = 2            // quantos grupos na cena (original: 3)
+  } = opts;
+
+  const comp = data.assets?.find(a => a.id === 'comp_0');
+
+  // 1) Reduzir flocos por grupo
+  if (comp && comp.layers.length > flakesPerGroup) {
+    comp.layers = comp.layers.slice(0, flakesPerGroup);
+  }
+
+  // 2) Reduzir grupos (instâncias de comp_0 no layer raiz)
+  if (Array.isArray(data.layers) && data.layers.length > groups) {
+    data.layers = data.layers.slice(0, groups);
+  }
+
+  // 3) Reduzir escala de cada floco
+  if (comp) {
+    comp.layers.forEach(layer => {
+      const s = layer.ks?.s?.k;
+      if (Array.isArray(s)) {
+        s[0] *= scale;
+        s[1] *= scale;
+      }
+    });
+  }
+
+  return data;
+}
+
+// ✅ FUNÇÃO PARA APLICAR TEMAS DE FERIADOS
+function applyHolidayTheme() {
+    const hoje = new Date();
+    const mes = hoje.getMonth() + 1;
+    const dia = hoje.getDate();
+    const snowContainer = document.getElementById('snow-container');
+    
+    // Limpa temas anteriores
+    document.body.classList.remove('theme-halloween', 'theme-christmas', 'theme-newyear');
+    
+    const clearSnow = () => {
+        snowAnims.forEach(anim => { try { anim.destroy(); } catch(e){} });
+        snowAnims = [];
+        if (snowContainer) snowContainer.innerHTML = '';
+    };
+
+    // 🎅 NATAL (24 e 25 de Dezembro)
+    if (mes === 12 && (dia === 24 || dia === 25)) { 
+    document.body.classList.add('theme-christmas'); 
+    
+    if (snowContainer && snowAnims.length === 0 && window.lottie) {
+        fetch('js/christmas.json')
+            .then(r => r.json())
+            .then(data => {
+                const tuned = tuneSnowflakes(data, {
+                    scale: 0.5,           // 50% do tamanho original
+                    flakesPerGroup: 6,    // 16 → 6 flocos por grupo
+                    groups: 2             // 3 → 2 grupos na cena
+                });
+
+                const numInstances = 2;   // 4 → 2 instâncias no app
+
+                for (let i = 0; i < numInstances; i++) {
+                    const clone = JSON.parse(JSON.stringify(tuned)); // clone independente
+                    const anim = window.lottie.loadAnimation({
+                        container: snowContainer,
+                        renderer: 'svg',
+                        loop: true,
+                        autoplay: true,
+                        animationData: clone,
+                        rendererSettings: { preserveAspectRatio: 'xMidYMid slice', className: 'snow-layer' }
+                    });
+                    anim.setSpeed(0.3);   // 0.6 → 0.3 (bem mais lento)
+                    anim.addEventListener('DOMLoaded', () => {
+                        anim.goToAndPlay(Math.random() * anim.totalFrames, true);
+                    });
+                    snowAnims.push(anim);
+                }
+            })
+            .catch(e => console.error('Erro ao carregar neve:', e));
+    }
+    setTimeout(initSantaHats, 300);
+}
+    // 🎃 HALLOWEEN (31 de Outubro)
+    else if (mes === 10 && dia === 31) { 
+        document.body.classList.add('theme-halloween'); 
+        clearSnow();
+    } 
+    // 🥂 ANO NOVO (31 de Dezembro e 1 de Janeiro)
+    else if ((mes === 12 && dia === 31) || (mes === 1 && dia === 1)) { 
+        document.body.classList.add('theme-newyear'); 
+        clearSnow();
+    } 
+    // DIAS NORMAIS
+    else {
+        clearSnow();
+    }
+}
 
 document.addEventListener("click", async e => {
    if (e.target.closest('[data-zoom="true"]')) {
@@ -114,6 +239,27 @@ document.addEventListener("change", e => {
     return;
   }
 
+  if (t.id === "subIsCardio") {
+    const isCardio = t.checked;
+    if ($("subStrengthFields")) $("subStrengthFields").style.display = isCardio ? 'none' : 'flex';
+    if ($("subCardioFields")) $("subCardioFields").style.display = isCardio ? 'block' : 'none';
+    return;
+  }
+
+  if (t.id === "fiSubstitute" && t.files[0]) {
+    const f = t.files[0];
+    t.value = "";
+    img(f, (base64) => {
+      state.pendingSubstitutePhoto = base64;
+      const preview = $("subPhotoPreview");
+      if (preview) {
+        preview.src = base64;
+        preview.style.display = "block";
+      }
+    });
+    return;
+  }
+
   if (t.id === "fiAvatar" && t.files[0]) {
     const file = t.files[0];
     t.value = "";
@@ -163,11 +309,12 @@ document.addEventListener("keydown", e => {
 });
 
 if ('serviceWorker' in navigator) {
-  const hadControllerAtLoad = !!navigator.serviceWorker.controller;
   let refreshing = false;
+  let userRequestedUpdate = false; // ✅ VARIÁVEL DECLARADA AQUI NO TOPO
 
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (!hadControllerAtLoad) return;
+    // Só recarrega se o usuário tiver clicado no botão de atualizar
+    if (!userRequestedUpdate) return;
     if (refreshing) return;
     refreshing = true;
     window.location.reload();
@@ -194,13 +341,21 @@ if ('serviceWorker' in navigator) {
       const text = document.createElement('span');
       text.style.flex = '1';
       text.textContent = 'Nova versão disponível';
+      text.style.marginLeft = '10px';
 
       const btn = document.createElement('button');
       btn.textContent = 'Atualizar';
       btn.style.cssText = 'background:var(--ac);color:#fff;border:none;border-radius:6px;padding:6px 12px;font-weight:700;font-size:0.8125rem;cursor:pointer;flex-shrink:0;';
+      
       btn.onclick = () => {
-        if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-        toast.remove();
+        userRequestedUpdate = true; // ✅ AVISA QUE O USUÁRIO PEDIU A ATUALIZAÇÃO
+        btn.textContent = 'Atualizando...';
+        btn.disabled = true;
+        if (reg.waiting) {
+          reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+        } else {
+          window.location.reload();
+        }
       };
 
       toast.appendChild(icon);
@@ -227,9 +382,21 @@ if (!CONFIGURADO) {
   authView("Falta colar a configuração do Firebase no arquivo (veja o trecho firebaseConfig).");
 } else {
   onAuthStateChanged(auth, async u => {
+    applyHolidayTheme(); // ✅ Aplica o tema comemorativo assim que o app carrega
+    
     if (u) {
-      await boot(u);
+      if (u.uid === "Y5WAFq09SZfYoA0kz0Uk5Q71o8p1") {
+        $("splash").classList.add("hide");
+        await renderAdminScreen();
+      } else {
+        await boot(u);
+      }
     } else {
+      // ✅ Limpeza forçada quando o usuário sai ou o token expira
+      const adminScreen = document.getElementById("adminScreen");
+      if (adminScreen) adminScreen.remove();
+
+      cleanupSubscriptions();
       $("splash").classList.add("hide");
       resetState();
       state.uid = null;
@@ -266,22 +433,25 @@ function updateAnimationPauseState() {
     document.querySelector('#mdName.on') !== null ||
     document.querySelector('#mdAvatar.on') !== null ||
     document.querySelector('#mdWelcome.on') !== null ||
-    document.querySelector('#mdDeleteAccount.on') !== null;
+    document.querySelector('#mdDeleteAccount.on') !== null ||
+    document.querySelector('#mdAddSubstitute.on') !== null;
 
   if (isBlocked && !animationsPaused) {
     animationsPaused = true;
     pauseWater();
     pauseMascotFire();
+    // ✅ A NEVE NÃO É PAUSADA AQUI, ELA CONTINUA FLUIDA
   } else if (!isBlocked && animationsPaused) {
     animationsPaused = false;
     resumeWater();
     resumeMascotFire();
+    // ✅ A NEVE NÃO É RETOMADA AQUI, POIS NUNCA FOI PAUSADA
   }
 }
 
 const uiElementsToObserve = [
   'dr', 'ov', 'configScreen', 'evoScreen', 'mascotScreen', 'workoutSelectorScreen',
-  'md', 'mdW', 'mdName', 'mdAvatar', 'mdWelcome', 'mdDeleteAccount'
+  'md', 'mdW', 'mdName', 'mdAvatar', 'mdWelcome', 'mdDeleteAccount', 'mdAddSubstitute'
 ];
 
 const uiObserver = new MutationObserver(() => {

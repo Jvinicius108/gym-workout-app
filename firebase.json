@@ -8,8 +8,12 @@
       "firebase.json",
       "firestore.rules",
       "repomix-output.xml",
+      "update-version.js",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "predeploy": [
+      "node update-version.js"
     ],
     "headers": [
       {

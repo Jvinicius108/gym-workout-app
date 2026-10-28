@@ -2,24 +2,37 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // ✅ FUNÇÃO DO ADMIN: Verifica o UID
+    function isAdmin() {
+      return request.auth != null && request.auth.uid == 'Y5WAFq09SZfYoA0kz0Uk5Q71o8p1';
+    }
+
+    // ✅ REGRA MÁGICA: Admin pode ler e escrever em QUALQUER lugar
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+
+    // ✅ REGRAS PARA USUÁRIOS COMUNS
     match /users/{userId} {
-      allow read: if request.auth != null && request.auth.uid == userId;
-      allow write: if request.auth != null && request.auth.uid == userId
-                   && request.resource.data.size() < 200;
-
-      match /feitos/{docId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Subcoleções (fotos, feitos)
+      match /{subcollection}/{docId} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
-      }
-
-      match /fotos/{docId} {
-        allow read: if request.auth != null && request.auth.uid == userId;
-        allow write: if request.auth != null && request.auth.uid == userId
-                     && request.resource.data.d.size() < 900000;
       }
     }
 
-    match /{document=**} {
-      allow read, write: if false;
+    // ✅ LEITURA DE SUBSTITUTOS E FOTOS GLOBAIS (qualquer um logado)
+    match /global_substitutes/{docId} {
+      allow read: if request.auth != null;
+    }
+    match /global_fotos/{docId} {
+      allow read: if request.auth != null;
+    }
+
+    // ✅ USUÁRIOS PODEM ABRIR CHAMADOS
+    match /chamados/{ticketId} {
+      allow create: if request.auth != null;
     }
   }
 }

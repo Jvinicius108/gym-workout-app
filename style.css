@@ -4,19 +4,16 @@
 :root{
   --bg:#f4f5f7; --card:#fff; --tx:#14171c; --mu:#5e6674; --bd:#e3e6ea; --ac:#ff5a36; --acx:#fff;
   
-  /* CORES DE STATUS */
   --success: #22a35a;
   --danger: #e5484d;
   --water: #00bfff;
   
-  /* ARREDONDAMENTOS (DESIGN SYSTEM) */
   --r-sm: 8px;
   --r-md: 12px;
   --r-lg: 16px;
   --r-xl: 24px;
   --r-full: 999px;
 
-  /* TIPOGRAFIA */
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
   --text-base: 1rem;
@@ -27,9 +24,27 @@
   --ac-shadow: color-mix(in srgb, var(--ac), transparent 50%);
   --font-body: 'Inter', -apple-system, sans-serif;
   --font-head: 'Outfit', -apple-system, sans-serif;
+
+  /* ✅ NOVAS SOMBRAS PREMIUM */
+  --shadow-sm: 0 2px 8px -2px rgba(0,0,0,0.06);
+  --shadow-md: 0 8px 24px -8px rgba(0,0,0,0.12);
+  --shadow-lg: 0 16px 40px -12px rgba(0,0,0,0.18);
+  
+  /* ✅ EFEITO VIDRO FOSCO */
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.2);
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1115;--card:#1a1d24;--tx:#f1f3f6;--mu:#9aa3b0;--bd:#2a2f38}}
-:root[data-theme="dark"]{--bg:#0f1115;--card:#1a1d24;--tx:#f1f3f6;--mu:#9aa3b0;--bd:#2a2f38}
+
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1115;--card:#1a1d24;--tx:#f1f3f6;--mu:#9aa3b0;--bd:#2a2f38;
+    --glass-bg: rgba(26, 29, 36, 0.75);--glass-border: rgba(255,255,255,0.05);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1115;--card:#1a1d24;--tx:#f1f3f6;--mu:#9aa3b0;--bd:#2a2f38;
+  --glass-bg: rgba(26, 29, 36, 0.75);--glass-border: rgba(255,255,255,0.05);
+}
 
 /* =========================================
    2. RESET E TIPOGRAFIA GLOBAL
@@ -38,18 +53,20 @@
 [hidden] { display: none !important; }
 html { font-size: clamp(14px, 2vw, 16px); -webkit-text-size-adjust: 100%; }
 html, body { 
-    margin: 0; padding: 0; 
-    width: 100%; max-width: 100%; 
-    height: 100%; min-height: 100%;
-    overflow: hidden; 
-    background: var(--bg); color: var(--tx); 
-    font-family: var(--font-body); line-height: 1.5; 
-    -webkit-font-smoothing: antialiased; 
-    overscroll-behavior-y: none; 
+    margin: 0; padding: 0; width: 100%; max-width: 100%; height: 100%; min-height: 100%; overflow: hidden; 
+    background: var(--bg); color: var(--tx); font-family: var(--font-body); line-height: 1.6; 
+    -webkit-font-smoothing: antialiased; overscroll-behavior-y: none; 
 }
 button, a, input, select, textarea { touch-action: manipulation; }
-h1, h2, h3, h4, .app-title, .menu-name, .panel h2 { font-family: var(--font-head); font-weight: 700; letter-spacing: -0.5px; }
-button{font-family: inherit; color: inherit; cursor: pointer; border: none; background: none;}
+
+/* ✅ TIPOGRAFIA REFINADA */
+h1, h2, h3, h4, .app-title, .menu-name, .panel h2 { 
+    font-family: var(--font-head); font-weight: 800; letter-spacing: -0.6px; line-height: 1.2;
+}
+button {
+    font-family: inherit; color: inherit; cursor: pointer; border: none; background: none; 
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s, background 0.2s;
+}
 
 #app { position: fixed; inset: 0; display: flex; flex-direction: column; width: 100%; overflow: hidden; background: var(--bg); }
 
@@ -57,27 +74,22 @@ button{font-family: inherit; color: inherit; cursor: pointer; border: none; back
 #app.workout-mode #app-body { padding-top: 0; }
 #app.workout-mode #main { margin-top: 0; }
 #app.workout-mode #mascotBtn, #app.workout-mode .mascot-balloon { display: none !important; }
-
-#app.workout-mode header,
-#app.workout-mode #top-calendar-area,
-#app.workout-mode .top-widgets {
-    display: none !important;
-}
+#app.workout-mode header, #app.workout-mode #top-calendar-area, #app.workout-mode .top-widgets { display: none !important; }
 
 /* =========================================
-   3. CABEÇALHO
+   3. CABEÇALHO COM GLASSMORPHISM
    ========================================= */
 header{
     display:flex; flex-direction:column;
     padding: max(20px, calc(8px + env(safe-area-inset-top, 0px))) 8px 8px;
-    border-bottom:1px solid var(--bd); flex-shrink:0; transition:all 0.3s; width:100%;
-    background: var(--bg); z-index: 10;
+    border-bottom:1px solid var(--glass-border); flex-shrink:0; transition:all 0.3s; width:100%;
+    background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); z-index: 10;
 }
 .header-top{display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:4px;}
 .app-title{flex:1;text-align:center;font-size:1.25rem;font-weight:800;color:var(--tx);margin:0;letter-spacing:1.5px;}
 .month-header{text-align:center;font-size:0.8125rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--mu);width:100%;}
 .ic{width:44px;height:44px;border-radius:var(--r-md);border:1px solid var(--bd);background:var(--card);font-size:1.25rem; display: flex; align-items: center; justify-content: center;}
-.ic-menu{width:44px;height:44px;border-radius:var(--r-md);border:1px solid var(--bd);background:var(--card);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;cursor:pointer;padding:0;transition:all 0.2s ease;flex-shrink:0;}
+.ic-menu{width:44px;height:44px;border-radius:var(--r-md);border:1px solid var(--bd);background:var(--card);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;cursor:pointer;padding:0;flex-shrink:0;}
 .ic-menu span{display:block;width:18px;height:2px;background-color:var(--tx);border-radius:var(--r-sm); transition: 0.2s;}
 .ic-menu:active{background:var(--bd);}
 
@@ -89,27 +101,17 @@ header{
     padding: 8px 8px calc(80px + env(safe-area-inset-bottom, 0px)); 
     -webkit-overflow-scrolling: touch; overscroll-behavior-y: none;
 }
-#app.workout-mode #app-body {
-    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-}
+#app.workout-mode #app-body { padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
 #app-body.centered-y{justify-content:flex-start; align-items:center;}
 
-.top-centered{
-    display:flex; flex-direction:column; align-items:center;
-    width: calc(100% + 16px); margin: 0 -8px; flex-shrink:0; padding: 0;
-}
-
-#main{
-    width:100%; display:flex; justify-content:center; margin-bottom: 0; overflow-x: hidden; 
-    margin-top: 8px; padding: 0 8px; 
-}
+.top-centered{ display:flex; flex-direction:column; align-items:center; width: calc(100% + 16px); margin: 0 -8px; flex-shrink:0; padding: 0; }
+#main{ width:100%; display:flex; justify-content:center; margin-bottom: 0; overflow-x: hidden; margin-top: 8px; padding: 0 8px; }
 #app-body.centered-y #main{flex:none;}
 
 .top-widgets { 
     display: flex; justify-content: flex-start; width: fit-content; max-width: calc(100% - 16px); 
-    margin: 0 auto 8px; 
-    background: var(--card); border: 1px solid var(--bd); border-radius: var(--r-lg); 
-    padding: 12px 16px; box-shadow: 0 2px 10px -4px rgba(0,0,0,0.06);
+    margin: 0 auto 8px; background: var(--card); border: 1px solid var(--bd); border-radius: var(--r-lg); 
+    padding: 12px 16px; box-shadow: var(--shadow-sm);
 }
 
 .water-widget { display: flex; align-items: center; gap: 16px; background: transparent; padding: 0; width: 100%; }
@@ -119,13 +121,13 @@ header{
 .water-lottie-container canvas { width: 100%; height: 100%; display: block; }
 .water-info { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 .water-info span { font-family: var(--font-head); font-size: clamp(1rem, 3vw, 1.25rem); font-weight: 800; color: var(--tx); cursor: pointer; letter-spacing: -0.5px;}
-.btn-water { background: var(--water); color: #fff; border-radius: var(--r-sm); padding: 8px 14px; font-size: clamp(0.8rem, 2vw, 0.875rem); font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,191,255,0.3); margin-top: 2px;}
+.btn-water { background: var(--water); color: #fff; border-radius: var(--r-sm); padding: 8px 14px; font-size: clamp(0.8rem, 2vw, 0.875rem); font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(0,191,255,0.3); margin-top: 2px;}
 .btn-water:active { transform: scale(0.95); }
 
 /* =========================================
    5. MASCOTE
    ========================================= */
-#mascotBtn { position: fixed; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); left: 16px; background: none; padding: 0; display: flex; flex-direction: column; align-items: center; z-index: 15; cursor: pointer; transition: transform 0.2s; }
+#mascotBtn { position: fixed; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); left: 16px; background: none; padding: 0; display: flex; flex-direction: column; align-items: center; z-index: 15; cursor: pointer; }
 #mascotBtn:active { transform: scale(0.9); }
 #lottieFire { transition: all 0.5s ease; }
 #mascotHealthBar { width: 80px; height: 6px; background: var(--bd); border-radius: var(--r-sm); margin-top: 6px; overflow: hidden; }
@@ -134,97 +136,50 @@ header{
 /* =========================================
    6. CALENDÁRIO HORIZONTAL
    ========================================= */
-.strip{
-    display: flex; gap: 8px; overflow-x: auto; overflow-y: hidden; 
-    padding: 4px 8px 8px; 
-    margin: 0 auto; scroll-snap-type: x proximity; align-items: flex-start; width: 100%;
-}
+.strip{ display: flex; gap: 8px; overflow-x: auto; overflow-y: hidden; padding: 15px 8px 8px; margin: 0 auto; scroll-snap-type: x proximity; align-items: flex-start; width: 100%; }
 .strip::-webkit-scrollbar { display: none; }
 
-.d{
+.d {
     flex: 0 0 64px; scroll-snap-align: center; height: 88px; padding: 10px 4px; border-radius: var(--r-lg);
     border: 1px solid var(--bd); background: var(--card); text-align: center; position: relative;
-    transition: all 0.3s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column;
-    justify-content: flex-start; align-items: center; overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; justify-content: flex-start; align-items: center; 
+    overflow: visible; 
 }
-.d small { 
-    display: block; position: relative; top: -3px; color: var(--mu); 
-    font-size: var(--text-xs); 
-    text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; 
-}
-.d b { 
-    font-family: var(--font-head); font-size: 1.75rem; 
-    display: flex; align-items: center; justify-content: center; height: 1.5rem; line-height: 1; margin-top: 2px; 
-}
-.d .label-txt { 
-    font-size: var(--text-xs); 
-    font-weight: 700; margin-top: 6px; position: relative; top: 4px; color: var(--ac); 
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; padding: 0 4px; 
-    line-height: 1.2;
-}
+.d small { display: block; position: relative; top: -3px; color: var(--mu); font-size: var(--text-xs); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+.d b { font-family: var(--font-head); font-size: 1.75rem; display: flex; align-items: center; justify-content: center; height: 1.5rem; line-height: 1; margin-top: 2px; }
+.d .label-txt { font-size: var(--text-xs); font-weight: 700; margin-top: 6px; position: relative; top: 4px; color: var(--ac); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; padding: 0 4px; line-height: 1.2; }
 
-.d.sel{
-    background: var(--ac); color: var(--acx); border-color: var(--ac); flex: 0 0 150px;
-    height: auto; padding-bottom: 12px; box-shadow: 0 8px 24px -6px var(--ac-shadow);
-}
+.d.sel{ background: var(--ac); color: var(--acx); border-color: var(--ac); flex: 0 0 150px; height: auto; padding-bottom: 12px; box-shadow: var(--shadow-md); }
 .d.sel small { color: var(--acx); opacity: .9; }
 .d.sel .label-txt { color: var(--acx); top: 3px; }
 .d.today:not(.sel) { border-color: var(--ac); box-shadow: inset 0 0 0 1px var(--ac); }
 .d i { position: absolute; top: 8px; right: 8px; font-style: normal; font-size: 0.75rem; color: var(--success); font-weight: 800; }
 .d.sel i { color: var(--acx); }
 
-.btn-start-inline {
-    display: none; width: calc(100% - 16px); height: 34px; border-radius: var(--r-sm);
-    background: #fff; color: var(--ac); align-items: center; justify-content: center;
-    margin: 10px auto 0; box-shadow: 0 4px 10px rgba(0,0,0,0.15); font-size: 0.75rem; font-weight: 800; gap: 4px;
-}
+.btn-start-inline { display: none; width: calc(100% - 16px); height: 34px; border-radius: var(--r-sm); background: #fff; color: var(--ac); align-items: center; justify-content: center; margin: 10px auto 0; box-shadow: 0 4px 10px rgba(0,0,0,0.15); font-size: 0.75rem; font-weight: 800; gap: 4px; }
 .d.sel .btn-start-inline { display: flex; }
 .btn-start-inline svg { width: 16px; height: 16px; }
 
 /* =========================================
    7. TELA INICIAL (CARD DO TREINO)
    ========================================= */
-.panel{ 
-    background: var(--card); border: 1px solid var(--bd); border-radius: var(--r-xl); padding: 24px 0; 
-    box-shadow: 0 4px 20px -8px rgba(0,0,0,0.08); width: 100%; margin: 0 auto; transition: all 0.3s ease; 
-}
+.panel{ background: var(--card); border: 1px solid var(--bd); border-radius: var(--r-xl); padding: 24px 0; box-shadow: var(--shadow-md); width: 100%; margin: 0 auto; transition: all 0.3s ease; position: relative; overflow: hidden; }
 .panel h2{margin:0 20px; text-align:center; font-size:clamp(1.25rem, 3vw, 1.5rem); font-weight: 800;}
 .panel p.s{margin:6px 20px 12px;color:var(--mu);font-size:0.9375rem;text-transform:capitalize; text-align:center;}
 .goal{margin:0 20px 16px;color:var(--mu);font-size:0.8125rem; text-align: center; font-weight: 500;}
 .card-btns { display: flex; gap: 12px; justify-content: center; margin-top: 20px; padding: 0 20px; }
 .card-btns .btn { margin-top: 0; flex: 1; font-size: 0.875rem; padding: 14px; font-weight: 700; border-radius: var(--r-md);}
 
-.preview-carousel { 
-    width: 100%; overflow: hidden; margin: 20px 0; position: relative; 
-    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); 
-}
-.carousel-track { 
-    display: flex; width: max-content; animation: scrollCarousel 20s linear infinite; 
-    will-change: transform; transform: translateZ(0); 
-}
+.preview-carousel { width: 100%; overflow: hidden; margin: 20px 0; position: relative; -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+.carousel-track { display: flex; width: max-content; animation: scrollCarousel 20s linear infinite; will-change: transform; transform: translateZ(0); }
 .carousel-track:hover, .carousel-track:active { animation-play-state: paused; }
 
-.carousel-item { 
-    display: flex; flex-direction: column; align-items: center; width: 80px; flex-shrink: 0; margin-right: 16px;
-}
-.carousel-item img, .carousel-item .ph { 
-    width: 80px; height: 80px; border-radius: var(--r-lg); object-fit: contain; background: var(--bg); 
-    border: 1px solid var(--bd); padding: 6px; transition: transform 0.2s, box-shadow 0.2s; will-change: transform;
-}
-.carousel-item span { 
-    font-size: var(--text-sm); 
-    text-align: center; margin-top: 8px; color: var(--mu); font-weight: 600; 
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; 
-}
-.carousel-item img:hover, .carousel-item img:active, 
-.carousel-item .ph:hover, .carousel-item .ph:active { 
-    transform: scale(1.1) translateY(-3px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.4); z-index: 10; border-color: var(--ac); 
-}
+.carousel-item { display: flex; flex-direction: column; align-items: center; width: 80px; flex-shrink: 0; margin-right: 16px; }
+.carousel-item img, .carousel-item .ph { width: 80px; height: 80px; border-radius: var(--r-lg); object-fit: contain; background: var(--bg); border: 1px solid var(--bd); padding: 6px; transition: transform 0.2s, box-shadow 0.2s; will-change: transform; }
+.carousel-item span { font-size: var(--text-sm); text-align: center; margin-top: 8px; color: var(--mu); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+.carousel-item img:hover, .carousel-item img:active, .carousel-item .ph:hover, .carousel-item .ph:active { transform: scale(1.1) translateY(-3px); box-shadow: var(--shadow-md); z-index: 10; border-color: var(--ac); }
 
-@keyframes scrollCarousel { 
-    0% { transform: translateX(0); } 
-    100% { transform: translateX(-50%); } 
-}
+@keyframes scrollCarousel { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
 /* =========================================
    8. SPLASH SCREEN
@@ -246,7 +201,7 @@ header{
 .ex span{color:var(--mu);font-size:0.875rem}
 
 .exs.vertical{display:flex;flex-direction:column;gap:16px;padding:4px 0;overflow-x:visible;width: 100%;}
-.exs.vertical .ex{ display:flex; align-items:flex-start; gap:16px; flex:auto; width:100%; text-align:left; border: 1px solid var(--bd); border-radius: var(--r-lg); padding: 16px; background: var(--card); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+.exs.vertical .ex{ display:flex; align-items:flex-start; gap:16px; flex:auto; width:100%; text-align:left; border: 1px solid var(--bd); border-radius: var(--r-lg); padding: 16px; background: var(--card); box-shadow: var(--shadow-sm); position: relative; overflow: hidden;}
 .exs.vertical .im{width:80px;height:80px;border-radius:var(--r-md);border:1px solid var(--bd);object-fit:contain;flex-shrink:0;background:var(--bg)}
 .exs.vertical .ex-info{flex:1;min-width:0;display:flex;flex-direction:column}
 .exs.vertical b{display:block;font-size:1.0625rem;margin:0;white-space:normal; font-family: var(--font-head);} 
@@ -254,43 +209,9 @@ header{
 
 .ex-actions { display: flex; gap: 10px; margin-top: 12px; width: 100%; }
 
-/* CABEÇALHO DO MODO TREINO */
-.wk-head {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    margin-bottom: 4px;
-    min-height: 44px;
-    width: 100%;
-}
-.wk-head h2 {
-    margin: 0;
-    text-align: center;
-    font-size: clamp(1.25rem, 3vw, 1.5rem);
-    font-weight: 800;
-    padding: 0 72px;
-    box-sizing: border-box;
-    width: 100%;
-}
-.wk-back {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    background: none;
-    border: none;
-    color: var(--ac);
-    font-weight: 700;
-    font-size: 0.875rem;
-    padding: 8px;
-    cursor: pointer;
-    z-index: 2;
-    transition: opacity 0.2s;
-}
+.wk-head { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 4px; min-height: 44px; width: 100%; }
+.wk-head h2 { margin: 0; text-align: center; font-size: clamp(1.25rem, 3vw, 1.5rem); font-weight: 800; padding: 0 72px; box-sizing: border-box; width: 100%; }
+.wk-back { position: absolute; left: 0; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 4px; background: none; border: none; color: var(--ac); font-weight: 700; font-size: 0.875rem; padding: 8px; cursor: pointer; z-index: 2; }
 .wk-back:active { opacity: 0.6; }
 
 .empty{padding:40px 20px;color:var(--mu);text-align:center; font-weight: 500;}
@@ -299,33 +220,29 @@ header{
 /* =========================================
    10. MENU LATERAL (DRAWER)
    ========================================= */
-.ov { position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:60;display:none }
+.ov { position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:60;display:none }
 .ov.on { display: block; }
-.drawer{ position:fixed;top:0;bottom:0;left:0;width:min(340px,90vw); background:var(--bg);z-index:70;transform:translateX(-102%); transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);overflow-y:auto; padding:calc(24px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px)); box-shadow:10px 0 30px rgba(0,0,0,0.2); }
+.drawer{ position:fixed;top:0;bottom:0;left:0;width:min(340px,90vw); background:var(--bg);z-index:70;transform:translateX(-102%); transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);overflow-y:auto; padding:calc(24px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px)); box-shadow:var(--shadow-lg); }
 .drawer.on{transform:none}
 .drawer h3{margin:28px 0 12px;font-size:0.75rem;color:var(--mu);text-transform:uppercase;letter-spacing:1px; font-weight: 700;}
 .menu-header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; padding: 0 4px; }
-.avatar-btn { width: 64px; height: 64px; border-radius: var(--r-full); border: 2px solid var(--bd); background: var(--bg); padding: 0; cursor: pointer; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size:2rem; color: var(--mu); transition: border-color 0.2s; }
+.avatar-btn { width: 64px; height: 64px; border-radius: var(--r-full); border: 2px solid var(--bd); background: var(--bg); padding: 0; cursor: pointer; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size:2rem; color: var(--mu); }
 .avatar-btn:active { border-color: var(--ac); }
 .avatar-btn img { width: 100%; height: 100%; object-fit: cover; }
 .menu-name { font-family: var(--font-head); font-size: 1.375rem; font-weight: 800; line-height: 1.2; }
 .menu-username { font-size: 0.875rem; color: var(--mu); font-weight: 500;}
-.btn-menu { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 16px; background: var(--card); border: 1px solid var(--bd); border-radius: var(--r-md); margin-bottom: 12px; font-weight: 700; font-size: 0.9375rem; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+.btn-menu { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 16px; background: var(--card); border: 1px solid var(--bd); border-radius: var(--r-md); margin-bottom: 12px; font-weight: 700; font-size: 0.9375rem; cursor: pointer; box-shadow: var(--shadow-sm); }
 .btn-menu:active { background: var(--bd); transform: scale(0.98); }
 
 /* =========================================
-   11. TELAS (CONFIG, EVO, MASCOT, SELECTOR)
+   11. TELAS
    ========================================= */
-#configScreen, #evoScreen, #mascotScreen, #workoutSelectorScreen { position: fixed; inset: 0; background: var(--bg); z-index: 50; display: none; flex-direction: column; overflow-y: auto; overscroll-behavior-y: none; padding: calc(16px + env(safe-area-inset-top,0px)) 8px calc(24px + env(safe-area-inset-bottom,0px)); }
-#configScreen.on, #evoScreen.on, #mascotScreen.on, #workoutSelectorScreen.on { display: flex; }
+#configScreen, #evoScreen, #mascotScreen, #workoutSelectorScreen, #substitutesScreen { position: fixed; inset: 0; background: var(--bg); z-index: 50; display: none; flex-direction: column; overflow-y: auto; overscroll-behavior-y: none; padding: calc(16px + env(safe-area-inset-top,0px)) 8px calc(24px + env(safe-area-inset-bottom,0px)); }
+#configScreen.on, #evoScreen.on, #mascotScreen.on, #workoutSelectorScreen.on, #substitutesScreen.on { display: flex; }
 .evo-header{display:flex;align-items:center;gap:16px;margin-bottom:24px; width: 100%;}
 .evo-header h2{margin:0;font-size:1.375rem; font-weight: 800;}
-.chart-container {
-    position: relative; width: 100%; height: 320px; max-height: 50vh; background: var(--card);
-    border-radius: var(--r-xl); padding: 24px 16px 16px 16px; border: 1px solid var(--bd); margin-top: 20px;
-    box-shadow: 0 8px 30px -10px rgba(0,0,0,0.1), 0 2px 10px -5px rgba(0,0,0,0.05); overflow: hidden;
-}
-.config-section { background: var(--card); border: 1px solid var(--bd); border-radius: var(--r-lg); padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); width: 100%;}
+.chart-container { position: relative; width: 100%; height: 320px; max-height: 50vh; background: var(--card); border-radius: var(--r-xl); padding: 24px 16px 16px 16px; border: 1px solid var(--bd); margin-top: 20px; box-shadow: var(--shadow-md); overflow: hidden; }
+.config-section { background: var(--card); border: 1px solid var(--bd); border-radius: var(--r-lg); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-sm); width: 100%;}
 .config-section h3 { margin: 0 0 16px; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 1px; color: var(--mu); font-weight: 700;}
 
 /* =========================================
@@ -336,7 +253,7 @@ header{
 .auth h1{font-family: var(--font-head); font-size:1.75rem;margin:0 0 8px;line-height:1.2;text-align:center; font-weight: 800;}
 .auth p{color:var(--mu);margin:0 0 24px;text-align:center; font-size: 0.9375rem;}
 .err{color:var(--danger);min-height:22px;margin-top:8px;font-size:0.875rem; font-weight: 600; text-align: center;}
-.tp{flex:0 0 230px;background:var(--card);border:1px solid var(--bd);border-radius:var(--r-lg);padding:24px;text-align:left; box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: 0.2s;}
+.tp{flex:0 0 230px;background:var(--card);border:1px solid var(--bd);border-radius:var(--r-lg);padding:24px;text-align:left; box-shadow: var(--shadow-sm); transition: 0.2s;}
 .tp:active{border-color:var(--ac); transform: scale(0.98);}
 .tp b{font-family: var(--font-head); display:block;font-size:2.25rem;letter-spacing:.1em;color:var(--ac); font-weight: 800;}
 .tp span{color:var(--mu);font-size:0.875rem;display:block;margin-top:8px; line-height: 1.5;}
@@ -349,132 +266,87 @@ header{
 .steps{color:var(--mu);font-size:0.75rem;margin-bottom:12px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;}
 .back-btn{background:none;border:0;color:var(--ac);font-weight:600;margin:0 0 16px;padding:0;font-size:0.9375rem; display: flex; align-items: center; gap: 4px;}
 .wgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-.wcard{padding:16px;border-radius:var(--r-lg);border:1px solid var(--bd);background:var(--card);text-align:left; transition: 0.2s;}
+.wcard{padding:16px;border-radius:var(--r-lg);border:1px solid var(--bd);background:var(--card);text-align:left; transition: 0.2s; box-shadow: var(--shadow-sm);}
 .wcard:active{border-color:var(--ac); transform: scale(0.98);}
 .wcard b{display:block;font-size:1rem; font-family: var(--font-head);}
 .wcard span{display:block;color:var(--mu);font-size:0.8125rem;margin-top:6px;}
 
 /* =========================================
-   13. COMPONENTES GERAIS E HIERARQUIA DE BOTÕES
+   13. COMPONENTES GERAIS
    ========================================= */
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.chip{padding:10px 16px;border-radius:var(--r-full);border:1px solid var(--bd);background:var(--card); font-weight: 600; font-size: 0.875rem; transition: 0.2s;}
+.chip{padding:10px 16px;border-radius:var(--r-full);border:1px solid var(--bd);background:var(--card); font-weight: 600; font-size: 0.875rem; flex-shrink: 0; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box;}
 .chip.on{background:var(--ac);color:var(--acx);border-color:var(--ac); box-shadow: 0 4px 10px -2px var(--ac-shadow);}
 .sw{width:36px;height:36px;border-radius:var(--r-full);border:3px solid var(--card);box-shadow:0 0 0 1px var(--bd); transition: 0.2s;}
 .sw.on{box-shadow:0 0 0 3px var(--tx); transform: scale(1.1);}
-.li{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--bd);border-radius:var(--r-md);padding:12px;margin-top:12px; transition: 0.2s;}
-.li img,.li .ph{width:48px;height:48px;border-radius:var(--r-sm);object-fit:contain;background:var(--bg);display:flex;align-items:center;justify-content:center}
-.li div{flex:1;min-width:0; font-size: 0.9375rem;}
+
+/* ✅ CORREÇÃO DO LAYOUT DE "MEUS EXERCÍCIOS" */
+.li { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--bd); border-radius: var(--r-md); padding: 12px; margin-top: 12px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden;}
+.li img, .li .ph { width: 48px; height: 48px; border-radius: var(--r-sm); object-fit: contain; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.li .flex-1 { flex: 1; min-width: 120px; font-size: 0.9375rem; }
+.li .flex-row { flex-shrink: 0; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
 .li small{color:var(--mu); font-size: 0.75rem;}
 .li button{border:0;background:none;font-size:1.125rem; padding: 4px;}
+
 input[type=text],input[type=password],input[type=number],select{
     width:100%; padding:14px; border-radius:var(--r-md); border:1px solid var(--bd);
-    background:var(--bg); color:var(--tx); 
-    font-family: inherit; 
-    font-size: 16px !important; 
-    margin-top:8px; transition: border-color 0.2s;
+    background:var(--bg); color:var(--tx); font-family: inherit; font-size: 16px !important; 
+    margin-top:8px; transition: border-color 0.2s, box-shadow 0.2s;
 }
-input:focus { outline: none; border-color: var(--ac); }
+input:focus { outline: none; border-color: var(--ac); box-shadow: 0 0 0 3px var(--ac-shadow); }
 .add{background:var(--card);border:1px dashed var(--bd);border-radius:var(--r-lg);padding:16px;margin-top:16px}
 
-/* SISTEMA DE BOTÕES */
 .btn {
-    padding: 14px 20px;
-    border-radius: var(--r-md);
-    font-weight: 700;
-    font-size: 0.9375rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: transform 0.1s, box-shadow 0.2s, background 0.2s;
-    cursor: pointer;
-    border: 2px solid transparent;
-    width: 100%;
-    margin-top: 8px;
+    padding: 14px 20px; border-radius: var(--r-md); font-weight: 700; font-size: 0.9375rem;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    cursor: pointer; border: 2px solid transparent; width: 100%; margin-top: 8px;
 }
-.btn:active { transform: scale(0.98); }
+.btn:active { transform: scale(0.96); }
 
-.btn-primary {
-    background: var(--ac-gradient);
-    color: var(--acx);
-    border: none;
-    box-shadow: 0 8px 20px -6px var(--ac-shadow);
-}
+.btn-primary { background: var(--ac-gradient); color: var(--acx); border: none; box-shadow: 0 8px 20px -6px var(--ac-shadow); }
 .btn-primary:disabled { opacity: 0.6; box-shadow: none; cursor: not-allowed; }
 
-.btn-secondary {
-    background: var(--card);
-    color: var(--tx);
-    border-color: var(--bd);
-}
+.btn-secondary { background: var(--card); color: var(--tx); border-color: var(--bd); }
 .btn-secondary:active { background: var(--bd); }
 
-.btn-danger {
-    background: transparent;
-    color: var(--danger);
-    border-color: var(--danger);
-}
+.btn-danger { background: transparent; color: var(--danger); border-color: var(--danger); }
 .btn-danger:active { background: rgba(229, 72, 77, 0.1); }
 
-.btn-ghost {
-    background: transparent;
-    color: var(--mu);
-    border: none;
-    padding: 12px;
-    font-weight: 600;
-    text-decoration: underline;
-    box-shadow: none;
-}
+.btn-ghost { background: transparent; color: var(--mu); border: none; padding: 12px; font-weight: 600; text-decoration: underline; box-shadow: none; }
 .btn-ghost:active { color: var(--tx); }
 
-.btn-carga{
-    background:var(--bg);
-    border:1px solid var(--bd);
-    border-radius:var(--r-sm);
-    font-size:0.8125rem;
-    font-weight:700;
-    padding:12px 10px;
-    cursor:pointer;
-    color:var(--tx);
-    flex:1;
-    justify-content:center;
-    display:flex;
-    align-items:center;
-    gap:6px; 
-    transition: 0.2s;
-}
+.btn-carga{ background:var(--bg); border:1px solid var(--bd); border-radius:var(--r-sm); font-size:0.8125rem; font-weight:700; padding:12px 10px; cursor:pointer; color:var(--tx); flex:1; justify-content:center; display:flex; align-items:center; gap:6px; }
 .btn-carga:active{background:var(--bd);}
 .btn-carga.btn-weight { background: rgba(255, 90, 54, 0.1); border: 1px solid var(--ac); color: var(--ac); }
 .btn-carga.btn-weight:active { background: rgba(255, 90, 54, 0.2); }
 .btn-carga.btn-rest { background: var(--bg); border: 1px solid var(--bd); color: var(--mu); }
 .btn-carga.btn-rest:active { background: var(--bd); }
 
-.chk-btn { width: 28px; height: 28px; border-radius: var(--r-full); border: 2px solid var(--bd); background: transparent; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: transparent; flex-shrink: 0; cursor: pointer; transition: all 0.2s; }
+.chk-btn { width: 28px; height: 28px; border-radius: var(--r-full); border: 2px solid var(--bd); background: transparent; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: transparent; flex-shrink: 0; cursor: pointer; }
 .chk-btn.done { background: var(--success); border-color: var(--success); color: #fff; transform: scale(1.05); }
 
 /* =========================================
    14. MODAIS
    ========================================= */
-.modal{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:420px;margin:auto;background:var(--card);border-radius:var(--r-xl);padding:24px;z-index:80;display:none;box-shadow:0 20px 40px rgba(0,0,0,0.4); border: 1px solid var(--bd);}
-.modal.on{display:block; animation: slideUp 0.3s ease-out; }
-@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:420px;margin:auto;background:var(--card);border-radius:var(--r-xl);padding:24px;z-index:80;display:none;box-shadow:var(--shadow-lg); border: 1px solid var(--bd);}
+.modal.on{display:block; animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes slideUp { from { transform: translateY(30px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
 .modal h2{margin:0 0 16px;font-size:1.25rem; font-family: var(--font-head); font-weight: 800;}
 .modal .btn{width:100%;padding:16px;font-weight:700;}
 
 /* =========================================
    15. CRONÔMETROS E ALARMES
    ========================================= */
-#restTimerUI { display: none; position: fixed; bottom: calc(80px + env(safe-area-inset-bottom,0px)); left: 50%; transform: translateX(-50%); background: var(--card); padding: 16px 24px; border-radius: var(--r-xl); box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 60; border: 2px solid var(--ac); align-items: center; gap: 20px; }
+#restTimerUI { display: none; position: fixed; bottom: calc(80px + env(safe-area-inset-bottom,0px)); left: 50%; transform: translateX(-50%); background: var(--card); padding: 16px 24px; border-radius: var(--r-xl); box-shadow: var(--shadow-lg); z-index: 60; border: 2px solid var(--ac); align-items: center; gap: 20px; }
 #restTimerUI.on { display: flex; }
 #timerDisplay { font-family: var(--font-head); font-size:1.75rem; font-weight: 800; font-variant-numeric: tabular-nums; }
 .btn-stop-timer { background: var(--bg); border: 1px solid var(--bd); border-radius: var(--r-sm); padding: 8px 16px; font-size: 0.875rem; font-weight: 700; }
-#alarmOverlay { position: fixed; inset: 0; background: rgba(255, 90, 54, 0.95); z-index: 200; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white; padding: 20px; backdrop-filter: blur(10px);}
+#alarmOverlay { position: fixed; inset: 0; background: rgba(255, 90, 54, 0.95); z-index: 200; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white; padding: 20px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);}
 #alarmOverlay.on { display: flex; animation: pulse 1s infinite; }
 @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
 #alarmOverlay h1 { font-family: var(--font-head); font-size: 2.5rem; margin-bottom: 12px; font-weight: 800;}
 #alarmOverlay p { font-size: 1.125rem; margin-bottom: 32px; font-weight: 500;}
-.btn-alarm { background: white; color: var(--ac); border: none; padding: 18px 36px; border-radius: var(--r-lg); font-size: 1.125rem; font-weight: 800; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.1);}
+.btn-alarm { background: white; color: var(--ac); border: none; padding: 18px 36px; border-radius: var(--r-lg); font-size: 1.125rem; font-weight: 800; cursor: pointer; box-shadow: var(--shadow-md);}
 #workoutTimerDisplay { text-align: center; font-family: var(--font-head); font-size: 2rem; font-weight: 800; color: var(--ac); margin-bottom: 16px; font-variant-numeric: tabular-nums; letter-spacing: 1px;}
 .duration-text { text-align: center; color: var(--tx); font-size: 0.9375rem; font-weight: 700; margin: 16px 20px; padding: 16px; background: var(--bg); border-radius: var(--r-lg); border: 1px solid var(--bd); display: flex; align-items: center; justify-content: center; gap: 8px;}
 
@@ -499,39 +371,9 @@ input:focus { outline: none; border-color: var(--ac); }
 /* =========================================
    17. ANIMAÇÕES DO CALENDÁRIO
    ========================================= */
-.d.animating { 
-    flex: 0 0 64px !important; 
-    width: 64px !important; 
-    min-height: 88px !important; 
-    height: 88px !important; 
-    border-radius: var(--r-lg) !important; 
-    padding: 0 !important; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    overflow: visible !important; 
-    background: var(--card) !important; 
-    border: 1px solid var(--bd) !important; 
-    position: relative; 
-    z-index: 999; 
-}
-.lottie-day { 
-    position: absolute; 
-    inset: 0; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    pointer-events: none; 
-    overflow: visible !important; 
-}
-.lottie-day svg { 
-    position: absolute; 
-    top: 50%; 
-    left: 50%; 
-    max-width: none !important; 
-    max-height: none !important; 
-    transform-origin: center center; 
-}
+.d.animating { flex: 0 0 64px !important; width: 64px !important; min-height: 88px !important; height: 88px !important; border-radius: var(--r-lg) !important; padding: 0 !important; display: flex; align-items: center; justify-content: center; overflow: visible !important; background: var(--card) !important; border: 1px solid var(--bd) !important; position: relative; z-index: 999; }
+.lottie-day { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; overflow: visible !important; }
+.lottie-day svg { position: absolute; top: 50%; left: 50%; max-width: none !important; max-height: none !important; transform-origin: center center; }
 .lottie-day[data-type="success"] svg { transform: translate(-50%, -50%) scale(2.5) !important; }
 .lottie-day[data-type="fail"] svg { transform: translate(-50%, -50%) scale(1.1) !important; }
 
@@ -556,48 +398,18 @@ input:focus { outline: none; border-color: var(--ac); }
 /* =========================================
    19. TOASTS
    ========================================= */
-#toast-container { 
-    position: fixed; 
-    top: calc(16px + env(safe-area-inset-top, 0px)); 
-    left: 50%; 
-    transform: translateX(-50%); 
-    z-index: 10000; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 10px; 
-    pointer-events: none; 
-    width: 100%; 
-    max-width: 400px; 
-    padding: 0 16px; 
-}
-.toast { 
-    background: #1a1d24; 
-    color: #fff; 
-    padding: 16px 20px; 
-    border-radius: var(--r-md); 
-    font-size: 0.875rem; 
-    font-weight: 600; 
-    display: flex; 
-    align-items: center; 
-    gap: 12px; 
-    opacity: 0; 
-    transform: translateY(-20px); 
-    animation: toastIn 0.3s forwards, toastOut 0.3s 3s forwards; 
-    border: 1px solid rgba(255,255,255,0.1); 
-    pointer-events: auto; 
-    word-break: break-word; 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-.toast.error { box-shadow: inset 4px 0 0 var(--danger), 0 10px 30px rgba(0,0,0,0.5); }
-.toast.success { box-shadow: inset 4px 0 0 var(--success), 0 10px 30px rgba(0,0,0,0.5); }
-.toast.info { box-shadow: inset 4px 0 0 var(--water), 0 10px 30px rgba(0,0,0,0.5); }
+#toast-container { position: fixed; top: calc(16px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 100%; max-width: 400px; padding: 0 16px; }
+.toast { background: #1a1d24; color: #fff; padding: 16px 20px; border-radius: var(--r-md); font-size: 0.875rem; font-weight: 600; display: flex; align-items: center; gap: 12px; opacity: 0; transform: translateY(-20px); animation: toastIn 0.3s forwards, toastOut 0.3s 3s forwards; border: 1px solid rgba(255,255,255,0.1); pointer-events: auto; word-break: break-word; box-shadow: var(--shadow-lg); }
+.toast.error { box-shadow: inset 4px 0 0 var(--danger), var(--shadow-lg); }
+.toast.success { box-shadow: inset 4px 0 0 var(--success), var(--shadow-lg); }
+.toast.info { box-shadow: inset 4px 0 0 var(--water), var(--shadow-lg); }
 @keyframes toastIn { to { opacity: 1; transform: translateY(0); } }
 @keyframes toastOut { to { opacity: 0; transform: translateY(-20px); } }
 
 /* =========================================
    20. SELETOR DE TREINO
    ========================================= */
-.workout-choice-card { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--bd); border-radius: var(--r-lg); overflow: hidden; transition: border-color 0.2s, transform 0.2s; text-align: left; width: 100%; padding: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
+.workout-choice-card { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--bd); border-radius: var(--r-lg); overflow: hidden; transition: border-color 0.2s, transform 0.2s; text-align: left; width: 100%; padding: 0; box-shadow: var(--shadow-sm); position: relative; }
 .workout-choice-card:active { border-color: var(--ac); transform: scale(0.98); }
 .workout-choice-header { padding: 20px; text-align: center; border-bottom: 1px solid var(--bd); }
 .workout-choice-header h3 { margin: 0; font-size: 1.25rem; color: var(--tx); font-family: var(--font-head); font-weight: 800;}
@@ -610,15 +422,7 @@ input:focus { outline: none; border-color: var(--ac); }
 /* =========================================
    21. BALÃO DE FALA DO MASCOTE
    ========================================= */
-.mascot-balloon { 
-    position: fixed; 
-    bottom: calc(140px + env(safe-area-inset-bottom, 0px)); 
-    left: 16px; 
-    background: rgba(26, 29, 36, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
-    border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--r-lg); padding: 14px 20px; 
-    max-width: 280px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 20; opacity: 0; visibility: hidden; 
-    transform: translateY(20px) scale(0.9); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-}
+.mascot-balloon { position: fixed; bottom: calc(140px + env(safe-area-inset-bottom, 0px)); left: 16px; background: rgba(26, 29, 36, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--r-lg); padding: 14px 20px; max-width: 280px; box-shadow: var(--shadow-lg); z-index: 20; opacity: 0; visibility: hidden; transform: translateY(20px) scale(0.9); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 .mascot-balloon.show { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
 .mascot-balloon::before { content: ''; position: absolute; bottom: -12px; left: 28px; width: 16px; height: 16px; background: rgba(26, 29, 36, 0.85); border-radius: var(--r-full); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
 .mascot-balloon::after { content: ''; position: absolute; bottom: -24px; left: 20px; width: 8px; height: 8px; background: rgba(26, 29, 36, 0.85); border-radius: var(--r-full); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
@@ -628,12 +432,7 @@ input:focus { outline: none; border-color: var(--ac); }
    22. ACESSIBILIDADE E PREFERÊNCIAS
    ========================================= */
 @media (prefers-reduced-motion: reduce) {
-    *, ::before, ::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
+    *, ::before, ::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
     .carousel-track { animation: none !important; }
     .fire-spark { display: none !important; }
 }
@@ -641,72 +440,21 @@ input:focus { outline: none; border-color: var(--ac); }
 /* =========================================
    24. ACESSIBILIDADE (Screen Readers)
    ========================================= */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
 
 /* =========================================
    25. EVOLUÇÃO DO MASCOTE (CELEBRATION)
    ========================================= */
-#celebrationOverlay {
-    position: fixed; inset: 0; z-index: 10000; 
-    display: flex; justify-content: center; align-items: center;
-    background: rgba(0, 0, 0, 0.85); 
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    opacity: 0; 
-    visibility: hidden; 
-    pointer-events: none; 
-    transition: opacity 0.8s ease, visibility 0.8s; 
-}
-#celebrationOverlay.on { 
-    opacity: 1; 
-    visibility: visible; 
-    pointer-events: auto; 
-}
-
-#celebrationContent { 
-    position: relative; z-index: 2; 
-    width: 100%; max-width: 500px; height: 100%; 
-    display: flex; justify-content: center; align-items: center; flex-direction: column; 
-}
-
-#celebrationLottieContainer { 
-    position: absolute; inset: 0; width: 100%; height: 100%; 
-    pointer-events: none; z-index: 1; 
-}
-
-#celebrationMascotContainer { 
-    width: 250px; height: 250px; 
-    filter: drop-shadow(0 0 40px #ff4500); /* Mantido, mas é aceitável por ser estático no container */
-    transition: opacity 0.5s ease, transform 0.5s ease; 
-    z-index: 2; 
-    opacity: 1; transform: scale(1);
-}
+#celebrationOverlay { position: fixed; inset: 0; z-index: 10000; display: flex; justify-content: center; align-items: center; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.8s ease, visibility 0.8s; }
+#celebrationOverlay.on { opacity: 1; visibility: visible; pointer-events: auto; }
+#celebrationContent { position: relative; z-index: 2; width: 100%; max-width: 500px; height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+#celebrationLottieContainer { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+#celebrationMascotContainer { width: 250px; height: 250px; filter: drop-shadow(0 0 40px #ff4500); transition: opacity 0.5s ease, transform 0.5s ease; z-index: 2; opacity: 1; transform: scale(1); }
 #celebrationMascotContainer.fade-out { opacity: 0; transform: scale(0.8); }
 #celebrationMascotContainer.fade-in { opacity: 0; transform: scale(1.2); }
-
-#arcText { 
-    position: absolute; 
-    top: 10%; 
-    width: 90%; max-width: 400px; height: auto; 
-    z-index: 3; opacity: 0; transform: scale(0.7); 
-    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-}
+#arcText { position: absolute; top: 10%; width: 90%; max-width: 400px; height: auto; z-index: 3; opacity: 0; transform: scale(0.7); transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 #arcText.on { opacity: 1; transform: scale(1); }
-#arcText text { 
-    font-family: var(--font-head); font-size: 38px; font-weight: 800; 
-    fill: #ffcc00; 
-    filter: drop-shadow(0 0 10px #ff4500) drop-shadow(0 0 20px #ff8c00); 
-    letter-spacing: 3px; 
-}
+#arcText text { font-family: var(--font-head); font-size: 38px; font-weight: 800; fill: #ffcc00; filter: drop-shadow(0 0 10px #ff4500) drop-shadow(0 0 20px #ff8c00); letter-spacing: 3px; }
 
 /* =========================================
    26. CLASSES UTILITÁRIAS (Fase 2)
@@ -717,12 +465,10 @@ input:focus { outline: none; border-color: var(--ac); }
 .mt-20 { margin-top: 20px; }
 .mt-24 { margin-top: 24px; }
 .mt-40 { margin-top: 40px; }
-
 .flex-row { display: flex; align-items: center; }
 .flex-col { display: flex; flex-direction: column; }
 .gap-8 { gap: 8px; }
 .gap-12 { gap: 12px; }
-
 .flex-1 { flex: 1; }
 .text-center { text-align: center; }
 .w-100 { width: 100%; }
@@ -735,7 +481,6 @@ input:focus { outline: none; border-color: var(--ac); }
 .menu-btn-content { display: flex; align-items: center; gap: 12px; }
 .menu-btn-arrow { color: var(--mu); }
 .drawer-spacer { flex: 1; }
-
 .water-header { display: flex; align-items: center; margin-bottom: 24px; gap: 12px; }
 .water-header .ic { border: none; background: transparent; padding: 0; }
 .water-separator { margin-top: 24px; border-top: 1px solid var(--bd); padding-top: 20px; }
@@ -764,91 +509,189 @@ input:focus { outline: none; border-color: var(--ac); }
 .mb-0 { margin-bottom: 0; }
 .mb-24 { margin-bottom: 24px; }
 .text-4xl { font-size: 48px; }
-
-/* Layout do Treino em Execução */
 .workout-container { width: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; }
 .workout-date { text-align: center; color: var(--mu); font-size: 14px; margin-bottom: 12px; font-weight: 500; }
 .ex-text-done { text-decoration: line-through; opacity: 0.5; }
 .ex-title-row { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
-
-/* Header do index.html */
 .header-spacer { width: 44px; }
-
-/* Fundo do card de prova (Imagem) */
 .proof-img { width: 100%; height: 250px; object-fit: contain; }
 
 /* =========================================
    28. LIGHTBOX DE GIF (Modo Espelho)
    ========================================= */
-.gif-lightbox {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.85); /* Fundo escuro semi-transparente */
-  backdrop-filter: blur(4px);
-  z-index: 99999; /* Fica acima de TUDO */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s;
-  cursor: pointer; /* Para o usuário saber que pode clicar para fechar */
-}
-
-.gif-lightbox.on {
-  opacity: 1;
-  visibility: visible;
-}
-
-.gif-lightbox img {
-  max-width: 95vw;
-  max-height: 90vh;
-  object-fit: contain;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  transform: scale(0.9);
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.gif-lightbox.on img {
-  transform: scale(1); /* Efeito de zoom ao abrir */
-}
+.gif-lightbox { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 99999; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s; cursor: pointer; }
+.gif-lightbox.on { opacity: 1; visibility: visible; }
+.gif-lightbox img { max-width: 95vw; max-height: 90vh; object-fit: contain; border-radius: 16px; box-shadow: var(--shadow-lg); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.gif-lightbox.on img { transform: scale(1); }
 
 /* =========================================
    29. SUPERSETS (BI-SETS)
    ========================================= */
-.superset-card {
-    border: 2px solid #ffd700 !important; /* Borda Dourada */
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2) !important; /* Brilho suave */
-    background: linear-gradient(to right, rgba(255, 215, 0, 0.05), transparent) !important;
-}
-
-.superset-badge {
-    background: #ffd700;
-    color: #000;
-    font-size: 11px;
-    font-weight: 800;
-    padding: 2px 8px;
-    border-radius: 4px;
-    margin-left: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 5px rgba(255,215,0,0.3);
-}
-
-.link-choice-btn {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: 16px;
-    background: var(--bg);
-    border: 1px solid var(--bd);
-    border-radius: var(--r-md);
-    color: var(--tx);
-    font-weight: 600;
-    transition: 0.2s;
-    text-align: left;
-}
+.superset-card { border: 2px solid #ffd700 !important; box-shadow: 0 0 15px rgba(255, 215, 0, 0.2) !important; background: linear-gradient(to right, rgba(255, 215, 0, 0.05), transparent) !important; }
+.superset-badge { background: #ffd700; color: #000; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 5px rgba(255,215,0,0.3); }
+.link-choice-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 16px; background: var(--bg); border: 1px solid var(--bd); border-radius: var(--r-md); color: var(--tx); font-weight: 600; transition: 0.2s; text-align: left; }
 .link-choice-btn:active { background: var(--bd); transform: scale(0.98); }
 .link-choice-btn.selected { border-color: #ffd700; background: rgba(255,215,0,0.1); }
+
+/* =========================================
+   30. DIA COMPENSADO (ESCUDO)
+   ========================================= */
+.d.compensated-day { border-color: #22a35a !important; background: rgba(34, 163, 90, 0.05) !important; }
+.d.compensated-day .compensated-icon { font-size: 1.2rem; margin-top: 4px; }
+.d.compensated-day.sel { background: var(--ac) !important; border-color: var(--ac) !important; }
+
+/* =========================================
+   31. TELA DE SUBSTITUTOS
+   ========================================= */
+.sub-card { background: var(--card); border: 1px solid var(--bd); border-radius: var(--r-lg); padding: 16px; display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; }
+.sub-card img, .sub-card .ph { width: 60px; height: 60px; border-radius: var(--r-md); object-fit: contain; background: var(--bg); display: flex; align-items: center; justify-content: center; }
+.sub-card-info { flex: 1; }
+.sub-card-info b { display: block; font-size: 1rem; }
+.sub-card-info small { display: block; color: var(--mu); font-size: 0.8125rem; margin-top: 4px; }
+.sub-card-actions { display: flex; gap: 8px; }
+.sub-card-actions button { background: none; border: none; padding: 4px; font-size: 1.125rem; cursor: pointer; }
+.sub-card.dict-suggestion { border-color: #ffd700; background: rgba(255, 215, 0, 0.03); }
+
+.btn-swap { background: rgba(0, 191, 255, 0.1); border: 1px solid var(--water); color: var(--water); border-radius: var(--r-sm); padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; flex-shrink: 0; margin-left: 8px; }
+.btn-swap:active { transform: scale(0.95); }
+
+.swapped-indicator { font-size: 10px; color: var(--water); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 4px; }
+
+/* =========================================
+   32. TELA DE TODOS OS SUBSTITUTOS
+   ========================================= */
+#allSubsScreen { position: fixed; inset: 0; background: var(--bg); z-index: 50; display: none; flex-direction: column; overflow-y: auto; overscroll-behavior-y: none; padding: calc(16px + env(safe-area-inset-top,0px)) 8px calc(120px + env(safe-area-inset-bottom,0px)); }
+#allSubsScreen.on { display: flex; }
+
+.chip { padding: 12px 18px; border-radius: var(--r-full); border: 1px solid var(--bd); background: var(--card); font-weight: 600; font-size: 0.875rem; flex-shrink: 0; white-space: nowrap; line-height: 1.2; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; }
+.chip.on { background: var(--ac); color: var(--acx); border-color: var(--ac); box-shadow: 0 4px 10px -2px var(--ac-shadow); }
+
+.filter-chip { padding: 12px 18px; border-radius: var(--r-full); background: var(--card); border: 1px solid var(--bd); color: var(--tx); font-size: 14px; font-weight: 600; white-space: nowrap; cursor: pointer; flex-shrink: 0; line-height: 1.2; display: inline-flex; align-items: center; box-sizing: border-box; }
+.filter-chip.on { background: var(--water); color: #fff; border-color: var(--water); }
+
+.all-subs-preview-box { background: var(--card); border: 1px dashed var(--water); border-radius: var(--r-lg); padding: 16px; margin-bottom: 20px; }
+.all-subs-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.all-subs-header h3 { margin: 0; font-size: 14px; color: var(--water); text-transform: uppercase; letter-spacing: 1px;}
+.all-subs-header button { font-size: 13px; color: var(--water); font-weight: 700; text-decoration: underline; }
+
+/* =========================================
+   33. CARDS DA LISTA DE SUBSTITUTOS GLOBAL
+   ========================================= */
+.sub-list-item { background: var(--card); border: 1px solid var(--bd); border-radius: var(--r-lg); padding: 16px; display: flex; align-items: center; gap: 16px; transition: border-color 0.2s, transform 0.1s; width: 100%; box-sizing: border-box; flex-shrink: 0; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; }
+.sub-list-item:active { border-color: var(--water); transform: scale(0.99); }
+.sub-list-item .ph { width: 48px; height: 48px; border-radius: var(--r-md); background: var(--bg); display: flex; align-items: center; justify-content: center; color: var(--mu); flex-shrink: 0; overflow: hidden; }
+.sub-list-item .ph img { width: 100%; height: 100%; object-fit: contain; }
+.sub-list-item .info { flex: 1; min-width: 0; }
+.sub-list-item .info b { display: block; font-size: 0.9375rem; color: var(--tx); line-height: 1.3; }
+.sub-list-item .info small { display: block; font-size: 0.75rem; color: var(--mu); margin-top: 4px; line-height: 1.4; white-space: normal; }
+.sub-list-item .action-btn { background: var(--bg); border: 1px solid var(--bd); border-radius: var(--r-md); width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; color: var(--tx); font-weight: 800; font-size: 1.25rem; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
+.sub-list-item .action-btn:active { background: var(--bd); transform: scale(0.95); }
+.sub-list-item .action-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* =========================================
+   34. PAINEL ADMIN (CLASSES PREMIUM)
+   ========================================= */
+.admin-header { flex-shrink: 0; padding: calc(20px + env(safe-area-inset-top,0px)) 20px 10px 20px; background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); z-index: 2; border-bottom: 1px solid var(--glass-border); }
+.admin-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.admin-title { margin: 0; font-family: var(--font-head); color: var(--tx); font-size: 1.5rem; }
+.admin-tabs-container { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+.admin-tabs-container::-webkit-scrollbar { display: none; }
+.admin-tab-btn { flex: 1; min-width: 120px; padding: 12px; border-radius: var(--r-md); font-weight: 700; font-size: 0.875rem; border: 1px solid var(--bd); background: var(--card); color: var(--tx); text-align: center; box-shadow: var(--shadow-sm); white-space: nowrap; }
+.admin-tab-btn.active { background: var(--ac); color: var(--acx); border-color: var(--ac); box-shadow: var(--shadow-md); }
+.admin-content { flex: 1; overflow-y: auto; padding: 16px 20px 20px 20px; }
+
+/* =========================================
+   35. TEMAS DE FERIADOS IMERSIVOS
+   ========================================= */
+/* --- NATAL --- */
+body.theme-christmas { 
+  --ac: #d32f2f; 
+  --ac-gradient: linear-gradient(135deg, #d32f2f 0%, #388e3c 100%); 
+}
+
+/* 🎅 Container do Chapéu Lottie */
+body.theme-christmas .d {
+  overflow: visible !important;
+}
+
+.santa-hat {
+  display: none;
+  position: absolute;
+  /* ✅ Colado no topo do card */
+  top: -16px; 
+  /* ✅ Colado na lateral direita */
+  right: -12px; 
+  /* Tamanho do container do Lottie */
+  width: 65px; 
+  height: 65px;
+  /* ✅ Corta o "respiro" transparente do arquivo Lottie */
+  overflow: hidden; 
+  /* ✅ Leve rotação para ficar charmoso */
+  transform: rotate(12deg); 
+  z-index: 20;
+  pointer-events: none;
+}
+
+body.theme-christmas .santa-hat {
+  display: block; 
+}
+
+.santa-hat svg {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  /* ✅ Zoom para preencher o container e o translate para centralizar o chapéu */
+  transform: scale(3.5) translate(-10%, -15%); 
+  transform-origin: center center;
+}
+
+/* Ícones de Natal (SVGs profissionais embutidos) */
+body.theme-christmas .btn-primary::after { 
+  content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' width='18' height='18'><path d='M12 2L15 9H9L12 2ZM9 11L15 11L18 18H6L9 11ZM18 20H6C6 21.1 6.9 22 8 22H16C17.1 22 18 21.1 18 20Z'/></svg>");
+  display: inline-block; vertical-align: middle; margin-left: 8px;
+}
+body.theme-christmas .btn-secondary::after { 
+  content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23388e3c' stroke-width='2' width='18' height='18'><path d='M12 2L15 9H9L12 2ZM9 11L15 11L18 18H6L9 11ZM18 20H6C6 21.1 6.9 22 8 22H16C17.1 22 18 21.1 18 20Z'/></svg>");
+  display: inline-block; vertical-align: middle; margin-left: 8px;
+}
+
+/* --- HALLOWEEN --- */
+body.theme-halloween { 
+  --ac: #ff7b00; 
+  --ac-gradient: linear-gradient(135deg, #ff7b00 0%, #6a0dad 100%); 
+}
+/* Morcegos voando */
+body.theme-halloween::before {
+  content: "🦇   🦇   🦇   🦇   🦇"; position: fixed; top: 20%; left: -20%; font-size: 30px; letter-spacing: 50px; pointer-events: none; z-index: 9999;
+  animation: batsFly 15s linear infinite; filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+}
+@keyframes batsFly { 0% { left: -20%; top: 20%; } 50% { left: 50%; top: 10%; } 100% { left: 120%; top: 30%; } }
+/* Teias nos cantos */
+body.theme-halloween .panel::after,
+body.theme-halloween .sub-list-item::after,
+body.theme-halloween .d::after {
+  content: ""; position: absolute; top: 0; right: 0; width: 40px; height: 40px; pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='1'><path d='M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07'/></svg>");
+  background-size: cover; opacity: 0.5;
+}
+body.theme-halloween .btn-primary::after { 
+  content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' width='18' height='18'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z'/></svg>");
+  display: inline-block; vertical-align: middle; margin-left: 8px;
+}
+
+/* --- ANO NOVO --- */
+body.theme-newyear { 
+  --ac: #d4af37; 
+  --ac-gradient: linear-gradient(135deg, #d4af37 0%, #000 100%); 
+}
+/* Fogos de artifício */
+body.theme-newyear::before {
+  content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;
+  background: radial-gradient(circle at 50% 50%, rgba(212,175,55,0.2) 0%, transparent 60%);
+  animation: fireworks 2s ease-out infinite alternate;
+}
+@keyframes fireworks { 0% { opacity: 0; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0; transform: scale(1.5); } }
+body.theme-newyear .btn-primary::after { 
+  content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' width='18' height='18'><path d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/></svg>");
+  display: inline-block; vertical-align: middle; margin-left: 8px;
+}

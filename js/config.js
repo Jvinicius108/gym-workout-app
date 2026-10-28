@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeFirestore, persistentLocalCache } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 export const firebaseConfig = {
   apiKey: "AIzaSyANjtatf0Vdx7j4v0ejsp39nsGWGJ1M5mw",
@@ -15,12 +15,32 @@ export const CONFIGURADO = !String(firebaseConfig.apiKey).startsWith("COLE");
 export const fb = CONFIGURADO ? initializeApp(firebaseConfig) : null;
 export const auth = fb && getAuth(fb);
 
-// 👇 Inicializando o Firestore com cache local (fila offline)
 export const db = fb && initializeFirestore(fb, {
-  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+  localCache: persistentLocalCache() 
 });
 
 export const DS = ["seg","ter","qua","qui","sex","sáb","dom"];
 export const DF = ["Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado","Domingo"];
-export const AC = ["#ff5a36", "#2f7cf6", "#22a35a", "#9b5cf6", "#e6397a", "#e5484d", "#f59e0b", "#06b6d4", "#6366f1"];
-export const TIPOS = {ABC:"3 treinos: A, B e C, repetidos ao longo da semana.",ABCD:"4 treinos: A, B, C e D, repetidos ao longo da semana.",ABCDE:"5 treinos: A, B, C, D e E, repetidos ao longo da semana."};
+
+// ✅ NOVAS CORES PREMIUM ADICIONADAS (Ouro, Esmeralda, Safira, Rubi)
+export const AC = [
+  "#ff5a36", // Laranja
+  "#2f7cf6", // Azul
+  "#22a35a", // Verde
+  "#9b5cf6", // Roxo
+  "#e6397a", // Rosa
+  "#e5484d", // Vermelho
+  "#f59e0b", // Amarelo
+  "#06b6d4", // Ciano
+  "#6366f1", // Índigo
+  "#d4af37", // Ouro (Novo)
+  "#0f9b58", // Esmeralda (Novo)
+  "#0f52ba", // Safira (Novo)
+  "#9b111e"  // Rubi (Novo)
+];
+
+export const TIPOS = {
+  ABC:"3 treinos: A, B e C, repetidos ao longo da semana.",
+  ABCD:"4 treinos: A, B, C e D, repetidos ao longo da semana.",
+  ABCDE:"5 treinos: A, B, C, D e E, repetidos ao longo da semana."
+};

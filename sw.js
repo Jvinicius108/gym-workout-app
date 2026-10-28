@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gym-workout-v=65';
+const CACHE_NAME = 'gym-workout-v202610281646';
 
 const ASSETS = [
   './',
@@ -16,6 +16,8 @@ const ASSETS = [
   './js/ui.js',
   './js/ui-evolution.js',
   './js/ui-settings.js',
+  './js/ui-admin.js',
+  './js/substitutions.js',
   './js/utils.js',
   './js/water.js',
   './js/quotes.js',
@@ -83,40 +85,43 @@ self.addEventListener('fetch', (e) => {
   }
 
   if (e.request.mode === 'navigate') {
+    // ✅ MUDANÇA AQUI: Network-First agressivo para o index.html
+    // Se tiver internet, ele pega a versão nova. Se não tiver, pega do cache.
     e.respondWith(
-      Promise.race([
-        fetch(e.request, { cache: 'no-store' }).then((networkResponse) => {
+      fetch(e.request, { cache: 'no-store' })
+        .then((networkResponse) => {
           if (networkResponse && networkResponse.ok) {
             const clone = networkResponse.clone();
             caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
           }
           return networkResponse;
-        }),
-        new Promise((_, reject) => setTimeout(reject, 3000))
-      ]).catch(() => {
-        return caches.match(e.request).then((cached) => {
-          return cached || caches.match('./index.html');
-        });
-      })
+        })
+        .catch(() => {
+          return caches.match(e.request).then((cached) => {
+            return cached || caches.match('./index.html');
+          });
+        })
     );
     return;
   }
 
+  // Para os outros arquivos (CSS, JS, imagens), continua Cache-First
   e.respondWith(
-    caches.match(e.request).then((cachedResponse) => {
-      const fetchPromise = fetch(e.request).then((networkResponse) => {
-        const canCache = networkResponse && (
-          (networkResponse.status >= 200 && networkResponse.status < 300) ||
-          networkResponse.type === 'opaque'
-        );
-        if (canCache) {
-          const clone = networkResponse.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
-        }
-        return networkResponse;
-      }).catch(() => new Response('Offline', { status: 503 }));
-
-      return cachedResponse || fetchPromise;
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.match(e.request).then((cachedResponse) => {
+        if (cachedResponse) return cachedResponse; 
+        
+        return fetch(e.request).then((networkResponse) => {
+          const canCache = networkResponse && (
+            (networkResponse.status >= 200 && networkResponse.status < 300) ||
+            networkResponse.type === 'opaque'
+          );
+          if (canCache) {
+            cache.put(e.request, networkResponse.clone());
+          }
+          return networkResponse;
+        }).catch(() => new Response('Offline', { status: 503 }));
+      });
     })
   );
 });

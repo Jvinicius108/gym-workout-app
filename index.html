@@ -48,6 +48,9 @@
 </head>
 <body>
 
+<!-- ✅ CONTAINER DA NEVE LOTTIE -->
+<div id="snow-container" style="position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden;"></div>
+
 <div id="splash" role="status" aria-label="Carregando o aplicativo">
   <div class="splash-content">
     <h1>GYM WORKOUT</h1>
@@ -119,7 +122,7 @@
     <button class="btn-alarm" id="btnDismissAlarm">OK, VOLTAR AO TREINO</button>
   </div>
 
-  <!-- ===== MODAIS ===== -->
+  <!-- ===== MODAIS DO USUÁRIO COMUM ===== -->
   <div class="modal" id="md" role="dialog" aria-modal="true" aria-labelledby="mdTitle">
     <h2 id="mdTitle">Treino concluído!</h2>
     <button class="btn btn-secondary" id="mFoto">Anexar foto</button>
@@ -173,7 +176,6 @@
     </div>
   </div>
 
-  <!-- MODAL PARA ESCOLHER O EXERCÍCIO DO SUPERSET -->
   <div class="modal" id="mdLinkExercise" role="dialog" aria-modal="true" aria-labelledby="mdLinkTitle">
     <h2 id="mdLinkTitle" style="color: #ffd700;">🔗 Linkar Exercício</h2>
     <p style="color:var(--mu); font-size:14px; margin-top:-8px; margin-bottom:16px;">
@@ -183,7 +185,6 @@
     <button class="btn btn-secondary" id="cancelLink" style="margin-top:16px;">Cancelar</button>
   </div>
 
-  <!-- MODAL DE AVISO DE SUPERSET NO INÍCIO DO TREINO -->
   <div class="modal" id="mdSupersetWarning" role="dialog" aria-modal="true" aria-labelledby="mdSuperTitle">
     <div style="text-align:center; padding: 10px 0;">
       <div style="font-size: 48px; margin-bottom: 12px;">⛓️</div>
@@ -194,6 +195,82 @@
       </p>
       <button class="btn btn-primary" id="btnCloseSupersetWarning" style="background: linear-gradient(135deg, #ffd700, #ff8c00); color: #000; font-weight: 800;">ENTENDI, BORA TREINAR!</button>
     </div>
+  </div>
+
+  <div class="modal" id="mdSwapExercise" role="dialog" aria-modal="true" aria-labelledby="mdSwapTitle">
+    <h2 id="mdSwapTitle" style="color: var(--water);">🔄 Trocar Exercício</h2>
+    <p style="color:var(--mu); font-size:14px; margin-top:-8px; margin-bottom:16px;">
+      Máquina ocupada? Escolha um substituto para hoje.
+    </p>
+    <div id="swapExerciseList" style="display:flex; flex-direction:column; gap:8px; max-height:50vh; overflow-y:auto;"></div>
+    <button class="btn btn-secondary" id="cancelSwap" style="margin-top:16px;">Cancelar</button>
+  </div>
+
+  <!-- MODAL PARA ADICIONAR/EDITAR NOVO SUBSTITUTO (USUÁRIO COMUM) -->
+  <div class="modal" id="mdAddSubstitute" role="dialog" aria-modal="true" aria-labelledby="mdAddSubTitle">
+    <h2 id="mdAddSubTitle">Substituto</h2>
+    
+    <div id="subBaseExerciseArea" style="display:none; margin-bottom:12px;">
+      <label for="subBaseExerciseSelect" style="font-size:12px;color:var(--water); font-weight:700;">Vincular a um exercício do seu treino (Opcional):</label>
+      <select id="subBaseExerciseSelect" style="margin-top:4px;"></select>
+    </div>
+
+    <input type="text" id="subNameInput" placeholder="Nome (ex: Supino Inclinado)" autocomplete="off">
+    
+    <div class="row mt-8" style="justify-content: flex-start; align-items: center;">
+      <input type="checkbox" id="subIsCardio" style="width: auto; margin: 0 8px 0 0; transform: scale(1.3); cursor: pointer;">
+      <label for="subIsCardio" style="font-size: 14px; color: var(--mu); font-weight: 600; cursor: pointer;">É Cardio?</label>
+    </div>
+
+    <div id="subStrengthFields" class="row mt-8" style="display: flex;">
+      <input type="text" id="subSetsInput" placeholder="Séries x Reps (ex: 3x12)" style="margin-top: 0;">
+    </div>
+
+    <div id="subCardioFields" class="mt-8" style="display: none;">
+      <input type="number" id="subDurationInput" placeholder="Tempo em minutos (ex: 15)" style="margin-top: 0;">
+    </div>
+
+    <button class="btn btn-secondary mt-12" id="btnSubPhoto" style="width: 100%;">📷 Anexar Foto/GIF</button>
+    <img id="subPhotoPreview" style="display:none; max-height: 120px; margin-top: 12px; border-radius: 8px; object-fit: contain; width: 100%;">
+    
+    <button class="btn btn-primary mt-16" id="btnSaveSubstitute">Salvar</button>
+    <button class="btn btn-secondary mt-8" id="btnCancelSubstitute">Cancelar</button>
+  </div>
+
+  <!-- NOVO MODAL DE ABRIR CHAMADO -->
+  <div class="modal" id="mdTicket" role="dialog" aria-modal="true" aria-labelledby="mdTicketTitle">
+    <h2 id="mdTicketTitle">Abrir Chamado</h2>
+    <p style="color:var(--mu); font-size:14px; margin-top:-8px; margin-bottom:16px;">Descreva o que está faltando para o Administrador.</p>
+    
+    <input type="text" id="ticketBaseEx" placeholder="Nome do Exercício Principal (ex: Supino Reto)" autocomplete="off">
+    <textarea id="ticketMessage" placeholder="Observações (ex: Falta a foto do Supino Inclinado com halteres)" style="width:100%; height:100px; padding:14px; border-radius:12px; border:1px solid var(--bd); background:var(--bg); color:var(--tx); font-family:inherit; font-size:16px; margin-top:8px; resize:none; box-sizing: border-box;"></textarea>
+    
+    <button class="btn btn-primary mt-16" id="btnSubmitTicket">Enviar Chamado</button>
+    <button class="btn btn-secondary mt-8" id="btnCancelTicket">Cancelar</button>
+  </div>
+
+  <!-- ===== MODAL EXCLUSIVO DO ADMINISTRADOR ===== -->
+  <div class="modal" id="mdAdminAddSub" role="dialog" aria-modal="true" style="z-index: 300; max-height: 90vh; overflow-y: auto;">
+    <h2 id="adminModalTitle">Gerenciar Substitutos</h2>
+    <p id="adminModalBaseEx" style="color:var(--water); font-size:14px; margin-top:-8px; margin-bottom:12px; font-weight:bold;"></p>
+    
+    <div id="adminSubsList" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap:10px; margin-bottom:15px;"></div>
+    
+    <div id="adminAddForm" style="display:none; background:var(--bg); padding:12px; border-radius:8px; margin-bottom:15px; border: 1px dashed var(--bd);">
+        <h3 style="margin:0 0 10px 0; font-size:14px;">Adicionar Novo Substituto</h3>
+        <input type="text" id="adminNewSubName" placeholder="Nome do Substituto" style="margin-bottom:8px;">
+        <div style="display:flex; gap:8px;">
+            <input type="text" id="adminNewSubSets" placeholder="Séries x Reps (ex: 3x12)" style="margin-bottom:8px;">
+            <button class="btn btn-secondary" id="btnAdminNewPhoto" style="width:auto; margin:0; padding:0 12px;">📷 Foto</button>
+        </div>
+        <img id="adminNewSubPreview" style="display:none; max-height: 80px; margin-top: 8px; border-radius: 8px;">
+        <button class="btn btn-primary mt-8" id="btnAdminAddNewConfirm" style="width:100%;">Adicionar</button>
+    </div>
+
+    <button class="btn btn-secondary" id="btnShowAddForm" style="margin-bottom:15px;">+ Adicionar Novo Substituto</button>
+    
+    <button class="btn btn-primary" id="btnAdminSaveAll" style="margin-top:10px;">SALVAR ALTERAÇÕES</button>
+    <button class="btn btn-secondary mt-8" id="btnCloseAdminModal">Fechar</button>
   </div>
 
   <!-- ===== TELAS SECUNDÁRIAS ===== -->
@@ -257,6 +334,42 @@
     <div id="configContent"></div>
   </div>
 
+  <div id="substitutesScreen" aria-labelledby="subsTitle">
+    <div class="evo-header">
+      <button class="ic" id="subsBack" style="font-size:18px" aria-label="Voltar">←</button>
+      <h2 id="subsTitle">Substitutos</h2>
+    </div>
+    <p id="subsBaseExName" style="text-align:center; color:var(--mu); margin-bottom:20px; font-weight:600;"></p>
+    <div id="subsContent" style="display:flex; flex-direction:column; gap:16px; padding-bottom: 20px;"></div>
+  </div>
+
+  <div id="allSubsScreen" aria-labelledby="allSubsTitle">
+    <!-- Cabeçalho e Filtros (Rolam junto com a tela) -->
+    <div class="evo-header" style="margin-bottom: 12px;">
+      <button class="ic" id="allSubsBack" style="font-size:18px" aria-label="Voltar">←</button>
+      <h2 id="allSubsTitle">Todos os Substitutos</h2>
+    </div>
+    
+    <div style="display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; align-items: center; flex-shrink: 0; padding: 4px 0 12px 0;">
+      <button class="chip on" data-filter-subs="all">Todos</button>
+      <button class="chip" data-filter-subs="Peito">Peito</button>
+      <button class="chip" data-filter-subs="Costas">Costas</button>
+      <button class="chip" data-filter-subs="Perna">Perna</button>
+      <button class="chip" data-filter-subs="Braço">Braço</button>
+      <button class="chip" data-filter-subs="Ombro">Ombro</button>
+    </div>
+
+    <!-- Conteúdo -->
+    <div id="allSubsContent" style="display:flex; flex-direction:column; gap:16px; margin-top: 16px;"></div>
+    
+    <!-- Botão Fixo no Rodapé -->
+    <div style="position: fixed; bottom: 0; left: 0; right: 0; padding: 16px 8px calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--bg); z-index: 55; border-top: 1px solid var(--bd);">
+      <button class="btn btn-primary" id="btnOpenTicketFooter" style="margin: 0; padding: 18px; background: var(--water); border-color: var(--water); font-weight:700; box-shadow: 0 4px 12px rgba(0, 191, 255, 0.2); width: 100%;">
+        📩 Solicitar Novo Substituto ao Administrador
+      </button>
+    </div>
+  </div>
+
   <div id="workoutSelectorScreen" aria-labelledby="selectorTitle">
     <div class="evo-header">
       <button class="ic" id="selectorBack" style="font-size:18px" aria-label="Voltar">←</button>
@@ -288,6 +401,8 @@
 <!-- ===== FILE INPUTS ===== -->
 <input type="file" accept="image/*" id="fi" hidden aria-label="Anexar imagem">
 <input type="file" accept="image/*" id="fiAvatar" hidden aria-label="Escolher foto de perfil">
+<input type="file" accept="image/*" id="fiSubstitute" hidden aria-label="Foto do substituto">
+<input type="file" accept="image/*" id="fiAdminSubstitute" hidden aria-label="Foto do substituto global (Admin)">
 
 <!-- ===== TOASTS ===== -->
 <div id="toast-container" role="status" aria-live="polite" aria-atomic="false"></div>

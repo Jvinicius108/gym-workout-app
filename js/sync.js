@@ -8,7 +8,7 @@ import { show, showWelcome, theme, strip, main, drawer, updateWaterUI, updateMas
 import { startWaterReminderTimer } from './water-reminder.js';
 import { collection, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-let unsubUser = null, unsubFeitos = null;
+let unsubUser = null, unsubFeitos = null, unsubGlobalSubs = null;
 let isAppInitialized = false;
 let bootRetryCount = 0;
 
@@ -122,9 +122,7 @@ function tryShowApp() {
   return true;
 }
 
-// 🔥 FUNÇÃO CIRÚRGICA PARA EVITAR PISCAR A TELA
 function checkIfCanRenderBackground() {
-  // Se estiver em Configurações, Evolução, Mascote ou Seletor, NÃO re-renderiza o fundo!
   if (state.inConfigMode || state.inMascotMode || state.inSelectorMode) return false;
   if ($("evoScreen") && $("evoScreen").classList.contains("on")) return false;
   return true;
@@ -143,6 +141,8 @@ export async function boot(user) {
 
     if (unsubUser) unsubUser();
     if (unsubFeitos) unsubFeitos();
+    if (unsubGlobalSubs) unsubGlobalSubs();
+    
     isAppInitialized = false;
     state.P = null;
     state.F = {};
@@ -228,16 +228,10 @@ export async function boot(user) {
       const newWater = pWaterSig(state.P);
 
       scheduleRender(() => {
-        // Atualiza a água na tela (sempre pode, é rápido)
         if (prevWater !== newWater) updateWaterUI();
-
-        // Atualiza o mascote na tela
         if (prevMain !== newMain) updateMascotVisuals();
-
-        // Se o usuário estiver digitando, aborta a renderização pesada!
         if (isUserTypingInternal()) return;
 
-        // Só renderiza o fundo se não estivermos em uma tela secundária
         if (checkIfCanRenderBackground()) {
           if (prevCal !== newCal) {
             theme(); strip(); main();
@@ -246,7 +240,6 @@ export async function boot(user) {
           }
         }
         
-        // Atualiza o menu lateral se ele estiver aberto
         if ($("dr").classList.contains("on") && $("dr").dataset.view === "main") {
           drawer();
         }
@@ -266,12 +259,32 @@ export async function boot(user) {
       if (prevFSig !== newFSig) {
         calculateStreakAndMisses();
         
-        // Só atualiza o fundo se o usuário não estiver numa tela secundária
         if (checkIfCanRenderBackground() && !isUserTypingInternal()) {
           if (!document.querySelector('.animating')) strip();
           main();
         }
         updateMascotVisuals();
+      }
+    });
+
+    // ✅ LISTENER SEGURO E NORMALIZADO (MINÚSCULO, SEM ESPAÇOS EXTRAS)
+    unsubGlobalSubs = onSnapshot(collection(db, "global_substitutes"), (snap) => {
+      const subsMap = {};
+      snap.forEach(doc => {
+        const data = doc.data();
+        if (!data.baseExercise) return;
+        
+        const key = String(data.baseExercise).trim().toLowerCase();
+        
+        if (!subsMap[key]) subsMap[key] = [];
+        subsMap[key].push({ id: doc.id, ...data });
+      });
+      
+      state.globalSubstitutes = subsMap;
+      
+      // Atualiza a tela do usuário imediatamente se ele estiver treinando
+      if (state.inWorkoutMode && !isUserTypingInternal()) {
+        scheduleRender(main);
       }
     });
 
@@ -297,5 +310,6 @@ export async function boot(user) {
 export function cleanupSubscriptions() {
   if (unsubUser) { unsubUser(); unsubUser = null; }
   if (unsubFeitos) { unsubFeitos(); unsubFeitos = null; }
+  if (unsubGlobalSubs) { unsubGlobalSubs(); unsubGlobalSubs = null; }
   isAppInitialized = false;
 }

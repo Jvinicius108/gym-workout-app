@@ -42,15 +42,21 @@ export const state = {
   showWaterGoalInput: false,
   pendingEvolution: null,
   
-  // NOVAS VARIÁVEIS PARA O FORMULÁRIO DE EXERCÍCIO
   editingIsCardio: false,
   editSets: "",
   editReps: "",
   editDuration: "",
 
-  // NOVAS VARIÁVEIS PARA SUPERSETS
   linkingExIndex: null,
   hasShownSupersetWarning: false,
+
+  // NOVAS FLAGS PARA SUBSTITUIÇÃO
+  inSubstitutesMode: false,
+  subsTargetIndex: null,
+  activeSwaps: {}, 
+  pendingSubstitutePhoto: null,
+  editingSubIndex: null,
+  globalSubstitutes: {},
 };
 
 export function resetState() {
@@ -97,6 +103,14 @@ export function resetState() {
   state.linkingExIndex = null;
   state.hasShownSupersetWarning = false;
 
+  state.inSubstitutesMode = false;
+  state.subsTargetIndex = null;
+  state.activeSwaps = {};
+  state.pendingSubstitutePhoto = null;
+  state.editingSubIndex = null;
+  state.globalSubstitutes = {};
+  
+
   if (state.timerInterval) {
     clearInterval(state.timerInterval);
     state.timerInterval = null;
@@ -115,10 +129,8 @@ export function resetState() {
 
 export function setState(patch, shouldPersist = false) {
   if (!state.P) return;
-
   Object.assign(state, patch);
   Object.assign(state.P, patch);
-
   if (shouldPersist) {
     window.dispatchEvent(new CustomEvent('state:persist', { detail: patch }));
   }
