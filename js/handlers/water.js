@@ -21,7 +21,6 @@ export async function handleWaterClicks(t, D) {
     state.P.waterCurrent = newCurrent;
     state.pendingWater = newCurrent;
     persist({ waterCurrent: newCurrent, waterGoal: state.waterGoal, lastWaterDate: state.lastWaterDate });
-    updateWaterUI();
     vibrate(10);
     return true;
   }

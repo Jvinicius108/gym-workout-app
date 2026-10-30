@@ -28,23 +28,24 @@ export async function handleDrawerAndModals(t, D) {
       open(false);
       state.inConfigMode = true;
       state.configDetail = false;
-      renderConfigScreen();
       return true;
     }
     if (t.id === "configBack") {
-      if (state.configDetail) { state.configDetail = false; renderConfigScreen(); }
-      else { state.inConfigMode = false; renderConfigScreen(); refresh(); }
+      if (state.configDetail) { 
+        state.configDetail = false;
+      } else { 
+        state.inConfigMode = false;
+      }
       return true;
     }
-    if (t.id === "mascotBtn") { state.inMascotMode = true; renderMascotScreen(); return true; }
-    if (t.id === "mascotBack") { state.inMascotMode = false; renderMascotScreen(); return true; }
+    if (t.id === "mascotBtn") { state.inMascotMode = true; return true; }
+    if (t.id === "mascotBack") { state.inMascotMode = false; return true; }
     if (t.id === "saveMascotData") {
       state.P.mascotName = $("mascotNameInput").value.trim();
       state.P.guardianName = $("guardianNameInput").value.trim();
       persist({ mascotName: state.P.mascotName, guardianName: state.P.guardianName });
       showToast("Dados do mascote salvos!", "success");
       state.inMascotMode = false;
-      renderMascotScreen();
       main(); drawer();
       return true;
     }

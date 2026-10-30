@@ -1,10 +1,13 @@
-const CACHE_NAME = 'gym-workout-v202610281646';
+const CACHE_NAME = 'gym-workout-v202610301121';
 
 const ASSETS = [
   './',
   './index.html',
   './style.css',
   './manifest.json',
+  './js/halloween-theme.js',
+  './js/christmas-theme.js',
+  './js/newyear-theme.js', 
   './js/app.js',
   './js/config.js',
   './js/theme-init.js',
@@ -61,7 +64,6 @@ self.addEventListener('activate', (e) => {
       );
     })
   );
-  self.clients.claim();
 });
 
 self.addEventListener('message', (event) => {
@@ -85,8 +87,6 @@ self.addEventListener('fetch', (e) => {
   }
 
   if (e.request.mode === 'navigate') {
-    // ✅ MUDANÇA AQUI: Network-First agressivo para o index.html
-    // Se tiver internet, ele pega a versão nova. Se não tiver, pega do cache.
     e.respondWith(
       fetch(e.request, { cache: 'no-store' })
         .then((networkResponse) => {
@@ -105,7 +105,6 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // Para os outros arquivos (CSS, JS, imagens), continua Cache-First
   e.respondWith(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.match(e.request).then((cachedResponse) => {

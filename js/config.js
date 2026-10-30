@@ -1,6 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { initializeFirestore, persistentLocalCache } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+// 1. IMPORTAR O APP CHECK DA CDN:
+import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
 
 export const firebaseConfig = {
   apiKey: "AIzaSyANjtatf0Vdx7j4v0ejsp39nsGWGJ1M5mw",
@@ -13,6 +15,7 @@ export const firebaseConfig = {
 
 export const CONFIGURADO = !String(firebaseConfig.apiKey).startsWith("COLE");
 export const fb = CONFIGURADO ? initializeApp(firebaseConfig) : null;
+
 export const auth = fb && getAuth(fb);
 
 export const db = fb && initializeFirestore(fb, {

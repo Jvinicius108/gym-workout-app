@@ -13,34 +13,37 @@ import { getSubstitutosPara } from '../substitutions.js';
 export async function handleWorkoutAndConfig(t, D) {
   try {
     if (D.selectWorkout) {
-      const letter = D.selectWorkout;
-      if ((state.P.ex[letter] || []).length === 0) {
-        showToast(`O Treino ${letter} está vazio. Adicione exercícios antes.`, "info");
-        return true;
-      }
-      state.inSelectorMode = false;
-      renderWorkoutSelector();
-      state.forcedLetter = letter;
-      state.inWorkoutMode = true;
-      state.completedExs.clear();
-      state.activeSwaps = {};
-      localStorage.setItem("inWorkoutMode_" + state.uid, "true");
-      localStorage.setItem("sel_" + state.uid, state.sel);
-      localStorage.setItem("forcedLetter_" + state.uid, state.forcedLetter);
-      localStorage.setItem("completedExs_" + state.uid, "[]");
-      
-      state.hasShownSupersetWarning = false;
-      const temSuperset = (state.P.ex[letter] || []).some(e => e.supersetId);
-      if (temSuperset) {
-        setTimeout(() => {
-          $("ov").classList.add("on");
-          $("mdSupersetWarning").classList.add("on");
-        }, 500);
-      }
-      startWorkoutTimer();
-      refresh();
-      return true;
-    }
+  const letter = D.selectWorkout;
+  if ((state.P.ex[letter] || []).length === 0) {
+    showToast(`O Treino ${letter} está vazio. Adicione exercícios antes.`, "info");
+    return true;
+  }
+  
+  // O Proxy detecta e fecha o seletor!
+  state.inSelectorMode = false;
+  
+  state.forcedLetter = letter;
+  // O Proxy detecta e desenha a tela de treino!
+  state.inWorkoutMode = true;
+  state.completedExs.clear();
+  state.activeSwaps = {};
+  
+  localStorage.setItem("inWorkoutMode_" + state.uid, "true");
+  localStorage.setItem("sel_" + state.uid, state.sel);
+  localStorage.setItem("forcedLetter_" + state.uid, state.forcedLetter);
+  localStorage.setItem("completedExs_" + state.uid, "[]");
+  
+  state.hasShownSupersetWarning = false;
+  const temSuperset = (state.P.ex[letter] || []).some(e => e.supersetId);
+  if (temSuperset) {
+    setTimeout(() => {
+      $("ov").classList.add("on");
+      $("mdSupersetWarning").classList.add("on");
+    }, 500);
+  }
+  startWorkoutTimer();
+  return true;
+}
 
     if (D.k) {
       const _ck = state.P.createdAt ? key(new Date(state.P.createdAt)) : null;
@@ -50,19 +53,18 @@ export async function handleWorkoutAndConfig(t, D) {
       state.showLetterSelector = false;
       state.completedExs.clear();
       state.activeSwaps = {};
-      state.inWorkoutMode = false;
+      state.inWorkoutMode = false; // O Proxy detecta essa alteração e chama o refresh() sozinho
       state.pendDuration = null;
       resetWorkoutTimer();
       localStorage.removeItem("inWorkoutMode_" + state.uid);
       localStorage.removeItem("forcedLetter_" + state.uid);
       localStorage.removeItem("completedExs_" + state.uid);
       localStorage.setItem("sel_" + state.uid, state.sel);
-      refresh();
       return true;
     }
 
     if (D.exit) {
-      state.inWorkoutMode = false;
+      state.inWorkoutMode = false; // O Proxy detecta essa alteração e chama o refresh() sozinho
       state.forcedLetter = null;
       state.completedExs.clear();
       state.activeSwaps = {};
@@ -70,7 +72,6 @@ export async function handleWorkoutAndConfig(t, D) {
       localStorage.removeItem("inWorkoutMode_" + state.uid);
       localStorage.removeItem("forcedLetter_" + state.uid);
       localStorage.removeItem("completedExs_" + state.uid);
-      refresh();
       return true;
     }
 

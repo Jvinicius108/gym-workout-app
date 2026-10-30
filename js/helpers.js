@@ -32,6 +32,7 @@ export const open = o => {
 };
 
 export const refresh = () => {
+  if (!state.P) return;
   if (isUserTyping()) {
     updateWaterUI();
     updateMascotVisuals();

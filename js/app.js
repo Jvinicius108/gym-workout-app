@@ -83,7 +83,6 @@ function tuneSnowflakes(data, opts = {}) {
   return data;
 }
 
-// ✅ FUNÇÃO PARA APLICAR TEMAS DE FERIADOS
 function applyHolidayTheme() {
     const hoje = new Date();
     const mes = hoje.getMonth() + 1;
@@ -99,64 +98,51 @@ function applyHolidayTheme() {
         if (snowContainer) snowContainer.innerHTML = '';
     };
 
-    // 🎅 NATAL (24 e 25 de Dezembro)
-    if (mes === 12 && (dia === 24 || dia === 25)) { 
-    document.body.classList.add('theme-christmas'); 
-    
-    if (snowContainer && snowAnims.length === 0 && window.lottie) {
-        fetch('js/christmas.json')
-            .then(r => r.json())
-            .then(data => {
-                const tuned = tuneSnowflakes(data, {
-                    scale: 0.5,           // 50% do tamanho original
-                    flakesPerGroup: 6,    // 16 → 6 flocos por grupo
-                    groups: 2             // 3 → 2 grupos na cena
-                });
-
-                const numInstances = 2;   // 4 → 2 instâncias no app
-
-                for (let i = 0; i < numInstances; i++) {
-                    const clone = JSON.parse(JSON.stringify(tuned)); // clone independente
-                    const anim = window.lottie.loadAnimation({
-                        container: snowContainer,
-                        renderer: 'svg',
-                        loop: true,
-                        autoplay: true,
-                        animationData: clone,
-                        rendererSettings: { preserveAspectRatio: 'xMidYMid slice', className: 'snow-layer' }
-                    });
-                    anim.setSpeed(0.3);   // 0.6 → 0.3 (bem mais lento)
-                    anim.addEventListener('DOMLoaded', () => {
-                        anim.goToAndPlay(Math.random() * anim.totalFrames, true);
-                    });
-                    snowAnims.push(anim);
-                }
-            })
-            .catch(e => console.error('Erro ao carregar neve:', e));
-    }
-    setTimeout(initSantaHats, 300);
-}
-    // 🎃 HALLOWEEN (31 de Outubro)
-    else if (mes === 10 && dia === 31) { 
+     // Em app.js, dentro de applyHolidayTheme():
+    // 🎅 NATAL (01 a 26 de Dezembro)
+    if (mes === 12 && dia >= 1 && dia <= 26) { 
+        document.body.classList.add('theme-christmas'); 
+        clearSnow();
+        
+        // ✅ ALTERAÇÃO AQUI: Passa o nome do usuário para o tema de Natal
+        const nomeUsuario = (state.P && (state.P.displayName || state.P.nome)) ? (state.P.displayName || state.P.nome) : "Atleta";
+        
+        if (typeof initChristmasTheme === 'function') {
+            initChristmasTheme(snowContainer, nomeUsuario);
+        }
+    } 
+    // 🎃 HALLOWEEN (20 a 31 de Outubro)
+    else if (mes === 10 && dia >= 20 && dia <= 31) { 
         document.body.classList.add('theme-halloween'); 
         clearSnow();
+        if (typeof initHalloweenTheme === 'function') initHalloweenTheme(snowContainer);
     } 
-    // 🥂 ANO NOVO (31 de Dezembro e 1 de Janeiro)
-    else if ((mes === 12 && dia === 31) || (mes === 1 && dia === 1)) { 
+    // 🥂 ANO NOVO (01 a 10 de Janeiro)
+    else if (mes === 1 && dia >= 1 && dia <= 10) { 
         document.body.classList.add('theme-newyear'); 
         clearSnow();
+        if (typeof initNewYearTheme === 'function') initNewYearTheme(snowContainer);
     } 
     // DIAS NORMAIS
     else {
         clearSnow();
     }
 }
-
 document.addEventListener("click", async e => {
-   if (e.target.closest('[data-zoom="true"]')) {
-    const imgElement = e.target.closest('[data-zoom="true"]');
-    const src = imgElement.src || imgElement.dataset.src;
-    
+  const target = e.target;
+
+  if (target.id === "gifLightbox" || (target.closest("#gifLightbox") && target.tagName !== "IMG")) {
+    $("gifLightbox").classList.remove("on");
+    setTimeout(() => { $("gifLightboxImg").src = ""; }, 300);
+    return;
+  }
+
+  const elementoClicado = target.closest('button, .ov, [data-start], [data-zoom="true"], #waterWidget');
+  
+  if (!elementoClicado) return;
+
+  if (elementoClicado.dataset.zoom === "true") {
+    const src = elementoClicado.src || elementoClicado.dataset.src;
     if (src) {
       $("gifLightboxImg").src = src;
       $("gifLightbox").classList.add("on");
@@ -164,15 +150,7 @@ document.addEventListener("click", async e => {
     return;
   }
 
-  // 2. FECHAR O GIF AMPLIADO (clicando em qualquer lugar da tela preta)
-  if (e.target.id === "gifLightbox" || e.target.closest("#gifLightbox") && e.target.tagName !== "IMG") {
-    $("gifLightbox").classList.remove("on");
-    // Limpa a imagem depois que a animação de fechar termina
-    setTimeout(() => { $("gifLightboxImg").src = ""; }, 300);
-    return;
-  }
-  const waterWidget = e.target.closest("#waterWidget");
-  if (waterWidget && !e.target.closest("#btnAddWater")) {
+  if (elementoClicado.id === "waterWidget") {
     e.stopPropagation();
     $("dr").dataset.view = "water";
     state.showWaterSizeInput = false;
@@ -183,8 +161,8 @@ document.addEventListener("click", async e => {
     return;
   }
 
-  const startBtn = e.target.closest("[data-start]");
-  if (startBtn) {
+  // C) Botão de Iniciar Treino
+  if (elementoClicado.dataset.start) {
     e.stopPropagation();
     if (state.sel > key(new Date())) {
       showToast("Você só pode iniciar treinos a partir de hoje.", "info");
@@ -214,19 +192,19 @@ document.addEventListener("click", async e => {
     if (state.forcedLetter) localStorage.setItem("forcedLetter_" + state.uid, state.forcedLetter);
     else localStorage.removeItem("forcedLetter_" + state.uid);
     localStorage.setItem("completedExs_" + state.uid, "[]");
+    
     startWorkoutTimer();
     refresh();
     return;
   }
 
-  const t = e.target.closest("button,.ov");
-  if (!t) return;
-  const D = t.dataset;
+  // D) SE FOR UM BOTÃO NORMAL OU OVERLAY (.ov), REPASSA PARA OS HANDLERS
+  const D = elementoClicado.dataset;
 
-  if (await handleWaterClicks(t, D)) return;
-  if (await handleDrawerAndModals(t, D)) return;
-  if (await handleWorkoutAndConfig(t, D)) return;
-  if (await handleOnboardingAndAuth(t, D)) return;
+  if (await handleWaterClicks(elementoClicado, D)) return;
+  if (await handleDrawerAndModals(elementoClicado, D)) return;
+  if (await handleWorkoutAndConfig(elementoClicado, D)) return;
+  if (await handleOnboardingAndAuth(elementoClicado, D)) return;
 });
 
 document.addEventListener("change", e => {
@@ -308,7 +286,7 @@ document.addEventListener("keydown", e => {
   }
 });
 
-if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
   let refreshing = false;
   let userRequestedUpdate = false; // ✅ VARIÁVEL DECLARADA AQUI NO TOPO
 
@@ -467,4 +445,43 @@ uiElementsToObserve.forEach(id => {
 
 document.addEventListener('visibilitychange', () => {
   updateAnimationPauseState();
+});
+
+// ===== REATIVIDADE DO STATE (Ouvinte Global) =====
+window.addEventListener('state:changed', async (e) => {
+  const { property, value } = e.detail;
+  
+  // Importamos os dois arquivos necessários
+  const ui = await import('./ui.js');
+  const helpers = await import('./helpers.js');
+
+  // 1. ÁGUA
+  if (property === 'waterCurrent' || property === 'waterGoal') {
+    ui.updateWaterUI();
+  }
+
+  // 2. MODO TREINO (Ativar/Desativar tela de treino)
+  if (property === 'inWorkoutMode') {
+    helpers.refresh(); // <-- CORREÇÃO: Agora chamamos do helpers.js!
+  }
+
+  // 3. SELETOR DE TREINOS (Modal de descanso/troca)
+  if (property === 'inSelectorMode') {
+    ui.renderWorkoutSelector();
+  }
+
+  // 4. MODO CONFIGURAÇÃO E DETALHES DO EXERCÍCIO
+  if (property === 'inConfigMode' || property === 'configDetail' || property === 'editingExIndex') {
+    ui.renderConfigScreen();
+  }
+
+  // 5. MODO SUBSTITUTOS
+  if (property === 'inSubstitutesMode') {
+    ui.renderSubstitutesScreen();
+  }
+
+  // 6. MODO MASCOTE
+  if (property === 'inMascotMode') {
+    ui.renderMascotScreen();
+  }
 });

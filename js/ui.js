@@ -56,7 +56,6 @@ export function theme() {
     r.removeAttribute("data-theme");
   }
 
-  // ✅ CORREÇÃO: Aplica a cor de destaque (que tinha sido removida por engano)
   r.style.setProperty("--ac", (state.P && state.P.ac) || AC[0]);
   
   const isDark = t === 'dark' || ((!t || t === 'auto') && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -173,7 +172,7 @@ export function onboard() {
 
 function dayHtml(d, k0) {
   const k = key(d);
-  const createdAt = state.P.createdAt || 0;
+  const createdAt = state.P?.createdAt || 0;
   const createdKey = createdAt ? key(new Date(createdAt)) : null;
   if (createdKey && k < createdKey) {
       return `<button class="d disabled" disabled aria-disabled="true" aria-label="${DS[mi(d)]} ${d.getDate()} — antes da criação da conta"><small>${DS[mi(d)]}</small><b>${d.getDate()}</b></button>`;
@@ -710,7 +709,7 @@ export function drawer() {
     <button class="btn btn-ghost mt-12" id="btnDeleteAccount" style="font-size:12px;">Excluir Conta Permanentemente</button>
     
     <!-- ✅ VERSÃO VISÍVEL (O script update-version.js vai substituir isso) -->
-    <div style="text-align: center; font-size: 10px; color: var(--mu); margin-top: 20px; opacity: 0.5;">Versão: v202610281646</div>
+    <div style="text-align: center; font-size: 10px; color: var(--mu); margin-top: 20px; opacity: 0.5;">Versão: v202610301121</div>
   `;
 
   safeRender("dr", h);

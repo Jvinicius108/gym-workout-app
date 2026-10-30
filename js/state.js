@@ -1,4 +1,5 @@
-export const state = {
+// 1. Guardamos o estado inicial num objeto puro
+const estadoInicial = {
   uid: null,
   P: null,
   F: {},
@@ -50,7 +51,6 @@ export const state = {
   linkingExIndex: null,
   hasShownSupersetWarning: false,
 
-  // NOVAS FLAGS PARA SUBSTITUIÇÃO
   inSubstitutesMode: false,
   subsTargetIndex: null,
   activeSwaps: {}, 
@@ -59,6 +59,22 @@ export const state = {
   globalSubstitutes: {},
 };
 
+// 2. 🚀 A MÁGICA ACONTECE AQUI: Exportamos o Proxy!
+export const state = new Proxy(estadoInicial, {
+  set(target, property, value) {
+    // A) Atualiza o valor na memória (como sempre foi)
+    target[property] = value;
+
+    // B) Dispara o "alarme" avisando o resto do app que a propriedade mudou!
+    window.dispatchEvent(new CustomEvent('state:changed', {
+      detail: { property, value }
+    }));
+
+    return true; // Indica que a alteração foi feita com sucesso
+  }
+});
+
+// 3. As funções reset e setState continuam iguais, pois o Proxy entende automaticamente.
 export function resetState() {
   state.P = null;
   state.F = {};
@@ -109,7 +125,6 @@ export function resetState() {
   state.pendingSubstitutePhoto = null;
   state.editingSubIndex = null;
   state.globalSubstitutes = {};
-  
 
   if (state.timerInterval) {
     clearInterval(state.timerInterval);
