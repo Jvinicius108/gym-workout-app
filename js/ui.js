@@ -2,7 +2,7 @@ import { state } from './state.js';
 import { $, esc, key, pd, mi, LT, getWorkoutForDate, getLabel, showToast, safeRender, Icons, isWeekCompensated } from './utils.js';
 import { ready, hydrate, persist, sanitizeName } from './db.js';
 import { startWorkoutTimer, formatDuration } from './timers.js';
-import { DS, DF, AC, TIPOS } from './config.js';
+import { DS, DF, AC, COLOR_OPTIONS, TIPOS } from './config.js';
 import { quotes } from './quotes.js';
 import { initWater, setWaterLevel } from './water.js';
 import { mascotQuotes } from './mascot_quotes.js';
@@ -39,15 +39,15 @@ function loadFire(level) {
 }
 
 export function theme() {
-  // ✅ TRAVA DE SEGURANÇA: Se o Painel Admin estiver aberto, ignora a mudança de tema
+
   const adminScreen = document.getElementById("adminScreen");
   if (adminScreen && adminScreen.style.display !== "none") {
-    return; 
+    return;
   }
 
   const r = document.documentElement;
   const t = state.P ? state.P.tema : "auto";
-  
+
   if (t && t !== 'auto') {
     localStorage.setItem('gym_theme', t);
     r.setAttribute("data-theme", t);
@@ -57,7 +57,7 @@ export function theme() {
   }
 
   r.style.setProperty("--ac", (state.P && state.P.ac) || AC[0]);
-  
+
   const isDark = t === 'dark' || ((!t || t === 'auto') && window.matchMedia('(prefers-color-scheme: dark)').matches);
   const bgColor = isDark ? '#0f1115' : '#f4f5f7';
   let metaTheme = document.querySelector('meta[name="theme-color"]');
@@ -183,14 +183,14 @@ function dayHtml(d, k0) {
   const isFuture = k > k0;
   const isToday = k === k0;
   const isDone = !!state.F[k];
-  
+
   const isFailed = isPast && !isRest && !isDone && state.P.tipo && state.F_loaded && (d.getTime() >= (state.P.createdAt || 0)) && !isWeekCompensated(d);
   const isCompensated = isPast && !isRest && !isDone && !isFailed && state.P.tipo && isWeekCompensated(d);
 
   let l = state.F[k]?.letter || (isRest ? null : getWorkoutForDate(d));
   let displayL = l ? getLabel(l) : '💤';
   let extraClass = "", statusHtml = "", animHtml = "";
-  
+
   if (isDone) {
     const animPlayed = state.P.animSeen?.[k] === "success";
     if (!animPlayed && isToday) {
@@ -403,14 +403,14 @@ export function main() {
   const k0 = key(new Date());
   const isPast = state.sel < k0;
   const isFuture = state.sel > k0;
-  
+
   const isFailed = isPast && !isRest && !state.F[state.sel] && state.P.tipo && (d.getTime() >= (state.P.createdAt || 0)) && !isWeekCompensated(d);
   const isCompensated = isPast && !isRest && !state.F[state.sel] && !isFailed && state.P.tipo && isWeekCompensated(d);
-  
+
   let h = '';
   const dn = d.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
   const meta = '<div class="goal">Meta da semana: ' + semana() + ' de ' + state.P.freq + ' treino' + (state.P.freq > 1 ? "s" : "") + '</div>';
-  
+
   if (!state.inWorkoutMode) {
     h += '<div class="panel">';
     if (isFailed) {
@@ -455,15 +455,15 @@ export function main() {
         h += `<div class="card-btns"><button class="btn btn-primary w-100" id="btn-open-config">ADICIONAR EXERCÍCIOS</button></div>`;
       } else {
         let carouselHTML = '';
-        // ✅ Repete os itens 10 vezes para garantir um loop infinito sem bordas
+
       const repeatedExs = Array(10).fill(exs).flat();
       repeatedExs.forEach((e) => {
-          let imgHtml = e.gif 
-            ? `<img src="${esc(e.gif)}" data-zoom="true" alt="">` 
-            : (e.f 
-                ? (state.cache[e.f] 
-                    ? `<img src="${state.cache[e.f]}" data-zoom="true" alt="">` 
-                    : `<img data-f="${e.f}" data-zoom="true" alt="">`) 
+          let imgHtml = e.gif
+            ? `<img src="${esc(e.gif)}" data-zoom="true" alt="">`
+            : (e.f
+                ? (state.cache[e.f]
+                    ? `<img src="${state.cache[e.f]}" data-zoom="true" alt="">`
+                    : `<img data-f="${e.f}" data-zoom="true" alt="">`)
                 : `<div class="ph">${Icons.dumbbellLarge}</div>`);
           carouselHTML += `<div class="carousel-item">${imgHtml}<span>${esc(e.name)}</span></div>`;
         });
@@ -482,29 +482,27 @@ export function main() {
     h += '</div>';
     h += '<div class="workout-date">' + dn + '</div>';
     h += '<div id="workoutTimerDisplay">' + (state.workoutStartTime ? formatDuration(Date.now() - state.workoutStartTime) : "00:00:00") + '</div>';
-    
+
     const ex = state.P.ex[l] || [];
     if (ex.length) {
       h += '<div class="exs vertical mb-20">' + ex.map((e, i) => {
         const hasSuperset = !!e.supersetId;
         const swapped = state.activeSwaps && state.activeSwaps[i];
-        
+
          const dicSubs = getSubstitutosPara(e.name);
         const hasDicSubs = (dicSubs.principais && dicSubs.principais.length > 0) || (dicSubs.secundarios && dicSubs.secundarios.length > 0);
         const hasCustomSubs = (e.substitutes || []).length > 0;
-        
-        // ✅ VERIFICAÇÃO CORRETA DO BANCO GLOBAL
+
         const key = String(e.name).trim().toLowerCase();
         const globalDbSubs = state.globalSubstitutes ? (state.globalSubstitutes[key] || []) : [];
-        
+
         const hasGlobalSubs = globalDbSubs.length > 0;
         const hasAnySub = hasDicSubs || hasCustomSubs || hasGlobalSubs;
-        
+
         const displayName = swapped ? swapped.name : e.name;
         const displaySets = swapped ? swapped.sets : e.sets;
-        
-        // ✅ CORREÇÃO: Mostrar a carga do substituto se estiver trocado
-        const displayWeight = swapped 
+
+        const displayWeight = swapped
             ? (swapped.w ? `Carga: ${esc(swapped.w)} ${esc(swapped.wu || 'kg')}` : '')
             : (e.w ? `Carga: ${esc(e.w)} ${esc(e.wu || 'kg')}` : '');
 
@@ -512,28 +510,28 @@ export function main() {
         if (swapped) {
           let fotoId = swapped.f;
           if (!fotoId) fotoId = 'global_' + sanitizeName(swapped.name);
-          
+
           imgHtml = state.cache[fotoId]
               ? `<img class="im" src="${state.cache[fotoId]}" data-zoom="true" alt="Ver execução">`
               : `<img class="im" data-f="${fotoId}" data-zoom="true" alt="Ver execução">`;
         } else {
-          imgHtml = e.gif 
-            ? `<img class="im" src="${esc(e.gif)}" data-zoom="true" alt="Ver execução">` 
-            : (e.f 
-                ? (state.cache[e.f] 
-                    ? `<img class="im" src="${state.cache[e.f]}" data-zoom="true" alt="Ver execução">` 
-                    : `<img class="im" data-f="${e.f}" data-zoom="true" alt="Ver execução">`) 
+          imgHtml = e.gif
+            ? `<img class="im" src="${esc(e.gif)}" data-zoom="true" alt="Ver execução">`
+            : (e.f
+                ? (state.cache[e.f]
+                    ? `<img class="im" src="${state.cache[e.f]}" data-zoom="true" alt="Ver execução">`
+                    : `<img class="im" data-f="${e.f}" data-zoom="true" alt="Ver execução">`)
                 : `<div class="im" style="display:flex;align-items:center;justify-content:center">${Icons.dumbbellLarge}</div>`);
         }
-        
+
         const isDone = state.completedExs.has(i);
         const textStyle = isDone ? 'ex-text-done' : '';
-        
+
         let swapBtn = '';
         if (hasAnySub) {
           swapBtn = `<button class="btn-swap" data-swap-ex="${i}" aria-label="Trocar exercício">🔄 ${swapped ? 'Desfazer Troca' : 'Trocar'}</button>`;
         }
-        
+
         return '<div class="ex ' + (hasSuperset ? 'superset-card' : '') + '">' + imgHtml +
           '<div class="ex-info">' +
             '<div class="ex-title-row" style="justify-content: space-between;">' +
@@ -553,7 +551,7 @@ export function main() {
             '</div>' +
           '</div></div>';
       }).join("") + '</div>';
-      
+
       const f = state.F[state.sel];
       if (f) {
         let proofImg = f.fid ? (state.cache[f.fid] ? '<img class="proof" src="' + state.cache[f.fid] + '" data-zoom="true" alt="">' : '<img class="proof" data-f="' + f.fid + '" data-zoom="true" alt="">') : '';
@@ -582,12 +580,12 @@ export function renderWorkoutSelector() {
         let carouselHTML = '';
         if (exs.length > 0) {
             exs.forEach((e) => {
-                let imgHtml = e.gif 
-                  ? `<img src="${esc(e.gif)}" data-zoom="true" alt="">` 
-                  : (e.f 
-                      ? (state.cache[e.f] 
-                          ? `<img src="${state.cache[e.f]}" data-zoom="true" alt="">` 
-                          : `<img data-f="${e.f}" data-zoom="true" alt="">`) 
+                let imgHtml = e.gif
+                  ? `<img src="${esc(e.gif)}" data-zoom="true" alt="">`
+                  : (e.f
+                      ? (state.cache[e.f]
+                          ? `<img src="${state.cache[e.f]}" data-zoom="true" alt="">`
+                          : `<img data-f="${e.f}" data-zoom="true" alt="">`)
                       : `<div class="ph">${Icons.dumbbellLarge}</div>`);
                 carouselHTML += `<div class="carousel-item">${imgHtml}<span>${esc(e.name)}</span></div>`;
             });
@@ -613,13 +611,13 @@ export function drawer() {
   if (dr.dataset.view === 'water') {
     const isCopo = state.waterType === 'copo';
     const currentLabel = state.waterGoal >= 1000 ? (state.waterGoal/1000).toFixed(1).replace('.0', '')+'L' : state.waterGoal+'ml';
-    
+
     h = `
       <div class="water-header">
          <button class="ic" id="btnWaterBack" aria-label="Voltar">${Icons.arrowLeft}</button>
          <h2 class="mt-0">Meta de Água</h2>
       </div>
-      
+
       <div class="config-section">
         <h3>O que você usa para medir?</h3>
         <div class="flex-row gap-12 mb-20">
@@ -627,21 +625,21 @@ export function drawer() {
           <button class="btn ${!isCopo ? 'btn-primary' : 'btn-secondary'} flex-1" id="btnWaterGarrafa">Garrafa</button>
         </div>
     `;
-    
+
     if (state.showWaterSizeInput) {
         const valSize = isCopo ? state.waterSize : (state.waterSize / 1000).toFixed(2).replace(/\.?0+$/, "");
         h += `<h3 class="mt-0">${isCopo ? 'QUANTAS MLs?' : 'QUANTOS LITROS?'}</h3><input type="number" id="waterSizeInput" value="${valSize}" placeholder="${isCopo ? 'Ex: 250' : 'Ex: 0.25'}" class="input-large">`;
     }
-    
+
     h += `
         <button class="btn btn-secondary btn-water-action" id="btnEditWaterMode">ALTERAR META DIÁRIA (ATUAL: ${currentLabel})</button>
-        
+
         <div class="water-separator">
             <h3 class="mt-0">🔔 Lembrete de Água</h3>
             <button class="btn btn-secondary btn-reminder-toggle" id="btnToggleReminder" style="color: ${state.waterReminder ? 'var(--success)' : 'var(--mu)'}; border-color: ${state.waterReminder ? 'var(--success)' : 'var(--bd)'}">
                 ${state.waterReminder ? '✅ Ativado' : '🔕 Ativar Lembrete'}
             </button>
-            
+
             ${state.waterReminder ? `
                 <p class="water-reminder-text">Avisar a cada:</p>
                 <div class="row justify-center mt-8">
@@ -650,23 +648,23 @@ export function drawer() {
             ` : ''}
         </div>
     `;
-    
+
     if (state.showWaterGoalInput) {
         const valGoal = isCopo ? state.waterGoal : (state.waterGoal / 1000).toFixed(2).replace(/\.?0+$/, "");
         h += `<h3 class="mt-20">META DIÁRIA (${isCopo ? 'MLs' : 'Litros'})</h3><input type="number" id="waterGoalInput" value="${valGoal}" placeholder="${isCopo ? 'Ex: 3000' : 'Ex: 3.0'}" class="input-large">`;
     }
-    
+
     h += `<button class="btn btn-primary mt-24" id="saveWaterDrawer">SALVAR</button></div>`;
-    
+
     safeRender("dr", h);
     return;
   }
 
   let displayName = state.P.displayName || state.P.nome;
   let username = state.P.nome;
-  
-  let avatarHtml = state.P.avatar 
-    ? `<button class="avatar-btn" id="btnAvatar"><img src="${esc(state.P.avatar)}" alt="Avatar"></button>` 
+
+  let avatarHtml = state.P.avatar
+    ? `<button class="avatar-btn" id="btnAvatar"><img src="${esc(state.P.avatar)}" alt="Avatar"></button>`
     : `<button class="avatar-btn" id="btnAvatar">${Icons.user}</button>`;
 
   h = `
@@ -681,11 +679,11 @@ export function drawer() {
         <div class="menu-username">@${esc(username)}</div>
       </div>
     </div>
-    
+
     <button class="btn-menu" id="btn-evolution">
       <span class="menu-btn-content">${Icons.chart} Ver Evolução</span> <span class="menu-btn-arrow">›</span>
     </button>
-    
+
     <button class="btn-menu" id="btn-open-config">
       <span class="menu-btn-content">${Icons.settings} Configurar Treinos</span> <span class="menu-btn-arrow">›</span>
     </button>
@@ -693,23 +691,23 @@ export function drawer() {
     <button class="btn-menu" id="btnWaterSettings">
       <span class="menu-btn-content">${Icons.water} Meta de Água Diária</span> <span class="menu-btn-arrow">›</span>
     </button>
-    
+
     <h3>Dias de repouso</h3>
     <div class="row">${DS.map((n, i) => `<button class="chip${state.P.rest.includes(i) ? " on" : ""}" data-rest2="${i}">${n}</button>`).join("")}</div>
-    
+
     <h3>Tempo de descanso (s)</h3>
     <div class="row">${[30,45,60,90,120].map(n => `<button class="chip${state.P.restTime === n ? " on" : ""}" data-resttime="${n}">${n}s</button>`).join("")}</div>
 
     <h3>Tema</h3>
     <div class="row">${[["auto","Automático"],["light","Claro"],["dark","Escuro"]].map(t => `<button class="chip${state.P.tema === t[0] ? " on" : ""}" data-th="${t[0]}">${t[1]}</button>`).join("")}</div>
-    <div class="row mt-16">${["Laranja","Azul","Verde","Roxo","Rosa","Vermelho","Amarelo","Ciano","Índigo"].map((name, i) => { const c = AC[i]; return `<button class="sw${state.P.ac === c ? " on" : ""}" style="background:${c}" data-ac="${c}" aria-label="Cor ${name}"></button>`; }).join("")}</div>
-    
+    <div class="row mt-16">${COLOR_OPTIONS.map(opt => `<button class="sw${state.P.ac === opt.c ? " on" : ""}" style="background:${opt.c}" data-ac="${opt.c}" aria-label="Cor ${opt.name}" title="${opt.name}"></button>`).join("")}</div>
+
     <div class="drawer-spacer"></div>
     <button class="btn btn-danger mt-40" id="out">Sair da Conta</button>
     <button class="btn btn-ghost mt-12" id="btnDeleteAccount" style="font-size:12px;">Excluir Conta Permanentemente</button>
-    
+
     <!-- ✅ VERSÃO VISÍVEL (O script update-version.js vai substituir isso) -->
-    <div style="text-align: center; font-size: 10px; color: var(--mu); margin-top: 20px; opacity: 0.5;">Versão: v202610301121</div>
+    <div style="text-align: center; font-size: 10px; color: var(--mu); margin-top: 20px; opacity: 0.5;">Versão: v202611051443</div>
   `;
 
   safeRender("dr", h);
@@ -754,16 +752,16 @@ export async function triggerEvolution(evolutionData) {
     const lottieContainer = document.getElementById('celebrationLottieContainer');
     const arcText = document.getElementById('arcText');
     const btn = document.getElementById('mascotBtn');
-    
+
     if (btn) btn.style.display = "none";
-    
+
     mascotContainer.innerHTML = '';
     lottieContainer.innerHTML = '';
     mascotContainer.classList.remove('fade-out', 'fade-in');
     arcText.classList.remove('on');
 
     const spawnedAnimations = new Set();
-    
+
     const loadLottie = async (path, container, loop = true) => {
         try {
             if (!window.lottie) throw new Error("Lottie não carregado.");
@@ -773,17 +771,17 @@ export async function triggerEvolution(evolutionData) {
             const anim = window.lottie.loadAnimation({ container: container, renderer: 'svg', loop: loop, autoplay: true, animationData: data });
             spawnedAnimations.add(anim);
             return anim;
-        } catch (e) { 
+        } catch (e) {
             console.error("Erro no Lottie:", e);
-            return null; 
+            return null;
         }
     };
-    
+
     const destroySpawned = () => {
         spawnedAnimations.forEach(anim => { try { anim.destroy(); } catch (e) {} });
         spawnedAnimations.clear();
     };
-    
+
     const destroyOne = (anim) => {
         if (!anim) return;
         try { anim.destroy(); } catch (e) {}
@@ -794,21 +792,21 @@ export async function triggerEvolution(evolutionData) {
 
     const oldFireFile = FIRE_FILES[evolutionData.oldLevel];
     const oldMascotAnim = await loadLottie(oldFireFile, mascotContainer, true);
-    
+
     await loadLottie('js/congratulations.json', lottieContainer, false);
 
     setTimeout(() => {
         mascotContainer.classList.add('fade-out');
-        
+
         setTimeout(async () => {
             destroyOne(oldMascotAnim);
             mascotContainer.innerHTML = '';
-            
+
             const newFireFile = FIRE_FILES[evolutionData.newLevel];
             const newMascotAnim = await loadLottie(newFireFile, mascotContainer, true);
-            
+
             if (newMascotAnim) {
-                if (evolutionData.newLevel === 3) newMascotAnim.setSpeed(2.0); 
+                if (evolutionData.newLevel === 3) newMascotAnim.setSpeed(2.0);
                 else if (evolutionData.newLevel === 2) newMascotAnim.setSpeed(1.5);
             }
 
@@ -817,31 +815,31 @@ export async function triggerEvolution(evolutionData) {
 
             lottieContainer.innerHTML = '';
             await loadLottie('js/celebration_confetti.json', lottieContainer, false);
-            
+
             arcText.classList.add('on');
 
             setTimeout(() => {
                 mascotContainer.classList.remove('fade-in');
             }, 50);
 
-        }, 500); 
-    }, 2000); 
+        }, 500);
+    }, 2000);
 
     setTimeout(() => {
         arcText.classList.remove('on');
-        
+
         setTimeout(() => {
             overlay.classList.remove('on');
             setTimeout(() => {
                 destroySpawned();
                 mascotContainer.innerHTML = '';
                 lottieContainer.innerHTML = '';
-                
+
                 state.pendingEvolution = null;
                 updateMascotVisuals();
-            }, 800); 
+            }, 800);
         }, 500);
-    }, 6000); 
+    }, 6000);
 }
 
 export function pauseMascotFire() {

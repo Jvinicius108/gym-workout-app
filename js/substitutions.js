@@ -670,8 +670,8 @@ export function getSubstitutosPara(nomeExercicio) {
   const busca = normalizarString(nomeExercicio);
 
   for (const familia of FAMILIAS) {
-    const membroEncontrado = familia.membros.find(m => 
-      normalizarString(m.nome) === busca || 
+    const membroEncontrado = familia.membros.find(m =>
+      normalizarString(m.nome) === busca ||
       m.alias.some(a => normalizarString(a) === busca) ||
       busca.includes(normalizarString(m.nome))
     );

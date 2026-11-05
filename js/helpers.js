@@ -57,7 +57,7 @@ export const refresh = () => {
 };
 
 export const fechaModal = () => {
-  // ✅ AQUI ESTÁ A CORREÇÃO: Adicionado o "mdTicket" na lista!
+
   const modais = ["md", "mdW", "mdName", "mdAvatar", "mdWelcome", "mdDeleteAccount", "mdLinkExercise", "mdSupersetWarning", "mdSwapExercise", "mdAddSubstitute", "mdAdminAddSub", "mdTicket"];
   modais.forEach(id => {
     const el = $(id);

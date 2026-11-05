@@ -1,9 +1,3 @@
-/* ============================================================
-   🎅 CHRISTMAS THEME — christmas-theme.js
-   TUDO em Canvas (Neve, Chapéu, Trenó, Renas, Presentes e POP-UP)
-   UI Global Transformada (Cores, Fontes, Botões)
-   ============================================================ */
-
 const XMAS_CFG = {
     title: '.app-title, .month-header',
     carousel: '#strip, .strip',
@@ -41,11 +35,11 @@ function xmasInjectStyles() {
         --glass-bg: rgba(18, 42, 27, 0.85);
         --glass-border: rgba(212, 175, 55, 0.2);
         --ac-gradient: linear-gradient(135deg, #b30000 0%, #ff0000 100%);
-        
+
         font-family: 'Nunito', sans-serif !important;
     }
 
-    body.theme-christmas #app, 
+    body.theme-christmas #app,
     body.theme-christmas #app-body,
     body.theme-christmas header {
         background-color: var(--bg) !important;
@@ -56,9 +50,9 @@ function xmasInjectStyles() {
     /* ==========================================
        2. TIPOGRAFIA E TÍTULOS
        ========================================== */
-    body.theme-christmas .app-title, 
+    body.theme-christmas .app-title,
     body.theme-christmas .month-header {
-        font-family: 'Mountains of Christmas', cursive !important; 
+        font-family: 'Mountains of Christmas', cursive !important;
         font-weight: 700 !important; letter-spacing: 2px; color: #fff;
         text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 2px 2px 0px #006400;
         animation: xmas-pulse 3s infinite alternate;
@@ -68,9 +62,9 @@ function xmasInjectStyles() {
         100% { text-shadow: 0 0 15px #ff0000, 0 0 30px #ff0000, 2px 2px 0px #006400; }
     }
 
-    body.theme-christmas h1, 
-    body.theme-christmas h2, 
-    body.theme-christmas h3, 
+    body.theme-christmas h1,
+    body.theme-christmas h2,
+    body.theme-christmas h3,
     body.theme-christmas .panel h2,
     body.theme-christmas .modal h2,
     body.theme-christmas .menu-name,
@@ -154,8 +148,8 @@ function xmasInjectStyles() {
         border: 2px solid #d4af37 !important;
         box-shadow: 0 0 20px rgba(212, 175, 55, 0.6) !important;
     }
-    body.theme-christmas .d.sel small, 
-    body.theme-christmas .d.sel b, 
+    body.theme-christmas .d.sel small,
+    body.theme-christmas .d.sel b,
     body.theme-christmas .d.sel .label-txt {
         color: #fff !important;
         font-weight: 800;
@@ -170,7 +164,7 @@ function xmasInjectStyles() {
         border: 1px solid #d32f2f !important;
     }
 
-    body.theme-christmas .exs.vertical .ex, 
+    body.theme-christmas .exs.vertical .ex,
     body.theme-christmas .config-section,
     body.theme-christmas .sub-list-item,
     body.theme-christmas .workout-choice-card {
@@ -198,9 +192,9 @@ function xmasInjectStyles() {
         box-shadow: 0 0 40px rgba(212, 175, 55, 0.3) !important;
     }
 
-    body.theme-christmas input[type=text], 
-    body.theme-christmas input[type=password], 
-    body.theme-christmas input[type=number], 
+    body.theme-christmas input[type=text],
+    body.theme-christmas input[type=password],
+    body.theme-christmas input[type=number],
     body.theme-christmas select {
         background: #0a1c12 !important;
         border: 1px solid #1e4d2b !important;
@@ -240,11 +234,11 @@ function xmasInjectStyles() {
     body.theme-christmas .auth .chip.on { background: #b30000; color: #fff; border-color: #ff0000; box-shadow: 0 0 15px rgba(255, 0, 0, 0.6); }
     body.theme-christmas .auth button[type="submit"] { background: linear-gradient(90deg, #b30000, #ff0000, #b30000) !important; border: 2px solid #d4af37 !important; color: #fff !important; font-size: 1.6rem !important; box-shadow: 0 5px 20px rgba(255, 0, 0, 0.5); border-radius: 50px !important; padding: 15px !important; text-transform: uppercase; margin-top: 15px; }
 
-    body.theme-christmas .btn-primary::after { 
+    body.theme-christmas .btn-primary::after {
       content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' width='18' height='18'><path d='M12 2L15 9H9L12 2ZM9 11L15 11L18 18H6L9 11ZM18 20H6C6 21.1 6.9 22 8 22H16C17.1 22 18 21.1 18 20Z'/></svg>");
       display: inline-block; vertical-align: middle; margin-left: 8px;
     }
-    body.theme-christmas .btn-secondary::after { 
+    body.theme-christmas .btn-secondary::after {
       content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='2' width='18' height='18'><path d='M12 2L15 9H9L12 2ZM9 11L15 11L18 18H6L9 11ZM18 20H6C6 21.1 6.9 22 8 22H16C17.1 22 18 21.1 18 20Z'/></svg>");
       display: inline-block; vertical-align: middle; margin-left: 8px;
     }
@@ -259,7 +253,7 @@ function xmasInjectStyles() {
         opacity: 0; visibility: hidden; transition: opacity 0.5s ease, visibility 0.5s;
     }
     #xmasPopupOverlay.on { opacity: 1; visibility: visible; }
-    
+
     #xmasPopupCard {
         background: #122a1b; border: 3px solid #d4af37; border-radius: 24px;
         width: 90%; max-width: 400px; position: relative;
@@ -322,9 +316,6 @@ function xmasCustomizeLogin() {
     if (xmasAuthObserver) xmasAuthObserver.observe(authEl, { childList: true, subtree: true });
 }
 
-// ==========================================
-// ANIMAÇÃO DO PAPAI NOEL (POP-UP)
-// ==========================================
 let santaRaf = 0;
 function startSantaAnimation(canvasId) {
     const canvas = document.getElementById(canvasId);
@@ -361,7 +352,7 @@ function startSantaAnimation(canvasId) {
 
     function animate(time) {
         if (!canvas.offsetParent) {
-            cancelAnimationFrame(santaRaf); // Para a animação se o modal for fechado
+            cancelAnimationFrame(santaRaf);
             return;
         }
 
@@ -369,29 +360,28 @@ function startSantaAnimation(canvasId) {
         ctx.clearRect(0, 0, W, H);
 
         const centerX = W / 2;
-        const centerY = H / 2 + 30; 
+        const centerY = H / 2 + 30;
         const scale = Math.min(W / 600, H / 400) * 1.1;
         const finalScale = Math.min(Math.max(scale, 0.5), 1.3);
 
         const breatheY = Math.sin(t * 2) * 5;
-        
+
         const blinkCycle = t % 4.5;
-        let blinkAmt = 1.0; 
+        let blinkAmt = 1.0;
         if (blinkCycle < 0.15) blinkAmt = 0.1 + 0.9 * Math.pow(Math.cos((blinkCycle / 0.15) * Math.PI / 2), 2);
         else if (blinkCycle > 2.5 && blinkCycle < 2.6) blinkAmt = 0.1 + 0.9 * Math.pow(Math.cos(((blinkCycle - 2.5) / 0.1) * Math.PI / 2), 2);
 
         const speakCycle = t % 4.0;
-        let speakFactor = 0; 
+        let speakFactor = 0;
         if (speakCycle > 0.3 && speakCycle < 0.6) speakFactor = Math.sin(((speakCycle - 0.3) / 0.3) * Math.PI);
         else if (speakCycle > 0.8 && speakCycle < 1.1) speakFactor = Math.sin(((speakCycle - 0.8) / 0.3) * Math.PI);
         else if (speakCycle > 1.3 && speakCycle < 1.7) speakFactor = Math.sin(((speakCycle - 1.3) / 0.4) * Math.PI);
         speakFactor = Math.max(0, speakFactor);
 
         ctx.save();
-        ctx.translate(centerX, centerY); 
+        ctx.translate(centerX, centerY);
         ctx.scale(finalScale, finalScale);
 
-        // CORPO
         ctx.translate(0, breatheY);
         const suitGrad = ctx.createLinearGradient(0, 0, 0, 250);
         suitGrad.addColorStop(0, '#e62222');
@@ -409,10 +399,9 @@ function startSantaAnimation(canvasId) {
         ctx.fillStyle = '#f0f4f8';
         ctx.beginPath(); ctx.ellipse(0, 90, 140, 40, 0, 0, Math.PI * 2); ctx.fill();
 
-        // GORRO TRASEIRO
         const hatGrad = ctx.createLinearGradient(-50, -100, 150, 50);
         hatGrad.addColorStop(0, '#ff3333'); hatGrad.addColorStop(0.5, '#cc1414'); hatGrad.addColorStop(1, '#7a0505');
-        const hatSwing = Math.sin(t * 1.5 + 1) * 12; 
+        const hatSwing = Math.sin(t * 1.5 + 1) * 12;
         ctx.fillStyle = hatGrad;
         ctx.shadowColor = 'rgba(0,0,0,0.3)'; ctx.shadowBlur = 15;
         ctx.beginPath();
@@ -424,18 +413,16 @@ function startSantaAnimation(canvasId) {
         ctx.fill(); ctx.shadowBlur = 0;
         drawFluffyCluster(145 + hatSwing, 75 + hatSwing, 22, 32, 8);
 
-        // ORELHAS
         ctx.translate(0, -breatheY * 0.3);
         const skinGrad = ctx.createRadialGradient(0, -20, 0, 0, -20, 90);
         skinGrad.addColorStop(0, '#ffe1d4'); skinGrad.addColorStop(0.7, '#f7c3ac'); skinGrad.addColorStop(1, '#e39d7f');
         const earShadow = '#c47d60';
-        
+
         ctx.fillStyle = skinGrad; ctx.beginPath(); ctx.ellipse(-85, -10, 18, 26, -0.2, 0, Math.PI*2); ctx.fill();
         ctx.fillStyle = earShadow; ctx.beginPath(); ctx.ellipse(-87, -10, 9, 15, -0.2, 0, Math.PI*2); ctx.fill();
         ctx.fillStyle = skinGrad; ctx.beginPath(); ctx.ellipse(85, -10, 18, 26, 0.2, 0, Math.PI*2); ctx.fill();
         ctx.fillStyle = earShadow; ctx.beginPath(); ctx.ellipse(87, -10, 9, 15, 0.2, 0, Math.PI*2); ctx.fill();
 
-        // ROSTO
         ctx.fillStyle = skinGrad;
         ctx.beginPath(); ctx.ellipse(0, -20, 78, 85, 0, 0, Math.PI * 2); ctx.fill();
 
@@ -446,7 +433,6 @@ function startSantaAnimation(canvasId) {
         cheekGradR.addColorStop(0, 'rgba(255, 100, 100, 0.5)'); cheekGradR.addColorStop(1, 'rgba(255, 100, 100, 0)');
         ctx.fillStyle = cheekGradR; ctx.beginPath(); ctx.arc(45, 5, 22, 0, Math.PI*2); ctx.fill();
 
-        // OLHOS
         const eyeY = -35;
         ctx.strokeStyle = 'rgba(196, 125, 96, 0.6)'; ctx.lineWidth = 1.5; ctx.lineCap = 'round';
         for (let d of [1, -1]) {
@@ -456,7 +442,7 @@ function startSantaAnimation(canvasId) {
         ctx.fillStyle = '#ffffff';
         ctx.beginPath(); ctx.ellipse(-35, eyeY, 14, 18 * blinkAmt, 0, 0, Math.PI*2); ctx.fill();
         ctx.beginPath(); ctx.ellipse(35, eyeY, 14, 18 * blinkAmt, 0, 0, Math.PI*2); ctx.fill();
-        
+
         if (blinkAmt > 0.1) {
             const pupilX = Math.sin(t * 1.5) * 2;
             ctx.fillStyle = '#0a4270';
@@ -467,7 +453,6 @@ function startSantaAnimation(canvasId) {
             ctx.beginPath(); ctx.arc(33 + pupilX, eyeY - 4 * blinkAmt, 3, 0, Math.PI*2); ctx.fill();
         }
 
-        // BARBA
         function drawBeardLayer(color, scaleY, offset) {
             ctx.fillStyle = color;
             ctx.beginPath();
@@ -485,7 +470,6 @@ function startSantaAnimation(canvasId) {
         drawBeardLayer('#ffffff', 0.85, 0);
         ctx.shadowBlur = 0;
 
-        // BOCA
         const mouthY = 30;
         const mouthOpen = speakFactor * 32;
         ctx.fillStyle = '#360909';
@@ -499,8 +483,7 @@ function startSantaAnimation(canvasId) {
             ctx.beginPath(); ctx.ellipse(0, mouthY + mouthOpen * 0.7, 10, mouthOpen * 0.4, 0, 0, Math.PI*2); ctx.fill();
         }
 
-        // BIGODE
-        const stacheLift = speakFactor * 5; 
+        const stacheLift = speakFactor * 5;
         function drawMustacheSide(d) {
             ctx.save(); ctx.scale(d, 1); ctx.translate(0, 15 - stacheLift * 0.3); ctx.rotate(-speakFactor * 0.1);
             ctx.shadowBlur = 8; ctx.shadowColor = 'rgba(0,0,0,0.1)';
@@ -514,7 +497,6 @@ function startSantaAnimation(canvasId) {
         }
         drawMustacheSide(-1); drawMustacheSide(1); ctx.shadowBlur = 0;
 
-        // NARIZ
         const noseGrad = ctx.createRadialGradient(-3, 0, 0, 0, 5, 25);
         noseGrad.addColorStop(0, '#ff7a7a'); noseGrad.addColorStop(1, '#d12828');
         ctx.shadowBlur = 10; ctx.shadowColor = 'rgba(0,0,0,0.2)';
@@ -523,7 +505,6 @@ function startSantaAnimation(canvasId) {
         ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.shadowBlur = 0;
         ctx.beginPath(); ctx.ellipse(-6, 0, 6, 4, -0.2, 0, Math.PI*2); ctx.fill();
 
-        // SOBRANCELHAS
         const browLift = speakFactor * -6;
         function drawEyebrow(d) {
             ctx.save(); ctx.scale(d, 1); ctx.translate(35, -60 + browLift); ctx.rotate(-speakFactor * 0.1);
@@ -535,7 +516,6 @@ function startSantaAnimation(canvasId) {
         }
         drawEyebrow(-1); drawEyebrow(1);
 
-        // BASE FRONTAL DO GORRO
         const hatFrontGrad = ctx.createLinearGradient(0, -120, 0, -60);
         hatFrontGrad.addColorStop(0, '#ff3333'); hatFrontGrad.addColorStop(1, '#cc1414');
         ctx.fillStyle = hatFrontGrad;
@@ -543,36 +523,31 @@ function startSantaAnimation(canvasId) {
         ctx.bezierCurveTo(-82, -125, 82, -125, 82, -60);
         ctx.lineTo(-82, -60); ctx.fill();
 
-        // BORDA FELPUDA
         ctx.fillStyle = '#ffffff'; ctx.shadowBlur = 10; ctx.shadowColor = 'rgba(0,0,0,0.2)';
         for (let bx = -85; bx <= 85; bx += 12) {
-            const by = -68 + Math.pow(bx / 85, 2) * 12; 
+            const by = -68 + Math.pow(bx / 85, 2) * 12;
             const r = 20 + Math.sin(bx * 0.5) * 3;
             ctx.beginPath(); ctx.arc(bx, by, r, 0, Math.PI*2); ctx.fill();
         }
         ctx.shadowBlur = 0;
 
-        // ==========================================
-        // BALÃO DE FALA ("HO HO HO!")
-        // ==========================================
-        const bubbleX = 80; // Posição X do balão (à direita do rosto)
-        const bubbleY = -100; // Posição Y do balão
+        const bubbleX = 80;
+        const bubbleY = -100;
         const bubbleW = 150;
         const bubbleH = 60;
         const bubbleR = 15;
 
-        // Desenha o balão (com rabinho apontando para a boca)
         ctx.beginPath();
         ctx.moveTo(bubbleX + bubbleR, bubbleY);
         ctx.lineTo(bubbleX + bubbleW - bubbleR, bubbleY);
         ctx.quadraticCurveTo(bubbleX + bubbleW, bubbleY, bubbleX + bubbleW, bubbleY + bubbleR);
         ctx.lineTo(bubbleX + bubbleW, bubbleY + bubbleH - bubbleR);
         ctx.quadraticCurveTo(bubbleX + bubbleW, bubbleY + bubbleH, bubbleX + bubbleW - bubbleR, bubbleY + bubbleH);
-        // Rabinho
+
         ctx.lineTo(bubbleX + 40, bubbleY + bubbleH);
-        ctx.lineTo(bubbleX + 15, bubbleY + bubbleH + 30); // Ponta do rabinho (aponta pra boca)
+        ctx.lineTo(bubbleX + 15, bubbleY + bubbleH + 30);
         ctx.lineTo(bubbleX + 20, bubbleY + bubbleH);
-        // Continua a borda inferior
+
         ctx.lineTo(bubbleX + bubbleR, bubbleY + bubbleH);
         ctx.quadraticCurveTo(bubbleX, bubbleY + bubbleH, bubbleX, bubbleY + bubbleH - bubbleR);
         ctx.lineTo(bubbleX, bubbleY + bubbleR);
@@ -585,12 +560,11 @@ function startSantaAnimation(canvasId) {
         ctx.fill();
         ctx.stroke();
 
-        // Texto HO HO HO dentro do balão
         ctx.fillStyle = '#b30000';
         ctx.font = '900 24px "Nunito", sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        // Leve animação no texto também
+
         const textPop = 1 + speakFactor * 0.1;
         ctx.save();
         ctx.translate(bubbleX + bubbleW/2, bubbleY + bubbleH/2);
@@ -598,27 +572,22 @@ function startSantaAnimation(canvasId) {
         ctx.fillText('HO HO HO!', 0, 0);
         ctx.restore();
 
-        ctx.restore(); // Restaura a transformação principal
+        ctx.restore();
 
         santaRaf = requestAnimationFrame(animate);
     }
-    
+
     santaRaf = requestAnimationFrame(animate);
 }
 
-// ==========================================
-// LÓGICA DE EXIBIÇÃO DO POP-UP (COM TRAVA ANUAL)
-// ==========================================
 function showXmasPopup(userName) {
     const currentYear = new Date().getFullYear().toString();
     const lastShownYear = localStorage.getItem('xmas_popup_year');
-    
-    // ✅ TRAVA: Se o usuário já viu o pop-up neste ano, ele bloqueia a execução aqui.
+
     if (lastShownYear === currentYear) {
         return;
     }
 
-    // Cria o HTML do Pop-up
     const popupHTML = `
         <div id="xmasPopupOverlay">
             <div id="xmasPopupCard">
@@ -634,22 +603,19 @@ function showXmasPopup(userName) {
     `;
     document.body.insertAdjacentHTML('beforeend', popupHTML);
 
-    // Mostra o pop-up
     setTimeout(() => {
         document.getElementById('xmasPopupOverlay').classList.add('on');
         startSantaAnimation('santaPopupCanvas');
-        
-        // ✅ SALVA A TRAVA: Grava o ano atual no navegador do usuário
-        localStorage.setItem('xmas_popup_year', currentYear); 
+
+        localStorage.setItem('xmas_popup_year', currentYear);
     }, 1000);
 
-    // Funções para fechar o pop-up
     const closePopup = () => {
         const overlay = document.getElementById('xmasPopupOverlay');
         overlay.classList.remove('on');
         setTimeout(() => {
-            overlay.remove(); 
-            cancelAnimationFrame(santaRaf); // Para a animação para economizar bateria
+            overlay.remove();
+            cancelAnimationFrame(santaRaf);
         }, 500);
     };
 
@@ -657,24 +623,21 @@ function showXmasPopup(userName) {
     document.getElementById('btnXmasOk').addEventListener('click', closePopup);
 }
 
-
 function initChristmasTheme(snowContainer, userName) {
     if (window.__xmasStop) window.__xmasStop();
     xmasInjectStyles();
     if (snowContainer) snowContainer.innerHTML = '';
-    
+
     xmasAuthObserver = new MutationObserver(() => xmasCustomizeLogin());
     const authEl = document.getElementById('auth');
     if (authEl) xmasAuthObserver.observe(authEl, { childList: true, subtree: true });
     xmasCustomizeLogin();
 
-    // ✅ DISPARA O POP-UP A PARTIR DO DIA 25 DE DEZEMBRO
     const today = new Date();
     if (today.getMonth() === 11 && today.getDate() >= 24 && userName) {
         showXmasPopup(userName);
     }
 
-    // CAMADAS DE CANVAS (Fundo e Frente do App)
     const bgCanvas = document.createElement('canvas');
     bgCanvas.id = 'xmas-bg-canvas';
     bgCanvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:5;';
@@ -698,7 +661,6 @@ function initChristmasTheme(snowContainer, userName) {
     };
     resize(); window.addEventListener('resize', resize);
 
-    // [PARTÍCULAS DE CLIQUE]
     class XmasParticle {
         constructor(x, y, type) {
             this.x = x; this.y = y; this.type = type;
@@ -742,9 +704,9 @@ function initChristmasTheme(snowContainer, userName) {
 
     const particles = [];
     const clickHandler = (e) => {
-        // Não gera partículas se o clique for no popup
+
         if (e.target.closest('#xmasPopupOverlay')) return;
-        
+
         const isInteractive = e.target.closest('button, a, input, select, textarea, .chip, .d, .wcard, .btn, .sub-list-item');
         if (isInteractive) {
             const x = e.clientX || (e.touches && e.touches[0].clientX);
@@ -758,13 +720,12 @@ function initChristmasTheme(snowContainer, userName) {
     };
     document.addEventListener('click', clickHandler);
 
-    // [NEVE]
     class Snowflake {
         constructor() { this.reset(true); }
         reset(initial) {
-            this.baseScale = xmasRand(0.4, 1.2); this.size = 20 * this.baseScale; 
+            this.baseScale = xmasRand(0.4, 1.2); this.size = 20 * this.baseScale;
             this.x = Math.random() * W; this.y = initial ? Math.random() * H : -30;
-            this.speedY = xmasRand(0.8, 2.5) * this.baseScale; this.angle = Math.random() * Math.PI; 
+            this.speedY = xmasRand(0.8, 2.5) * this.baseScale; this.angle = Math.random() * Math.PI;
             this.spin = xmasRand(-0.01, 0.01) * this.baseScale;
             this.wobble = Math.random() * Math.PI * 2; this.wobbleSpeed = xmasRand(0.01, 0.03);
             this.wobbleAmp = xmasRand(0.5, 2.0) * this.baseScale; this.opacity = xmasRand(0.3, 0.8);
@@ -791,7 +752,6 @@ function initChristmasTheme(snowContainer, userName) {
         }
     }
 
-    // [PAPAI NOEL VOADOR]
     class SantaFlying {
         constructor() {
             this.speed = 2.0; this.reset();
@@ -808,7 +768,7 @@ function initChristmasTheme(snowContainer, userName) {
             while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
             while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
             this.angle += angleDiff * dt * 2;
-            this.x += Math.cos(this.angle) * this.speed; this.y += Math.sin(this.angle) * this.speed; this.legPhase += dt * 12; 
+            this.x += Math.cos(this.angle) * this.speed; this.y += Math.sin(this.angle) * this.speed; this.legPhase += dt * 12;
 
             const margin = 250;
             if (this.x > W + margin) this.x = -margin; if (this.x < -margin) this.x = W + margin;
@@ -850,20 +810,19 @@ function initChristmasTheme(snowContainer, userName) {
             fgCtx.fillStyle = '#ff0000'; fgCtx.beginPath(); fgCtx.arc(-10, -15, 12, 0, Math.PI*2); fgCtx.fill();
             fgCtx.fillStyle = '#fff'; fgCtx.beginPath(); fgCtx.arc(-10, -28, 6, 0, Math.PI*2); fgCtx.fill();
             fgCtx.fillStyle = '#ff0000'; fgCtx.beginPath(); fgCtx.moveTo(-15, -30); fgCtx.lineTo(-5, -30); fgCtx.lineTo(-20, -45); fgCtx.closePath(); fgCtx.fill();
-            fgCtx.restore(); 
+            fgCtx.restore();
         }
     }
 
-    // [CHAPÉUS]
     let cards = [];
     const scanCards = () => { cards = [...document.querySelectorAll('.d')]; };
     function drawHatOnCard(ctx, r, time) {
         if (r.width < 30 || r.height < 20 || r.bottom < 0 || r.top > H || r.right < 0 || r.left > W) return;
         const cx = r.right + 20; const cy = r.top - 4;
         const angle = Math.sin(time * 0.002) * 0.08 + 0.45;
-        ctx.save(); ctx.translate(cx, cy); ctx.rotate(angle); 
+        ctx.save(); ctx.translate(cx, cy); ctx.rotate(angle);
         const scale = 0.6; ctx.scale(scale, scale); ctx.translate(-50, -5);
-        
+
         ctx.fillStyle = '#ffffff'; ctx.strokeStyle = '#e0e0e0'; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.arc(50, 5, 15, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
         ctx.beginPath(); ctx.ellipse(10, 40, 30, 12, 0.1, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
@@ -874,11 +833,10 @@ function initChristmasTheme(snowContainer, userName) {
         ctx.restore();
     }
 
-    // LOOP PRINCIPAL
     const flakes = Array.from({ length: XMAS_CFG.flakes }, () => new Snowflake());
     const santaFlying = new SantaFlying();
     let raf = 0, last = performance.now();
-    
+
     let scanTimeout;
     const observer = new MutationObserver(() => { clearTimeout(scanTimeout); scanTimeout = setTimeout(scanCards, 100); });
     observer.observe(document.body, { childList: true, subtree: true });
@@ -893,20 +851,20 @@ function initChristmasTheme(snowContainer, userName) {
     function frame(now) {
         if (!document.body.classList.contains('theme-christmas')) { stop(); return; }
         const dt = Math.min((now - last) / 1000, 0.05); last = now;
-        
+
         bgCtx.clearRect(0, 0, W, H);
         cards.forEach(card => { const r = card.getBoundingClientRect(); drawHatOnCard(bgCtx, r, now); });
-        
+
         fgCtx.clearRect(0, 0, W, H);
         flakes.forEach(f => { f.update(); f.draw(); });
         santaFlying.update(dt); santaFlying.draw();
-        
+
         for (let i = particles.length - 1; i >= 0; i--) {
             particles[i].update(); particles[i].draw();
             if (particles[i].life <= 0) particles.splice(i, 1);
         }
         raf = requestAnimationFrame(frame);
     }
-    
+
     scanCards(); raf = requestAnimationFrame(frame);
 }

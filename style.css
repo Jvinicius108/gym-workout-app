@@ -255,6 +255,102 @@ header{
 #configScreen.on, #evoScreen.on, #mascotScreen.on, #workoutSelectorScreen.on, #substitutesScreen.on { display: flex; }
 .evo-header{display:flex;align-items:center;gap:16px;margin-bottom:24px; width: 100%;}
 .evo-header h2{margin:0;font-size:1.375rem; font-weight: 800;}
+
+.evo-card {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: var(--r-xl);
+  padding: 16px;
+  margin-bottom: 12px;
+  text-align: left;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.evo-card:hover, .evo-card:active {
+  border-color: var(--ac);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -6px var(--ac-shadow);
+}
+.evo-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.evo-card-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.evo-card-name b {
+  font-size: 1rem;
+  font-family: var(--font-head);
+  color: var(--tx);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.evo-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-md);
+  background: var(--bg);
+  color: var(--ac);
+  flex-shrink: 0;
+}
+.evo-card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 5px 10px;
+  border-radius: var(--r-full);
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  color: var(--ac);
+  flex-shrink: 0;
+}
+.evo-card-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  background: var(--bg);
+  border-radius: var(--r-lg);
+  padding: 10px 12px;
+  border: 1px solid var(--bd);
+}
+.evo-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.evo-metric-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--mu);
+}
+.evo-metric-val {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  font-family: var(--font-head);
+  color: var(--tx);
+}
+
 .chart-container { position: relative; width: 100%; height: 320px; max-height: 50vh; background: var(--card); border-radius: var(--r-xl); padding: 24px 16px 16px 16px; border: 1px solid var(--bd); margin-top: 20px; box-shadow: var(--shadow-md); overflow: hidden; }
 .config-section { background: var(--card); border: 1px solid var(--bd); border-radius: var(--r-lg); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-sm); width: 100%;}
 .config-section h3 { margin: 0 0 16px; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 1px; color: var(--mu); font-weight: 700;}

@@ -62,7 +62,7 @@ async function requestWakeLock() {
   try {
     wakeLock = await navigator.wakeLock.request('screen');
     wakeLock.addEventListener('release', () => { wakeLock = null; });
-  } catch (e) { /* silencioso */ }
+  } catch (e) {  }
 }
 
 function releaseWakeLock() {
@@ -124,6 +124,6 @@ export function stopTimer() {
 export function triggerAlarmScreen() {
   playAlarm();
   $("alarmOverlay").classList.add("on");
-  vibrate([500, 200, 500, 200, 500]); // ✅ Vibração no alarme
+  vibrate([500, 200, 500, 200, 500]);
   setTimeout(() => $("btnDismissAlarm").focus(), 100);
 }

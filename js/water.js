@@ -1,12 +1,5 @@
-// =========================================
-//  ÁGUA DO COPO (canvas)
-//  - nível real: a altura da água acompanha a porcentagem
-//  - a cada aumento cai uma gota, que gera ondulação, respingos e bolhas
-//  - o nível sobe com uma mola (leve balanço ao chegar)
-// =========================================
-
 const TAU = Math.PI * 2;
-const PAD = 14; // folga acima/abaixo para as ondas não aparecerem com o copo vazio/cheio
+const PAD = 14;
 
 const REDUCE = typeof matchMedia === "function" &&
   matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -15,8 +8,8 @@ let canvas = null, ctx = null;
 let W = 0, H = 0, dpr = 1;
 let raf = 0, last = 0, time = 0;
 
-let level = 0, vel = 0, target = 0;     // 0..1
-let energy = 0, sloshDir = 1;           // energia das ondas (decai sozinha)
+let level = 0, vel = 0, target = 0;
+let energy = 0, sloshDir = 1;
 let seeded = false;
 
 const drops = [], ripples = [], splashes = [], bubbles = [];
@@ -29,12 +22,10 @@ const LAYERS = [
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
-/* ---------- API ---------- */
-
-let resizeObserver = null; // ✅ NOVO: Variável para observar o tamanho
+let resizeObserver = null;
 
 export function initWater(el) {
-  if (!el || canvas === el) return;          // idempotente
+  if (!el || canvas === el) return;
   canvas = el;
   ctx = canvas.getContext("2d");
   resize();
@@ -42,17 +33,16 @@ export function initWater(el) {
   cancelAnimationFrame(raf);
   raf = requestAnimationFrame(frame);
 
-  // ✅ CORREÇÃO: Usa ResizeObserver para atualizar o tamanho apenas quando necessário
   if (resizeObserver) resizeObserver.disconnect();
   resizeObserver = new ResizeObserver(() => resize());
   resizeObserver.observe(canvas);
 
 }
-// p: 0..1. Chame sempre que o nível mudar (chamadas repetidas com o mesmo valor são ignoradas).
+
 export function setWaterLevel(p) {
   p = clamp(p, 0, 1);
 
-  if (!seeded) {                              // primeira vez: a água sobe suave desde o fundo
+  if (!seeded) {
     seeded = true;
     target = p;
     if (REDUCE) { level = p; vel = 0; }
@@ -66,17 +56,15 @@ export function setWaterLevel(p) {
   if (REDUCE) { drops.length = 0; level = target = p; vel = 0; return; }
 
   if (p > pending) {
-    // aumento: solta uma gota; o nível só sobe quando ela encosta na água
+
     drops.push({ x: W * (0.36 + Math.random() * 0.28), y: -8, vy: 0, target: p });
   } else {
-    // diminuição (meta alterada, novo dia): desce direto, sem gota
+
     drops.length = 0;
     target = p;
     energy = Math.max(energy, 0.3);
   }
 }
-
-/* ---------- geometria ---------- */
 
 function resize() {
   if (!canvas) return;
@@ -100,10 +88,8 @@ function surfaceY(x, L, base) {
     + Math.sin(x * k1 + time * L.sp + L.ph) * amp
     + Math.sin(x * k1 * 2.1 - time * L.sp * 1.3 + L.ph * 2) * amp * 0.35;
 
-  // balanço de um lado para o outro logo depois de uma gota
   y += Math.sin(time * 5.5) * energy * sloshDir * (x / W - 0.5) * 16 * L.k;
 
-  // ondas circulares do ponto onde a gota caiu
   for (const r of ripples) {
     const a = 4.2 * Math.exp(-r.age * 1.7);
     const u = Math.abs(x - r.x) - r.age * 95;
@@ -112,15 +98,13 @@ function surfaceY(x, L, base) {
   return y;
 }
 
-/* ---------- efeitos ---------- */
-
 function impact(d, base) {
   target = d.target;
   energy = Math.min(1.3, energy + 0.7);
   sloshDir = Math.random() < 0.5 ? -1 : 1;
   ripples.push({ x: d.x, age: 0 });
 
-  for (let i = 0; i < 7; i++) {               // respingos
+  for (let i = 0; i < 7; i++) {
     const ang = -Math.PI / 2 + (Math.random() - 0.5) * 1.5;
     const sp = 70 + Math.random() * 110;
     splashes.push({
@@ -142,14 +126,12 @@ function spawnBubble(x, y) {
   });
 }
 
-/* ---------- loop ---------- */
-
 function frame(now) {
   raf = requestAnimationFrame(frame);
   const dt = Math.min(0.05, (now - last) / 1000);
   last = now;
   if (!canvas || !canvas.isConnected) return;
-  
+
   if (canvas.clientWidth === 0 || canvas.clientHeight === 0) return;
 
   if (!W || !H) return;
@@ -161,7 +143,6 @@ function frame(now) {
 function update(dt) {
   if (!REDUCE) time += dt * (1 + energy * 1.4);
 
-  // mola do nível (leve overshoot, dá o "balanço" de água chegando)
   vel += ((target - level) * 38 - vel * 8.5) * dt;
   level += vel * dt;
   energy *= Math.exp(-dt * 1.5);
@@ -221,7 +202,7 @@ function draw() {
     ctx.fillStyle = g;
     ctx.fill();
 
-    if (L.front) {                             // brilho na linha da superfície
+    if (L.front) {
       ctx.beginPath();
       ctx.moveTo(0, ys[0]);
       for (let i = 1; i < ys.length; i++) ctx.lineTo(Math.min(i * 3, W), ys[i]);
@@ -232,7 +213,6 @@ function draw() {
     }
   }
 
-  // bolhas
   ctx.lineWidth = 1;
   for (const b of bubbles) {
     ctx.beginPath();
@@ -245,7 +225,6 @@ function draw() {
     ctx.fill();
   }
 
-  // respingos
   for (const s of splashes) {
     ctx.globalAlpha = clamp(1 - s.life / 0.8, 0, 1);
     ctx.beginPath();

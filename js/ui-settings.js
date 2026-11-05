@@ -19,9 +19,9 @@ export function renderConfigScreen() {
     $("configTitle").textContent = "Configurar Treinos";
     h += `<div class="config-section">`;
     h += `<h3>Tipo de Treino</h3><div class="row">${Object.keys(TIPOS).map(t => `<button class="chip${state.P.tipo === t ? " on" : ""}" data-tipo2="${t}">${t}</button>`).join("")}</div>`;
-    
+
     h += `<h3 class="mt-20">Treinos por semana</h3><div class="row">${[1,2,3,4,5,6].map(n => `<button class="chip${state.P.freq === n ? " on" : ""}" data-freq2="${n}">${n}</button>`).join("")}</div>`;
-    
+
     h += `<h3 class="mt-20">Nomes dos Treinos (Opcional)</h3>`;
     h += `<div class="flex-col gap-12">`;
     LT().forEach(l => {
@@ -31,7 +31,7 @@ export function renderConfigScreen() {
             </div>`;
     });
     h += `</div><button class="btn btn-secondary mt-16" id="saveTitles">Salvar Nomes</button></div>`;
-    
+
     h += `<div class="config-section"><h3>Meus Exercícios</h3>`;
     h += `<div class="wgrid">${LT().map(l => {
       const n = (state.P.ex[l] || []).length;
@@ -53,7 +53,7 @@ export function renderConfigScreen() {
     h += `<button class="btn btn-secondary mt-16 flex-row gap-8" id="configDetailBack" style="justify-content: center;">${Icons.arrowLeft} Voltar aos Treinos</button>`;
     h += `<div class="config-section mt-16">`;
     const exs = state.P.ex[state.letter] || [];
-    
+
     if (!exs.length) {
       h += `<div class="empty">Nenhum exercício cadastrado ainda.</div>`;
     } else {
@@ -80,12 +80,12 @@ export function renderConfigScreen() {
         </div>`;
       }).join("");
     }
-    
+
     h += `<div class="add">
       <b>${state.editingExIndex !== null ? 'Editando exercício' : 'Adicionar exercício'}</b>
-      
+
       <input type="text" id="nn" placeholder="Nome (ex: Supino reto)" value="${esc(prevName || (state.editingExIndex !== null ? state.P.ex[state.letter][state.editingExIndex].name : ""))}">
-      
+
       <div class="row mt-8" style="justify-content: flex-start; align-items: center;">
         <input type="checkbox" id="exIsCardio" style="width: auto; margin: 0 8px 0 0; transform: scale(1.3); cursor: pointer;" ${state.editingIsCardio ? 'checked' : ''}>
         <label for="exIsCardio" style="font-size: 14px; color: var(--mu); font-weight: 600; cursor: pointer;">É exercício de Cardio? (por tempo)</label>
@@ -102,7 +102,7 @@ export function renderConfigScreen() {
       </div>
 
       <div class="row">${state.draft ? `<img src="${state.draft}" style="width:64px;height:64px;border-radius:12px;object-fit:contain;background:var(--bg);margin-top:12px" alt="">` : ''}<button class="btn btn-secondary flex-1 mt-12 flex-row gap-8" id="np" style="justify-content: center;">${Icons.camera} ${state.draft ? "Trocar foto" : "Foto do exercício"}</button></div>`;
-    
+
     h += `<div class="flex-row gap-12 mt-12">`;
     if (state.editingExIndex !== null) h += `<button class="btn btn-danger flex-1" id="cancel-edit">Cancelar</button>`;
     h += `<button class="btn btn-primary flex-1" id="na" style="margin:0;">${state.editingExIndex !== null ? 'Salvar Alterações' : 'Adicionar'}</button>`;
@@ -116,7 +116,7 @@ export function renderConfigScreen() {
 export function renderAllSubsScreen(filter = "all") {
   $("allSubsScreen").classList.add("on");
   $("allSubsScreen").style.display = "flex";
-  
+
   const userSubs = [];
   LT().forEach(l => {
     (state.P.ex[l] || []).forEach((ex, exIndex) => {
@@ -159,7 +159,7 @@ export function renderAllSubsScreen(filter = "all") {
     if (!matchFilter(familia.musculo) && !matchFilter(familia.membros[0].nome)) return;
 
     h += `<h3 style="font-size:12px; color:var(--water); text-transform:uppercase; margin-top:10px; letter-spacing:1px;">${esc(familia.musculo)}</h3>`;
-    
+
     familia.membros.forEach(membro => {
       const jaAdicionado = userSubs.some(s => s.name === membro.nome);
       h += `
@@ -197,7 +197,7 @@ export function renderAllSubsScreen(filter = "all") {
 export function renderSubstitutesScreen() {
   if (!state.inSubstitutesMode) { $("substitutesScreen").classList.remove("on"); return; }
   $("substitutesScreen").classList.add("on");
-  
+
   const baseEx = state.P.ex[state.letter][state.subsTargetIndex];
   if (!baseEx) return;
 
@@ -206,7 +206,7 @@ export function renderSubstitutesScreen() {
 
   let h = "";
   const dicSubs = getSubstitutosPara(baseEx.name);
-  
+
   if (dicSubs.principais && dicSubs.principais.length > 0) {
     h += `<h3 style="font-size:12px; color:var(--mu); text-transform:uppercase; margin-top:10px; letter-spacing:1px;">Substitutos Diretos</h3>`;
     dicSubs.principais.forEach((sub) => {
@@ -271,10 +271,10 @@ export function renderMascotScreen() {
 
     $("mascotNameInput").value = state.P.mascotName || "";
     $("guardianNameInput").value = state.P.guardianName || "";
-    
+
     const streak = state.P.streak || 0;
     const misses = state.P.misses || 0;
-    
+
     $("mascotStreakDisplay").textContent = streak + (streak === 1 ? " dia" : " dias");
     $("mascotMissesDisplay").textContent = misses + (misses === 1 ? " dia" : " dias");
 

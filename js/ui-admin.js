@@ -5,18 +5,18 @@ import { putGlobalFoto, getGlobalFoto, hydrate, sanitizeName } from './db.js';
 import { collection, getDocsFromServer, addDoc, deleteDoc, doc, updateDoc, clearIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { auth } from './config.js';
 import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getSubstitutosPara } from './substitutions.js'; 
+import { getSubstitutosPara } from './substitutions.js';
 
 let currentAdminBaseEx = "";
 let currentAdminBaseSets = "3x12";
-let currentAdminSubs = []; 
+let currentAdminSubs = [];
 let tempNewSubPhoto = null;
 
 export async function renderAdminScreen() {
     $("app").hidden = true;
     $("auth").hidden = true;
     $("splash").classList.add("hide");
-    
+
     let adminScreen = document.getElementById("adminScreen");
     if (!adminScreen) {
         adminScreen = document.createElement("div");
@@ -24,7 +24,7 @@ export async function renderAdminScreen() {
         adminScreen.style.cssText = "position:fixed; inset:0; background:var(--bg); z-index:200; display:flex; flex-direction:column; overflow:hidden;";
         document.body.appendChild(adminScreen);
     }
-    
+
     adminScreen.style.display = "flex";
 
     try {
@@ -41,10 +41,10 @@ export async function renderAdminScreen() {
         localStorage.setItem('gym_theme_admin', adminTheme);
     }
     document.documentElement.setAttribute('data-theme', adminTheme);
-    
+
     let adminColor = localStorage.getItem('gym_ac_admin');
     if (!adminColor) {
-        adminColor = '#ff5a36'; 
+        adminColor = '#ff5a36';
         localStorage.setItem('gym_ac_admin', adminColor);
     }
     document.documentElement.style.setProperty('--ac', adminColor);
@@ -64,10 +64,10 @@ export async function renderAdminScreen() {
                     <button class="btn btn-secondary" id="adminLogout" style="width:auto; margin:0; padding:8px 12px; font-size:12px;">Sair</button>
                 </div>
             </div>
-            
+
             <div id="adminTabsContainer" class="admin-tabs-container"></div>
         </div>
-        
+
         <div id="adminContent" class="admin-content">
             <p style="text-align:center; color:var(--mu);">Carregando dados...</p>
         </div>
@@ -79,7 +79,7 @@ export async function renderAdminScreen() {
 
    document.getElementById("adminLogout").onclick = () => {
         const adminScreen = document.getElementById("adminScreen");
-        if (adminScreen) adminScreen.remove(); 
+        if (adminScreen) adminScreen.remove();
          signOut(auth).then(() => { window.location.href = window.location.pathname; });
     };
 
@@ -125,7 +125,7 @@ export async function renderAdminScreen() {
             { id: 'subs', label: 'Exercícios Substitutos', action: loadSubstitutes },
             { id: 'tickets', label: 'Chamados', action: loadTickets }
         ];
-        
+
         let html = '';
         tabs.forEach(tab => {
             const isActive = tab.id === activeTabId;
@@ -144,7 +144,7 @@ export async function renderAdminScreen() {
     }
 
     renderTabs('users');
-    
+
     if (auth.currentUser) {
         auth.currentUser.getIdToken(true).then(() => { loadUsers(); }).catch((e) => { console.error(e); loadUsers(); });
     } else { setTimeout(loadUsers, 1000); }
@@ -156,9 +156,9 @@ export async function renderAdminScreen() {
       <div class="modal" id="mdAdminAddSub" role="dialog" aria-modal="true" style="z-index: 300; max-height: 90vh; overflow-y: auto;">
         <h2 id="adminModalTitle">Gerenciar Substitutos</h2>
         <p id="adminModalBaseEx" style="color:var(--water); font-size:14px; margin-top:-8px; margin-bottom:12px; font-weight:bold;"></p>
-        
+
         <div id="adminSubsList" style="display:flex; flex-direction:column; gap:10px; margin-bottom:15px;"></div>
-        
+
         <div id="adminAddForm" style="display:none; background:var(--bg); padding:12px; border-radius:8px; margin-bottom:15px; border: 1px dashed var(--bd);">
             <h3 style="margin:0 0 10px 0; font-size:14px; color:var(--tx);">Adicionar Novo Substituto ao Banco</h3>
             <input type="text" id="adminNewSubName" placeholder="Nome do Substituto" style="margin-bottom:8px;">
@@ -171,7 +171,7 @@ export async function renderAdminScreen() {
         </div>
 
         <button class="btn btn-secondary" id="btnShowAddForm" style="margin-bottom:15px;">${Icons.plus} Adicionar Novo Substituto</button>
-        
+
         <button class="btn btn-primary" id="btnAdminSaveAll" style="margin-top:10px;">SALVAR ALTERAÇÕES</button>
         <button class="btn btn-secondary mt-8" id="btnCloseAdminModal">Fechar</button>
       </div>
@@ -192,7 +192,7 @@ export async function renderAdminScreen() {
 
     $("btnShowAddForm").onclick = () => {
         $("adminAddForm").style.display = "block";
-        $("adminNewSubSets").value = currentAdminBaseSets; 
+        $("adminNewSubSets").value = currentAdminBaseSets;
         $("adminNewSubPreview").src = "";
         $("adminNewSubPreview").style.display = "none";
         tempNewSubPhoto = null;
@@ -200,7 +200,7 @@ export async function renderAdminScreen() {
     };
 
     $("btnAdminNewPhoto").onclick = () => $("fiAdminSubstitute").click();
-    
+
     $("fiAdminSubstitute").onchange = (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -248,7 +248,7 @@ export async function renderAdminScreen() {
 
             currentAdminSubs = currentAdminSubs.filter(s => !(s.isDict && s.name.trim().toLowerCase() === name.trim().toLowerCase()));
             currentAdminSubs.push({ id: docRef.id, name, sets, f: globalPhotoId });
-            
+
             renderAdminSubsList();
             $("adminAddForm").style.display = "none";
             $("adminNewSubName").value = "";
@@ -304,7 +304,7 @@ export async function renderAdminScreen() {
             } else {
                 let imgHtml = `<div style="width:100%; height:80px; background:var(--bg); border-radius:4px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; color:var(--mu); font-size:12px;">Sem foto</div>`;
                 const isValidImg = sub.f && typeof sub.f === 'string' && sub.f !== 'null' && sub.f !== 'undefined' && !sub.f.startsWith('data:');
-                
+
                 if (isValidImg) {
                     if (state.cache[sub.f]) imgHtml = `<img src="${state.cache[sub.f]}" style="width:100%; height:80px; object-fit:contain; background:var(--bg); border-radius:4px; margin-bottom:8px;">`;
                     else imgHtml = `<img data-f="${sub.f}" style="width:100%; height:80px; object-fit:contain; background:var(--bg); border-radius:4px; margin-bottom:8px;">`;
@@ -332,7 +332,7 @@ export async function renderAdminScreen() {
                 const name = decodeURIComponent(btn.dataset.name);
                 $("adminNewSubName").value = name;
                 $("adminNewSubSets").value = currentAdminBaseSets;
-                
+
                 tempNewSubPhoto = null;
                 $("adminNewSubPreview").style.display = "none";
                 $("adminNewSubPreview").src = "";
@@ -368,7 +368,7 @@ export async function renderAdminScreen() {
     async function loadUsers() {
         const content = document.getElementById("adminContent");
         content.innerHTML = "<p style='text-align:center; color:var(--tx);'>Buscando usuários...</p>";
-        
+
         try {
             const snap = await getDocsFromServer(collection(db, "users"));
             let h = "<div style='display:flex; flex-direction:column; gap:10px;'>";
@@ -396,7 +396,7 @@ export async function renderAdminScreen() {
     async function loadExercises() {
         const content = document.getElementById("adminContent");
         content.innerHTML = "<p style='text-align:center; color:var(--tx);'>Buscando exercícios...</p>";
-        
+
         try {
             const snap = await getDocsFromServer(collection(db, "users"));
             const exerciciosMap = new Map();
@@ -426,29 +426,29 @@ export async function renderAdminScreen() {
 
             let h = "<p style='color:var(--mu); margin-bottom:12px;'>Clique em um exercício para gerenciar seus substitutos globais:</p>";
             h += "<div style='display:flex; flex-direction:column; gap:8px;'>";
-            
+
             Array.from(exerciciosMap.keys()).sort().forEach(key => {
                 const exData = exerciciosMap.get(key);
                 const subs = globaisMap[key] || [];
                 const hasSubs = subs.length > 0;
-                
+
                 const dicSubs = getSubstitutosPara(exData.originalName);
                 const nDic = (dicSubs.principais ? dicSubs.principais.length : 0) + (dicSubs.secundarios ? dicSubs.secundarios.length : 0);
-                
+
                 let btnIcon = Icons.plus;
                 let btnBg = 'var(--water)';
                 let countText = '';
-                
+
                 if (hasSubs) {
                     btnIcon = Icons.edit;
                     btnBg = 'var(--ac)';
                     countText = `<small style="color:var(--success); font-weight:bold; display:flex; align-items:center; gap:4px;">${Icons.checkCircle} ${subs.length} substituto(s) no banco</small>`;
                 } else if (nDic > 0) {
                     btnIcon = Icons.book;
-                    btnBg = 'var(--mu)'; 
+                    btnBg = 'var(--mu)';
                     countText = `<small style="color:var(--mu); display:flex; align-items:center; gap:4px;">${Icons.book} ${nDic} no dicionário (aluno vê)</small>`;
                 }
-                
+
                 h += `
                     <div class="sub-list-item admin-ex-item" data-name="${encodeURIComponent(exData.originalName)}" data-sets="${encodeURIComponent(exData.sets)}" style="cursor:pointer;">
                         <div class="info">
@@ -466,12 +466,12 @@ export async function renderAdminScreen() {
                 el.addEventListener('click', async () => {
                     currentAdminBaseEx = decodeURIComponent(el.dataset.name);
                     currentAdminBaseSets = decodeURIComponent(el.dataset.sets);
-                    
+
                     try {
                         const qSnap = await getDocsFromServer(collection(db, "global_substitutes"));
                         currentAdminSubs = [];
                         const targetKey = String(currentAdminBaseEx).trim().toLowerCase();
-                        
+
                         qSnap.forEach(d => {
                             const data = d.data();
                             if (data.baseExercise && String(data.baseExercise).trim().toLowerCase() === targetKey) {
@@ -481,13 +481,13 @@ export async function renderAdminScreen() {
 
                         const dic = getSubstitutosPara(currentAdminBaseEx);
                         const allDicItems = [...(dic.principais || []), ...(dic.secundarios || [])];
-                        
+
                         allDicItems.forEach(dictSub => {
                             if (!currentAdminSubs.find(s => s.name.trim().toLowerCase() === dictSub.name.trim().toLowerCase())) {
                                 currentAdminSubs.push({ name: dictSub.name, sets: currentAdminBaseSets, isDict: true });
                             }
                         });
-                        
+
                         $("adminModalBaseEx").textContent = "Exercício Base: " + currentAdminBaseEx;
                         renderAdminSubsList();
 
@@ -510,7 +510,7 @@ export async function renderAdminScreen() {
     async function loadSubstitutes() {
         const content = document.getElementById("adminContent");
         content.innerHTML = "<p style='text-align:center; color:var(--tx);'>Buscando substitutos...</p>";
-        
+
         try {
             const gSnap = await getDocsFromServer(collection(db, "global_substitutes"));
             const subsMap = new Map();
@@ -530,7 +530,7 @@ export async function renderAdminScreen() {
 
             let h = "<p style='color:var(--mu); margin-bottom:12px;'>Todos os substitutos cadastrados no banco:</p>";
             h += "<div style='display:flex; flex-direction:column; gap:8px;'>";
-            
+
             Array.from(subsMap.values()).sort((a,b) => a.name.localeCompare(b.name)).forEach(sub => {
                 h += `
                     <div class="sub-list-item sub-acc-item" style="flex-direction:column; align-items:flex-start; cursor:pointer;">
@@ -576,12 +576,12 @@ export async function renderAdminScreen() {
     async function loadTickets() {
         const content = document.getElementById("adminContent");
         content.innerHTML = "<p style='text-align:center; color:var(--tx);'>Buscando chamados...</p>";
-        
+
         try {
             const snap = await getDocsFromServer(collection(db, "chamados"));
             let h = "<div style='display:flex; flex-direction:column; gap:10px;'>";
             if (snap.empty) h += "<p style='text-align:center; color:var(--mu);'>Nenhum chamado pendente.</p>";
-            
+
             snap.forEach(docSnap => {
                 const t = docSnap.data();
                 h += `

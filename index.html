@@ -18,7 +18,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#ff5a36">
-<!-- ✅ Adicionado o padrão novo da Apple -->
+
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>GYM WORKOUT</title>
@@ -30,7 +30,7 @@
   }
   html[data-theme="dark"]  { background: #0f1115; color-scheme: dark; }
   html[data-theme="light"] { background: #f4f5f7; color-scheme: light; }
-  
+
   /* ✅ FORÇA A COR NO BODY PARA O IPHONE PINTAR A SAFE AREA */
   body { background-color: #f4f5f7; }
   @media (prefers-color-scheme: dark) { body:not([data-theme="light"]) { background-color: #0f1115; } }
@@ -57,7 +57,6 @@
 </head>
 <body>
 
-<!-- ✅ CONTAINER DA NEVE LOTTIE -->
 <div id="snow-container" style="position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden;"></div>
 
 <div id="splash" role="status" aria-label="Carregando o aplicativo">
@@ -131,7 +130,6 @@
     <button class="btn-alarm" id="btnDismissAlarm">OK, VOLTAR AO TREINO</button>
   </div>
 
-  <!-- ===== MODAIS DO USUÁRIO COMUM ===== -->
   <div class="modal" id="md" role="dialog" aria-modal="true" aria-labelledby="mdTitle">
     <h2 id="mdTitle">Treino concluído!</h2>
     <button class="btn btn-secondary" id="mFoto">Anexar foto</button>
@@ -215,17 +213,16 @@
     <button class="btn btn-secondary" id="cancelSwap" style="margin-top:16px;">Cancelar</button>
   </div>
 
-  <!-- MODAL PARA ADICIONAR/EDITAR NOVO SUBSTITUTO (USUÁRIO COMUM) -->
   <div class="modal" id="mdAddSubstitute" role="dialog" aria-modal="true" aria-labelledby="mdAddSubTitle">
     <h2 id="mdAddSubTitle">Substituto</h2>
-    
+
     <div id="subBaseExerciseArea" style="display:none; margin-bottom:12px;">
       <label for="subBaseExerciseSelect" style="font-size:12px;color:var(--water); font-weight:700;">Vincular a um exercício do seu treino (Opcional):</label>
       <select id="subBaseExerciseSelect" style="margin-top:4px;"></select>
     </div>
 
     <input type="text" id="subNameInput" placeholder="Nome (ex: Supino Inclinado)" autocomplete="off">
-    
+
     <div class="row mt-8" style="justify-content: flex-start; align-items: center;">
       <input type="checkbox" id="subIsCardio" style="width: auto; margin: 0 8px 0 0; transform: scale(1.3); cursor: pointer;">
       <label for="subIsCardio" style="font-size: 14px; color: var(--mu); font-weight: 600; cursor: pointer;">É Cardio?</label>
@@ -241,30 +238,28 @@
 
     <button class="btn btn-secondary mt-12" id="btnSubPhoto" style="width: 100%;">📷 Anexar Foto/GIF</button>
     <img id="subPhotoPreview" style="display:none; max-height: 120px; margin-top: 12px; border-radius: 8px; object-fit: contain; width: 100%;">
-    
+
     <button class="btn btn-primary mt-16" id="btnSaveSubstitute">Salvar</button>
     <button class="btn btn-secondary mt-8" id="btnCancelSubstitute">Cancelar</button>
   </div>
 
-  <!-- NOVO MODAL DE ABRIR CHAMADO -->
   <div class="modal" id="mdTicket" role="dialog" aria-modal="true" aria-labelledby="mdTicketTitle">
     <h2 id="mdTicketTitle">Abrir Chamado</h2>
     <p style="color:var(--mu); font-size:14px; margin-top:-8px; margin-bottom:16px;">Descreva o que está faltando para o Administrador.</p>
-    
+
     <input type="text" id="ticketBaseEx" placeholder="Nome do Exercício Principal (ex: Supino Reto)" autocomplete="off">
     <textarea id="ticketMessage" placeholder="Observações (ex: Falta a foto do Supino Inclinado com halteres)" style="width:100%; height:100px; padding:14px; border-radius:12px; border:1px solid var(--bd); background:var(--bg); color:var(--tx); font-family:inherit; font-size:16px; margin-top:8px; resize:none; box-sizing: border-box;"></textarea>
-    
+
     <button class="btn btn-primary mt-16" id="btnSubmitTicket">Enviar Chamado</button>
     <button class="btn btn-secondary mt-8" id="btnCancelTicket">Cancelar</button>
   </div>
 
-  <!-- ===== MODAL EXCLUSIVO DO ADMINISTRADOR ===== -->
   <div class="modal" id="mdAdminAddSub" role="dialog" aria-modal="true" style="z-index: 300; max-height: 90vh; overflow-y: auto;">
     <h2 id="adminModalTitle">Gerenciar Substitutos</h2>
     <p id="adminModalBaseEx" style="color:var(--water); font-size:14px; margin-top:-8px; margin-bottom:12px; font-weight:bold;"></p>
-    
+
     <div id="adminSubsList" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap:10px; margin-bottom:15px;"></div>
-    
+
     <div id="adminAddForm" style="display:none; background:var(--bg); padding:12px; border-radius:8px; margin-bottom:15px; border: 1px dashed var(--bd);">
         <h3 style="margin:0 0 10px 0; font-size:14px;">Adicionar Novo Substituto</h3>
         <input type="text" id="adminNewSubName" placeholder="Nome do Substituto" style="margin-bottom:8px;">
@@ -277,12 +272,11 @@
     </div>
 
     <button class="btn btn-secondary" id="btnShowAddForm" style="margin-bottom:15px;">+ Adicionar Novo Substituto</button>
-    
+
     <button class="btn btn-primary" id="btnAdminSaveAll" style="margin-top:10px;">SALVAR ALTERAÇÕES</button>
     <button class="btn btn-secondary mt-8" id="btnCloseAdminModal">Fechar</button>
   </div>
 
-  <!-- ===== TELAS SECUNDÁRIAS ===== -->
   <div id="mascotScreen" aria-labelledby="mascotTitle">
     <div class="evo-header">
       <button class="ic" id="mascotBack" style="font-size:18px" aria-label="Voltar">←</button>
@@ -353,12 +347,12 @@
   </div>
 
   <div id="allSubsScreen" aria-labelledby="allSubsTitle">
-    <!-- Cabeçalho e Filtros (Rolam junto com a tela) -->
+
     <div class="evo-header" style="margin-bottom: 12px;">
       <button class="ic" id="allSubsBack" style="font-size:18px" aria-label="Voltar">←</button>
       <h2 id="allSubsTitle">Todos os Substitutos</h2>
     </div>
-    
+
     <div style="display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; align-items: center; flex-shrink: 0; padding: 4px 0 12px 0;">
       <button class="chip on" data-filter-subs="all">Todos</button>
       <button class="chip" data-filter-subs="Peito">Peito</button>
@@ -368,10 +362,8 @@
       <button class="chip" data-filter-subs="Ombro">Ombro</button>
     </div>
 
-    <!-- Conteúdo -->
     <div id="allSubsContent" style="display:flex; flex-direction:column; gap:16px; margin-top: 16px;"></div>
-    
-    <!-- Botão Fixo no Rodapé -->
+
     <div style="position: fixed; bottom: 0; left: 0; right: 0; padding: 16px 8px calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--bg); z-index: 55; border-top: 1px solid var(--bd);">
       <button class="btn btn-primary" id="btnOpenTicketFooter" style="margin: 0; padding: 18px; background: var(--water); border-color: var(--water); font-weight:700; box-shadow: 0 4px 12px rgba(0, 191, 255, 0.2); width: 100%;">
         📩 Solicitar Novo Substituto ao Administrador
@@ -390,7 +382,6 @@
 
 </div>
 
-<!-- ===== TELA DE EVOLUÇÃO (CELEBRATION) ===== -->
 <div id="celebrationOverlay">
   <div id="celebrationLottieContainer"></div>
   <div id="celebrationContent">
@@ -402,18 +393,15 @@
   </div>
 </div>
 
-<!-- ===== VISUALIZADOR DE GIF (LIGHTBOX) ===== -->
 <div id="gifLightbox" class="gif-lightbox">
   <img id="gifLightboxImg" src="" alt="Exercício ampliado">
 </div>
 
-<!-- ===== FILE INPUTS ===== -->
 <input type="file" accept="image/*" id="fi" hidden aria-label="Anexar imagem">
 <input type="file" accept="image/*" id="fiAvatar" hidden aria-label="Escolher foto de perfil">
 <input type="file" accept="image/*" id="fiSubstitute" hidden aria-label="Foto do substituto">
 <input type="file" accept="image/*" id="fiAdminSubstitute" hidden aria-label="Foto do substituto global (Admin)">
 
-<!-- ===== TOASTS ===== -->
 <div id="toast-container" role="status" aria-live="polite" aria-atomic="false"></div>
 
 <script src="js/christmas-theme.js"></script>

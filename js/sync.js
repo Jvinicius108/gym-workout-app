@@ -142,7 +142,7 @@ export async function boot(user) {
     if (unsubUser) unsubUser();
     if (unsubFeitos) unsubFeitos();
     if (unsubGlobalSubs) unsubGlobalSubs();
-    
+
     isAppInitialized = false;
     state.P = null;
     state.F = {};
@@ -239,7 +239,7 @@ export async function boot(user) {
             theme(); main();
           }
         }
-        
+
         if ($("dr").classList.contains("on") && $("dr").dataset.view === "main") {
           drawer();
         }
@@ -258,7 +258,7 @@ export async function boot(user) {
       const newFSig = fSig(state.F);
       if (prevFSig !== newFSig) {
         calculateStreakAndMisses();
-        
+
         if (checkIfCanRenderBackground() && !isUserTypingInternal()) {
           if (!document.querySelector('.animating')) strip();
           main();
@@ -267,22 +267,20 @@ export async function boot(user) {
       }
     });
 
-    // ✅ LISTENER SEGURO E NORMALIZADO (MINÚSCULO, SEM ESPAÇOS EXTRAS)
     unsubGlobalSubs = onSnapshot(collection(db, "global_substitutes"), (snap) => {
       const subsMap = {};
       snap.forEach(doc => {
         const data = doc.data();
         if (!data.baseExercise) return;
-        
+
         const key = String(data.baseExercise).trim().toLowerCase();
-        
+
         if (!subsMap[key]) subsMap[key] = [];
         subsMap[key].push({ id: doc.id, ...data });
       });
-      
+
       state.globalSubstitutes = subsMap;
-      
-      // Atualiza a tela do usuário imediatamente se ele estiver treinando
+
       if (state.inWorkoutMode && !isUserTypingInternal()) {
         scheduleRender(main);
       }

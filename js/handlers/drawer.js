@@ -31,9 +31,9 @@ export async function handleDrawerAndModals(t, D) {
       return true;
     }
     if (t.id === "configBack") {
-      if (state.configDetail) { 
+      if (state.configDetail) {
         state.configDetail = false;
-      } else { 
+      } else {
         state.inConfigMode = false;
       }
       return true;

@@ -80,7 +80,7 @@ export async function toggleWaterReminder() {
         const reg = await navigator.serviceWorker.ready;
         const pending = await reg.getNotifications({ tag: 'water-reminder' });
         pending.forEach(n => n.close());
-      } catch (e) { /* ignora */ }
+      } catch (e) {  }
     }
     showToast("Lembretes desativados.", "info");
   }

@@ -1,4 +1,3 @@
-// 1. Guardamos o estado inicial num objeto puro
 const estadoInicial = {
   uid: null,
   P: null,
@@ -42,7 +41,7 @@ const estadoInicial = {
   showWaterSizeInput: false,
   showWaterGoalInput: false,
   pendingEvolution: null,
-  
+
   editingIsCardio: false,
   editSets: "",
   editReps: "",
@@ -53,28 +52,25 @@ const estadoInicial = {
 
   inSubstitutesMode: false,
   subsTargetIndex: null,
-  activeSwaps: {}, 
+  activeSwaps: {},
   pendingSubstitutePhoto: null,
   editingSubIndex: null,
   globalSubstitutes: {},
 };
 
-// 2. 🚀 A MÁGICA ACONTECE AQUI: Exportamos o Proxy!
 export const state = new Proxy(estadoInicial, {
   set(target, property, value) {
-    // A) Atualiza o valor na memória (como sempre foi)
+
     target[property] = value;
 
-    // B) Dispara o "alarme" avisando o resto do app que a propriedade mudou!
     window.dispatchEvent(new CustomEvent('state:changed', {
       detail: { property, value }
     }));
 
-    return true; // Indica que a alteração foi feita com sucesso
+    return true;
   }
 });
 
-// 3. As funções reset e setState continuam iguais, pois o Proxy entende automaticamente.
 export function resetState() {
   state.P = null;
   state.F = {};
@@ -110,7 +106,7 @@ export function resetState() {
   state.isUpdate = false;
   state.ob = { step: 0, tipo: "", freq: 0, qty: 0, days: [] };
   state.timerEndTime = null;
-  
+
   state.editingIsCardio = false;
   state.editSets = "";
   state.editReps = "";

@@ -1,8 +1,3 @@
-/* ============================================================
-   🎃 HALLOWEEN THEME — halloween-theme.js
-   Transformação completa da UI (Fundo, Botões, Fontes, Cards, Ícones)
-   ============================================================ */
-
 const HW_CFG = {
     title: '.app-title, .month-header',
     carousel: '#strip, .strip',
@@ -17,8 +12,7 @@ const hwSmooth = t => t * t * (3 - 2 * t);
 
 function hwInjectStyles() {
     if (document.getElementById('halloween-style')) return;
-    
-    // Fontes Temáticas: Creepster (Títulos) e Mali (Corpo/Texto)
+
     if (!document.getElementById('halloween-font')) {
         const link = document.createElement('link');
         link.id = 'halloween-font';
@@ -26,7 +20,7 @@ function hwInjectStyles() {
         link.href = 'https://fonts.googleapis.com/css2?family=Creepster&family=Mali:wght@400;600;700&display=swap';
         document.head.appendChild(link);
     }
-    
+
     const style = document.createElement('style');
     style.id = 'halloween-style';
     style.textContent = `
@@ -44,12 +38,12 @@ function hwInjectStyles() {
         --water: #a855f7;          /* Poção Roxa (Água) */
         --glass-bg: rgba(31, 16, 26, 0.85);
         --glass-border: rgba(255, 123, 0, 0.2);
-        
+
         font-family: 'Mali', sans-serif !important;
     }
 
     /* Força o tema escuro mesmo se o usuário estiver no modo claro */
-    body.theme-halloween #app, 
+    body.theme-halloween #app,
     body.theme-halloween #app-body,
     body.theme-halloween header {
         background-color: var(--bg) !important;
@@ -58,7 +52,7 @@ function hwInjectStyles() {
     /* ==========================================
        2. TIPOGRAFIA E TÍTULOS
        ========================================== */
-    body.theme-halloween .app-title, 
+    body.theme-halloween .app-title,
     body.theme-halloween .month-header {
         font-family: 'Creepster', cursive !important; font-weight: 400 !important;
         letter-spacing: 0.09em; background: linear-gradient(180deg, #ffd27a 0%, #ff7a00 42%, #c42500 78%, #6e0f00 100%);
@@ -72,9 +66,9 @@ function hwInjectStyles() {
     @keyframes hw-flicker { 0%, 17%, 22%, 25%, 54%, 58%, 100% { opacity: 1; } 19%, 23.5%, 55.5% { opacity: 0.45; } }
 
     /* Títulos Gerais (Painéis, Modais, Drawer) */
-    body.theme-halloween h1, 
-    body.theme-halloween h2, 
-    body.theme-halloween h3, 
+    body.theme-halloween h1,
+    body.theme-halloween h2,
+    body.theme-halloween h3,
     body.theme-halloween .panel h2,
     body.theme-halloween .modal h2,
     body.theme-halloween .menu-name,
@@ -161,8 +155,8 @@ function hwInjectStyles() {
         border: 2px solid #ff7b00 !important;
         box-shadow: 0 0 20px #ff7b00 !important;
     }
-    body.theme-halloween .d.sel small, 
-    body.theme-halloween .d.sel b, 
+    body.theme-halloween .d.sel small,
+    body.theme-halloween .d.sel b,
     body.theme-halloween .d.sel .label-txt {
         color: #11070f !important;
         font-weight: 800;
@@ -178,7 +172,7 @@ function hwInjectStyles() {
     }
 
     /* Cards de treino e listas */
-    body.theme-halloween .exs.vertical .ex, 
+    body.theme-halloween .exs.vertical .ex,
     body.theme-halloween .config-section,
     body.theme-halloween .sub-list-item,
     body.theme-halloween .workout-choice-card {
@@ -217,9 +211,9 @@ function hwInjectStyles() {
     }
 
     /* Inputs (Campos de digitação) */
-    body.theme-halloween input[type=text], 
-    body.theme-halloween input[type=password], 
-    body.theme-halloween input[type=number], 
+    body.theme-halloween input[type=text],
+    body.theme-halloween input[type=password],
+    body.theme-halloween input[type=number],
     body.theme-halloween select {
         background: #0a0508 !important;
         border: 1px solid #3a1c32 !important;
@@ -247,7 +241,7 @@ function hwInjectStyles() {
     body.theme-halloween .ic-menu span {
         background-color: #ff7b00 !important;
     }
-    
+
     body.theme-halloween svg {
         filter: drop-shadow(0 0 2px rgba(255, 123, 0, 0.5));
     }
@@ -274,69 +268,69 @@ function hwInjectStyles() {
        7. TELA DE LOGIN (Já existente, refinada)
        ========================================== */
     body.theme-halloween #auth { background: radial-gradient(circle at center, #2a0a0a 0%, #0a0a0c 100%) !important; }
-    
+
     body.theme-halloween .auth {
-        background: rgba(15, 5, 5, 0.95); 
-        border: 2px dashed #ff7b00; 
+        background: rgba(15, 5, 5, 0.95);
+        border: 2px dashed #ff7b00;
         border-radius: 0px !important;
-        box-shadow: 0 0 40px rgba(255, 123, 0, 0.3), inset 0 0 60px rgba(0,0,0,0.9); 
+        box-shadow: 0 0 40px rgba(255, 123, 0, 0.3), inset 0 0 60px rgba(0,0,0,0.9);
         padding: 40px 30px;
         /* ✅ NOVA ANIMAÇÃO DE PULSO */
         animation: authPulse 3s infinite alternate ease-in-out;
     }
 
     @keyframes authPulse {
-        0% { 
-            box-shadow: 0 0 30px rgba(255, 136, 0, 0.81), inset 0 0 60px rgba(0,0,0,0.9); 
-            border-color: #ff7b00; 
+        0% {
+            box-shadow: 0 0 30px rgba(255, 136, 0, 0.81), inset 0 0 60px rgba(0,0,0,0.9);
+            border-color: #ff7b00;
         }
-        100% { 
-            box-shadow: 0 0 50px rgba(17, 0, 255, 0.6), inset 0 0 60px rgba(0,0,0,0.9); 
-            border-color: #6a0dad; 
+        100% {
+            box-shadow: 0 0 50px rgba(17, 0, 255, 0.6), inset 0 0 60px rgba(0,0,0,0.9);
+            border-color: #6a0dad;
         }
     }
 
-    body.theme-halloween .auth h1 { 
-        font-size: 3rem !important; 
-        margin-bottom: 15px; 
-        text-align: center; 
+    body.theme-halloween .auth h1 {
+        font-size: 3rem !important;
+        margin-bottom: 15px;
+        text-align: center;
         color: #ff7b00;
         /* ✅ NOVA ANIMAÇÃO DE PISCAR */
         animation: flicker 4s infinite alternate;
     }
 
     @keyframes flicker {
-        0%, 18%, 22%, 25%, 53%, 57%, 100% { 
-            text-shadow: 0 0 15px #ff0000, 0 0 25px #ff0000; 
-            opacity: 1; 
+        0%, 18%, 22%, 25%, 53%, 57%, 100% {
+            text-shadow: 0 0 15px #ff0000, 0 0 25px #ff0000;
+            opacity: 1;
         }
-        20%, 24%, 55% { 
-            text-shadow: none; 
-            opacity: 0.5; 
+        20%, 24%, 55% {
+            text-shadow: none;
+            opacity: 0.5;
         }
     }
 
-    body.theme-halloween .auth p { 
-        color: #a38888 !important; 
-        font-style: italic; 
-        text-align: center; 
+    body.theme-halloween .auth p {
+        color: #a38888 !important;
+        font-style: italic;
+        text-align: center;
         font-family: 'Mali', sans-serif !important;
     }
 
     /* ✅ NOVO BRILHO VERDE TÓXICO AO CLICAR NO INPUT */
-    body.theme-halloween .auth input:focus { 
-        border-color: #ff9900 !important; 
+    body.theme-halloween .auth input:focus {
+        border-color: #ff9900 !important;
         color: #ff9900 !important;
     }
 
     body.theme-halloween .auth button[type="submit"] {
-        background: linear-gradient(90deg, #6a0dad, #ff7b00) !important; 
-        border: none !important; 
+        background: linear-gradient(90deg, #6a0dad, #ff7b00) !important;
+        border: none !important;
         color: #fff !important;
-        border-radius: 0px !important; 
-        font-size: 1.8rem !important; 
+        border-radius: 0px !important;
+        font-size: 1.8rem !important;
         letter-spacing: 2px;
-        box-shadow: 0 0 20px rgba(255, 123, 0, 0.6); 
+        box-shadow: 0 0 20px rgba(255, 123, 0, 0.6);
         margin-top: 15px;
     }
     `;
@@ -365,17 +359,16 @@ function initHalloweenTheme(snowContainer) {
     if (window.__halloweenStop) window.__halloweenStop();
     hwInjectStyles();
     if (snowContainer) snowContainer.innerHTML = '';
-    
+
     hwAuthObserver = new MutationObserver(() => hwCustomizeLogin());
     const authEl = document.getElementById('auth');
     if (authEl) hwAuthObserver.observe(authEl, { childList: true, subtree: true });
     hwCustomizeLogin();
 
-    // ✅ CAMADA DE FUNDO (z-index: 5 - Dentro do #app)
     const bgCanvas = document.createElement('canvas');
     bgCanvas.id = 'halloween-bg-canvas';
     bgCanvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:5;';
-    
+
     const appEl = document.getElementById('app');
     if (appEl) {
         appEl.insertBefore(bgCanvas, appEl.firstChild);
@@ -384,7 +377,6 @@ function initHalloweenTheme(snowContainer) {
     }
     const bgCtx = bgCanvas.getContext('2d');
 
-    // ✅ CAMADA SUPERIOR (z-index: 99999 - Morcegos, Fantasmas e Teias do Menu)
     const fgCanvas = document.createElement('canvas');
     fgCanvas.id = 'halloween-fg-canvas';
     fgCanvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:99999;';
@@ -399,9 +391,7 @@ function initHalloweenTheme(snowContainer) {
         fgCanvas.width = W * dpr; fgCanvas.height = H * dpr; fgCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resize(); window.addEventListener('resize', resize);
-    // ==========================================
-    // MORCEGOS E FANTASMAS (Desenhados na camada superior fgCtx)
-    // ==========================================
+
     function drawWing(ctx, s, sp, lag) {
         const S = [0.24 * s, -0.3 * s], E = [0.95 * s * sp, -0.6 * s], Wr = [1.55 * s * sp, -1.0 * s];
         const tips = [[3.4 * s * sp, -0.3 * s + lag],[3.0 * s * sp, 0.7 * s + lag * 0.8],[2.35 * s * sp, 1.4 * s + lag * 0.6],[1.55 * s * sp, 1.8 * s + lag * 0.4]];
@@ -542,9 +532,6 @@ function initHalloweenTheme(snowContainer) {
         }
     }
 
-    // ==========================================
-    // TEIAS E ARANHAS DOS CONTAINERS (bgCtx)
-    // ==========================================
     function makeWeb() {
         const nS = 6 + Math.floor(Math.random() * 2), rings = 6 + Math.floor(Math.random() * 3);
         const angles = [], spokeLen = [];
@@ -611,7 +598,7 @@ function initHalloweenTheme(snowContainer) {
         ctx.beginPath(); ctx.moveTo(-0.16 * s, 0.75 * s); ctx.lineTo(0.16 * s, 0.75 * s); ctx.lineTo(0, 1.05 * s); ctx.closePath();
         ctx.moveTo(-0.16 * s, 1.35 * s); ctx.lineTo(0.16 * s, 1.35 * s); ctx.lineTo(0, 1.05 * s); ctx.closePath(); ctx.fill();
         ctx.fillStyle = '#0a0a0d'; ctx.beginPath(); ctx.ellipse(0, 1.95 * s, 0.38 * s, 0.42 * s, 0, 0, Math.PI * 2); ctx.fill();
-        
+
         ctx.shadowColor = '#ff0000'; ctx.shadowBlur = Math.max(4, 2.5 * s);
         ctx.fillStyle = '#ff1a1a';
         for (const d of [1, -1]) {
@@ -649,10 +636,7 @@ function initHalloweenTheme(snowContainer) {
         if (carousel) cards = cards.filter(c => carousel.contains(c) && c !== carousel);
         if (!cards.length && carousel) cards = [...carousel.children].filter(e => e.offsetWidth > 40);
         const list = [];
-        
-        // ✅ REMOVIDO: A linha abaixo adicionava a barra do carrossel como alvo das teias
-        // if (carousel) list.push({ el: carousel, isBar: true, key: 'carousel-bar' });
-        
+
         cards.forEach((el, i) => {
             const key = el.dataset.k || ('card-' + i);
             list.push({ el, isBar: false, key });
@@ -707,9 +691,6 @@ function initHalloweenTheme(snowContainer) {
         }
     }
 
-    // ==========================================
-    // TEIAS DO MENU (Deslizam junto com o .drawer)
-    // ==========================================
     const menuWebs = {
         topLeft: makeWeb(),
         topRight: makeWeb(),
@@ -731,24 +712,19 @@ function initHalloweenTheme(snowContainer) {
         ctx.rect(r.left, r.top, r.width, r.height);
         ctx.clip();
 
-        // Teias nos cantos do menu acompanhando o movimento
         drawWeb(ctx, r.left, r.top, 1, R, menuWebs.topLeft, t);
         drawWeb(ctx, r.right, r.top, -1, R, menuWebs.topRight, t);
         drawWeb(ctx, r.right, r.bottom, -1, R, menuWebs.bottomRight, t);
 
-        // Aranha pendurada na borda direita do menu
         drawHangingSpider(ctx, menuWebs.spider, r.right - R * 0.4, r.top, maxLen, t);
 
         ctx.restore();
     }
 
-    // ==========================================
-    // LOOP PRINCIPAL
-    // ==========================================
     const bats = Array.from({ length: HW_CFG.bats }, () => new Bat());
     const ghosts = Array.from({ length: HW_CFG.ghosts }, () => new Ghost());
     let raf = 0, last = performance.now();
-    
+
     let scanTimeout;
     const observer = new MutationObserver(() => { clearTimeout(scanTimeout); scanTimeout = setTimeout(scan, 30); });
     observer.observe(document.body, { childList: true, subtree: true });
@@ -764,12 +740,10 @@ function initHalloweenTheme(snowContainer) {
     function frame(now) {
         if (!document.body.classList.contains('theme-halloween')) { stop(); return; }
         const dt = Math.min((now - last) / 1000, 0.05); last = now;
-        
-        // 1. CAMADA DE FUNDO (Apenas teias e aranhas dos containers)
+
         bgCtx.clearRect(0, 0, W, H);
         drawDecorations(now);
 
-        // 2. CAMADA SUPERIOR (Morcegos, Fantasmas e Teias do Menu)
         fgCtx.clearRect(0, 0, W, H);
         ghosts.forEach(g => { g.update(dt); g.draw(now); });
         bats.forEach(b => { b.update(dt, now); b.draw(now); });

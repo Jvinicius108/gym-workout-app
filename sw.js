@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gym-workout-v202610301121';
+const CACHE_NAME = 'gym-workout-v202611051443';
 
 const ASSETS = [
   './',
@@ -7,7 +7,7 @@ const ASSETS = [
   './manifest.json',
   './js/halloween-theme.js',
   './js/christmas-theme.js',
-  './js/newyear-theme.js', 
+  './js/newyear-theme.js',
   './js/app.js',
   './js/config.js',
   './js/theme-init.js',
@@ -108,8 +108,8 @@ self.addEventListener('fetch', (e) => {
   e.respondWith(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.match(e.request).then((cachedResponse) => {
-        if (cachedResponse) return cachedResponse; 
-        
+        if (cachedResponse) return cachedResponse;
+
         return fetch(e.request).then((networkResponse) => {
           const canCache = networkResponse && (
             (networkResponse.status >= 200 && networkResponse.status < 300) ||

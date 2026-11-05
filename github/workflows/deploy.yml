@@ -1,0 +1,31 @@
+name: Deploy Automatico no Firebase
+
+on:
+  push:
+    branches:
+      - main # ou master, dependendo do nome da sua branch principal
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Instalar dependências e fazer Build
+        run: |
+          npm install
+          npm run build # (remova essa linha se o seu projeto for HTML/JS puro sem build)
+
+      - name: Deploy para Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          channelId: live
+          projectId: 1//0h9Seguyttu2rCgYIARAAGBESNwF-L9IrRqJcYBwO0Gn6fTgDr1S8O1l9whSJLnTOn8MokOhmJ1nmQBgdShrCy7R_ui-lRplc96c

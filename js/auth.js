@@ -18,7 +18,7 @@ export async function go() {
   const e = $("ae");
   e.textContent = "";
 
-  if (!/^[a-z0-9_]{3,20}$/.test(u)) return e.textContent = "Usuário: 3 a 20 letras minúsculas, números ou _.";
+  if (!/^[[a-z0-9_]{3,20}$/.test(u)) return e.textContent = "Usuário: 3 a 20 letras minúsculas, números ou _.";
   if (p.length < 6) return e.textContent = "A senha precisa de pelo menos 6 caracteres.";
 
   const em = u + "@meutreino.app";

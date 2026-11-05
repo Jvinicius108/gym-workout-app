@@ -9,8 +9,8 @@ export const ready = () => state.P && state.P.tipo && state.P.freq &&
 export const userDoc = () => doc(db, "users", state.uid);
 
 const MAX_CACHE = 50;
-const cacheOrder = [];          
-const pendingPhotos = new Set(); 
+const cacheOrder = [];
+const pendingPhotos = new Set();
 
 export function addToCache(id, d) {
   state.cache[id] = d;
@@ -58,7 +58,7 @@ export async function putGlobalFoto(name, d) {
   } catch (e) {
     console.error("putGlobalFoto:", e);
     showToast("Erro ao salvar no Banco Global.", "error");
-    throw e; 
+    throw e;
   }
   return globalId;
 }
@@ -86,13 +86,12 @@ export function hydrate() {
   const toFetch = new Set();
   document.querySelectorAll("img[data-f]").forEach(im => {
     const id = im.dataset.f;
-    
-    if (!id || id === 'null' || id === 'undefined' || typeof id !== 'string') return; 
-    
+
+    if (!id || id === 'null' || id === 'undefined' || typeof id !== 'string') return;
+
     if (state.cache[id]) { im.src = state.cache[id]; return; }
     if (!pendingPhotos.has(id)) toFetch.add(id);
   });
-
 
   document.querySelectorAll("img[data-global]").forEach(im => {
     const name = im.dataset.global;
@@ -113,8 +112,7 @@ export function hydrate() {
 
     promise.then(snap => {
       pendingPhotos.delete(id);
-      
-      // ✅ SE NÃO ENCONTRAR, COLOCA O PLACEHOLDER PARA NÃO FICAR IMAGEM QUEBRADA
+
       if (!snap.exists() || !snap.data().d) {
           document.querySelectorAll(`img[data-f="${CSS.escape(id)}"]`).forEach(im => {
               const parent = im.parentElement;
@@ -124,7 +122,7 @@ export function hydrate() {
           });
           return;
       }
-      
+
       const d = snap.data().d;
       addToCache(id, d);
 

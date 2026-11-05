@@ -28,10 +28,8 @@ window.addEventListener('error', e => {
   console.error('JS Error:', e.error || e.message, e.filename, e.lineno);
 });
 
-// ✅ ARRAY PARA AS ANIMAÇÕES DE NEVE
 let snowAnims = [];
 
-// ✅ FUNÇÃO PARA INICIAR OS CHAPÉUS DE NATAL
 function initSantaHats() {
     if (!document.body.classList.contains('theme-christmas')) return;
     if (!window.lottie) return;
@@ -39,7 +37,7 @@ function initSantaHats() {
     document.querySelectorAll('.santa-hat').forEach(hat => {
         if (hat.dataset.loaded) return;
         hat.dataset.loaded = 'true';
-        
+
         window.lottie.loadAnimation({
             container: hat,
             renderer: 'svg',
@@ -49,27 +47,24 @@ function initSantaHats() {
         });
     });
 }
-// ✅ TUNER DA NEVE — aplicado antes de carregar no Lottie
+
 function tuneSnowflakes(data, opts = {}) {
   const {
-    scale = 0.5,          // multiplicador de tamanho (<1 = menores)
-    flakesPerGroup = 6,   // quantos flocos manter por grupo (original: 16)
-    groups = 2            // quantos grupos na cena (original: 3)
+    scale = 0.5,
+    flakesPerGroup = 6,
+    groups = 2
   } = opts;
 
   const comp = data.assets?.find(a => a.id === 'comp_0');
 
-  // 1) Reduzir flocos por grupo
   if (comp && comp.layers.length > flakesPerGroup) {
     comp.layers = comp.layers.slice(0, flakesPerGroup);
   }
 
-  // 2) Reduzir grupos (instâncias de comp_0 no layer raiz)
   if (Array.isArray(data.layers) && data.layers.length > groups) {
     data.layers = data.layers.slice(0, groups);
   }
 
-  // 3) Reduzir escala de cada floco
   if (comp) {
     comp.layers.forEach(layer => {
       const s = layer.ks?.s?.k;
@@ -88,42 +83,38 @@ function applyHolidayTheme() {
     const mes = hoje.getMonth() + 1;
     const dia = hoje.getDate();
     const snowContainer = document.getElementById('snow-container');
-    
-    // Limpa temas anteriores
+
     document.body.classList.remove('theme-halloween', 'theme-christmas', 'theme-newyear');
-    
+
     const clearSnow = () => {
         snowAnims.forEach(anim => { try { anim.destroy(); } catch(e){} });
         snowAnims = [];
         if (snowContainer) snowContainer.innerHTML = '';
     };
 
-     // Em app.js, dentro de applyHolidayTheme():
-    // 🎅 NATAL (01 a 26 de Dezembro)
-    if (mes === 12 && dia >= 1 && dia <= 26) { 
-        document.body.classList.add('theme-christmas'); 
+    if (mes === 12 && dia >= 1 && dia <= 26) {
+        document.body.classList.add('theme-christmas');
         clearSnow();
-        
-        // ✅ ALTERAÇÃO AQUI: Passa o nome do usuário para o tema de Natal
+
         const nomeUsuario = (state.P && (state.P.displayName || state.P.nome)) ? (state.P.displayName || state.P.nome) : "Atleta";
-        
+
         if (typeof initChristmasTheme === 'function') {
             initChristmasTheme(snowContainer, nomeUsuario);
         }
-    } 
-    // 🎃 HALLOWEEN (20 a 31 de Outubro)
-    else if (mes === 10 && dia >= 20 && dia <= 31) { 
-        document.body.classList.add('theme-halloween'); 
+    }
+
+    else if (mes === 10 && dia >= 20 && dia <= 31) {
+        document.body.classList.add('theme-halloween');
         clearSnow();
         if (typeof initHalloweenTheme === 'function') initHalloweenTheme(snowContainer);
-    } 
-    // 🥂 ANO NOVO (01 a 10 de Janeiro)
-    else if (mes === 1 && dia >= 1 && dia <= 10) { 
-        document.body.classList.add('theme-newyear'); 
+    }
+
+    else if (mes === 1 && dia >= 1 && dia <= 10) {
+        document.body.classList.add('theme-newyear');
         clearSnow();
         if (typeof initNewYearTheme === 'function') initNewYearTheme(snowContainer);
-    } 
-    // DIAS NORMAIS
+    }
+
     else {
         clearSnow();
     }
@@ -138,7 +129,7 @@ document.addEventListener("click", async e => {
   }
 
   const elementoClicado = target.closest('button, .ov, [data-start], [data-zoom="true"], #waterWidget');
-  
+
   if (!elementoClicado) return;
 
   if (elementoClicado.dataset.zoom === "true") {
@@ -161,7 +152,6 @@ document.addEventListener("click", async e => {
     return;
   }
 
-  // C) Botão de Iniciar Treino
   if (elementoClicado.dataset.start) {
     e.stopPropagation();
     if (state.sel > key(new Date())) {
@@ -192,13 +182,12 @@ document.addEventListener("click", async e => {
     if (state.forcedLetter) localStorage.setItem("forcedLetter_" + state.uid, state.forcedLetter);
     else localStorage.removeItem("forcedLetter_" + state.uid);
     localStorage.setItem("completedExs_" + state.uid, "[]");
-    
+
     startWorkoutTimer();
     refresh();
     return;
   }
 
-  // D) SE FOR UM BOTÃO NORMAL OU OVERLAY (.ov), REPASSA PARA OS HANDLERS
   const D = elementoClicado.dataset;
 
   if (await handleWaterClicks(elementoClicado, D)) return;
@@ -288,10 +277,10 @@ document.addEventListener("keydown", e => {
 
 if ('serviceWorker' in navigator && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
   let refreshing = false;
-  let userRequestedUpdate = false; // ✅ VARIÁVEL DECLARADA AQUI NO TOPO
+  let userRequestedUpdate = false;
 
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    // Só recarrega se o usuário tiver clicado no botão de atualizar
+
     if (!userRequestedUpdate) return;
     if (refreshing) return;
     refreshing = true;
@@ -324,9 +313,9 @@ if ('serviceWorker' in navigator && location.hostname !== 'localhost' && locatio
       const btn = document.createElement('button');
       btn.textContent = 'Atualizar';
       btn.style.cssText = 'background:var(--ac);color:#fff;border:none;border-radius:6px;padding:6px 12px;font-weight:700;font-size:0.8125rem;cursor:pointer;flex-shrink:0;';
-      
+
       btn.onclick = () => {
-        userRequestedUpdate = true; // ✅ AVISA QUE O USUÁRIO PEDIU A ATUALIZAÇÃO
+        userRequestedUpdate = true;
         btn.textContent = 'Atualizando...';
         btn.disabled = true;
         if (reg.waiting) {
@@ -360,8 +349,8 @@ if (!CONFIGURADO) {
   authView("Falta colar a configuração do Firebase no arquivo (veja o trecho firebaseConfig).");
 } else {
   onAuthStateChanged(auth, async u => {
-    applyHolidayTheme(); // ✅ Aplica o tema comemorativo assim que o app carrega
-    
+    applyHolidayTheme();
+
     if (u) {
       if (u.uid === "Y5WAFq09SZfYoA0kz0Uk5Q71o8p1") {
         $("splash").classList.add("hide");
@@ -370,7 +359,7 @@ if (!CONFIGURADO) {
         await boot(u);
       }
     } else {
-      // ✅ Limpeza forçada quando o usuário sai ou o token expira
+
       const adminScreen = document.getElementById("adminScreen");
       if (adminScreen) adminScreen.remove();
 
@@ -389,7 +378,7 @@ window.addEventListener('online', async () => {
   try {
     const { processPhotoUploadQueue } = await import('./db.js');
     await processPhotoUploadQueue();
-  } catch (e) { /* ignora */ }
+  } catch (e) {  }
 });
 
 window.addEventListener('offline', () => {
@@ -418,12 +407,12 @@ function updateAnimationPauseState() {
     animationsPaused = true;
     pauseWater();
     pauseMascotFire();
-    // ✅ A NEVE NÃO É PAUSADA AQUI, ELA CONTINUA FLUIDA
+
   } else if (!isBlocked && animationsPaused) {
     animationsPaused = false;
     resumeWater();
     resumeMascotFire();
-    // ✅ A NEVE NÃO É RETOMADA AQUI, POIS NUNCA FOI PAUSADA
+
   }
 }
 
@@ -447,40 +436,32 @@ document.addEventListener('visibilitychange', () => {
   updateAnimationPauseState();
 });
 
-// ===== REATIVIDADE DO STATE (Ouvinte Global) =====
 window.addEventListener('state:changed', async (e) => {
   const { property, value } = e.detail;
-  
-  // Importamos os dois arquivos necessários
+
   const ui = await import('./ui.js');
   const helpers = await import('./helpers.js');
 
-  // 1. ÁGUA
   if (property === 'waterCurrent' || property === 'waterGoal') {
     ui.updateWaterUI();
   }
 
-  // 2. MODO TREINO (Ativar/Desativar tela de treino)
   if (property === 'inWorkoutMode') {
-    helpers.refresh(); // <-- CORREÇÃO: Agora chamamos do helpers.js!
+    helpers.refresh();
   }
 
-  // 3. SELETOR DE TREINOS (Modal de descanso/troca)
   if (property === 'inSelectorMode') {
     ui.renderWorkoutSelector();
   }
 
-  // 4. MODO CONFIGURAÇÃO E DETALHES DO EXERCÍCIO
   if (property === 'inConfigMode' || property === 'configDetail' || property === 'editingExIndex') {
     ui.renderConfigScreen();
   }
 
-  // 5. MODO SUBSTITUTOS
   if (property === 'inSubstitutesMode') {
     ui.renderSubstitutesScreen();
   }
 
-  // 6. MODO MASCOTE
   if (property === 'inMascotMode') {
     ui.renderMascotScreen();
   }

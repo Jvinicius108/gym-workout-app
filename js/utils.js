@@ -115,7 +115,6 @@ export function safeRender(targetId, html) {
   }
 }
 
-// ✅ NOVA BIBLIOTECA DE ÍCONES (LUCIDE ICONS)
 const svg = (content, size=20) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="${size}" height="${size}">${content}</svg>`;
 
 export const Icons = {
@@ -138,8 +137,7 @@ export const Icons = {
   down: svg('<polyline points="6 9 12 15 18 9"></polyline>', 18),
   dumbbell: svg('<path d="M6.5 6.5h11M6.5 17.5h11M3 9.5h1.5M3 14.5h1.5M19.5 9.5H21M19.5 14.5H21M6.5 6.5V17.5M17.5 6.5V17.5"></path>', 24),
   dumbbellLarge: svg('<path d="M6.5 6.5h11M6.5 17.5h11M3 9.5h1.5M3 14.5h1.5M19.5 9.5H21M19.5 14.5H21M6.5 6.5V17.5M17.5 6.5V17.5"></path>', 32),
-  
-  // ✅ NOVOS ÍCONES PROFISSIONAIS ADICIONADOS
+
   swap: svg('<path d="m16 3 4 4-4 4"></path><path d="M20 7H4"></path><path d="m8 21-4-4 4-4"></path><path d="M4 17h16"></path>', 18),
   link: svg('<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>', 18),
   book: svg('<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>', 18),
@@ -156,16 +154,33 @@ export const Icons = {
 };
 
 export function isWeekCompensated(date) {
-    if (!state.P || !state.P.freq || state.P.freq === 0) return false;
-    const dayOfWeek = (date.getDay() + 6) % 7;
-    const monday = new Date(date.getFullYear(), date.getMonth(), date.getDate() - dayOfWeek);
-    const today = new Date();
-    const todayMonday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - ((today.getDay() + 6) % 7));
-    if (monday.getTime() === todayMonday.getTime()) return true;
-    let count = 0;
-    for (let i = 0; i <= 6; i++) {
-        const temp = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i);
-        if (state.F[key(temp)]) count++;
+  if (!state.P || !state.P.rest || !state.F) return false;
+  const targetKey = key(date);
+  const isRest = state.P.rest.includes(mi(date));
+  if (isRest || state.F[targetKey]) return false;
+
+  const dayOfWeek = mi(date);
+  const monday = new Date(date.getFullYear(), date.getMonth(), date.getDate() - dayOfWeek);
+  const today = new Date();
+  const k0 = key(today);
+
+  let shieldsEarned = 0;
+  const missedPlannedDays = [];
+
+  for (let i = 0; i < 7; i++) {
+    const temp = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i);
+    const k = key(temp);
+    const tempIsRest = state.P.rest.includes(mi(temp));
+    if (tempIsRest) {
+      if (state.F[k]) shieldsEarned++;
+    } else {
+      if (k < k0 && !state.F[k] && temp.getTime() >= (state.P.createdAt || 0)) {
+        missedPlannedDays.push(k);
+      }
     }
-    return count >= state.P.freq;
+  }
+
+  if (shieldsEarned === 0) return false;
+  const coveredKeys = missedPlannedDays.slice(0, shieldsEarned);
+  return coveredKeys.includes(targetKey);
 }

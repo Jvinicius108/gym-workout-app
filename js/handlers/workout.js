@@ -18,21 +18,20 @@ export async function handleWorkoutAndConfig(t, D) {
     showToast(`O Treino ${letter} está vazio. Adicione exercícios antes.`, "info");
     return true;
   }
-  
-  // O Proxy detecta e fecha o seletor!
+
   state.inSelectorMode = false;
-  
+
   state.forcedLetter = letter;
-  // O Proxy detecta e desenha a tela de treino!
+
   state.inWorkoutMode = true;
   state.completedExs.clear();
   state.activeSwaps = {};
-  
+
   localStorage.setItem("inWorkoutMode_" + state.uid, "true");
   localStorage.setItem("sel_" + state.uid, state.sel);
   localStorage.setItem("forcedLetter_" + state.uid, state.forcedLetter);
   localStorage.setItem("completedExs_" + state.uid, "[]");
-  
+
   state.hasShownSupersetWarning = false;
   const temSuperset = (state.P.ex[letter] || []).some(e => e.supersetId);
   if (temSuperset) {
@@ -53,7 +52,7 @@ export async function handleWorkoutAndConfig(t, D) {
       state.showLetterSelector = false;
       state.completedExs.clear();
       state.activeSwaps = {};
-      state.inWorkoutMode = false; // O Proxy detecta essa alteração e chama o refresh() sozinho
+      state.inWorkoutMode = false;
       state.pendDuration = null;
       resetWorkoutTimer();
       localStorage.removeItem("inWorkoutMode_" + state.uid);
@@ -64,7 +63,7 @@ export async function handleWorkoutAndConfig(t, D) {
     }
 
     if (D.exit) {
-      state.inWorkoutMode = false; // O Proxy detecta essa alteração e chama o refresh() sozinho
+      state.inWorkoutMode = false;
       state.forcedLetter = null;
       state.completedExs.clear();
       state.activeSwaps = {};
@@ -87,7 +86,7 @@ export async function handleWorkoutAndConfig(t, D) {
       const idx = +D.weight;
       state.curExIndex = idx;
       state.curExLetter = state.letter;
-      
+
       const ex = state.P.ex[state.curExLetter][state.curExIndex];
       const swapped = state.activeSwaps && state.activeSwaps[idx];
 
@@ -100,7 +99,7 @@ export async function handleWorkoutAndConfig(t, D) {
           $("wInput").value = ex.w || "";
           $("wUnit").value = ex.wu || "kg";
       }
-      
+
       $("ov").classList.add("on");
       $("mdW").classList.add("on");
       return true;
@@ -297,25 +296,25 @@ export async function handleWorkoutAndConfig(t, D) {
           if (sub) { baseEx = state.P.ex[sub.letter][sub.index]; state.subsTargetIndex = sub.index; state.letter = sub.letter; }
       }
       if (!baseEx) return true;
-      
+
       const sub = baseEx.substitutes[state.editingSubIndex];
       if (!sub) return true;
 
       state.pendingSubstitutePhoto = sub.f ? state.cache[sub.f] : null;
-      
+
       if ($("subNameInput")) $("subNameInput").value = sub.name;
       if ($("subIsCardio")) $("subIsCardio").checked = (sub.type === 'cardio');
-      
+
       if (sub.type === 'cardio') {
           if ($("subStrengthFields")) $("subStrengthFields").style.display = 'none';
           if ($("subCardioFields")) $("subCardioFields").style.display = 'block';
-          if ($("subDurationInput")) $("subDurationInput").value = sub.sets.replace(/[^\d]/g, '');
+          if ($("subDurationInput")) $("subDurationInput").value = sub.sets.replace(/[[^\d]/g, '');
       } else {
           if ($("subStrengthFields")) $("subStrengthFields").style.display = 'flex';
           if ($("subCardioFields")) $("subCardioFields").style.display = 'none';
           if ($("subSetsInput")) $("subSetsInput").value = sub.sets;
       }
-      
+
       if ($("subPhotoPreview")) {
           if (sub.f && state.cache[sub.f]) {
               $("subPhotoPreview").src = state.cache[sub.f];
@@ -331,7 +330,7 @@ export async function handleWorkoutAndConfig(t, D) {
               $("subPhotoPreview").removeAttribute("data-f");
           }
       }
-      
+
       if ($("subBaseExerciseArea")) $("subBaseExerciseArea").style.display = 'none';
       $("ov").classList.add("on");
       $("mdAddSubstitute").classList.add("on");
@@ -405,15 +404,15 @@ export async function handleWorkoutAndConfig(t, D) {
             }
         }
       }
-      
+
       persist({ ex: state.P.ex });
       state.pendingSubstitutePhoto = null;
       fechaModal();
-      
+
       if ($("allSubsScreen").classList.contains("on")) renderAllSubsScreen();
       else if (state.inSubstitutesMode) renderSubstitutesScreen();
       else renderConfigScreen();
-      
+
       showToast("Salvo com sucesso!", "success");
       return true;
     }
@@ -421,12 +420,12 @@ export async function handleWorkoutAndConfig(t, D) {
     if (D.swapEx !== undefined) {
       const idx = +D.swapEx;
       const ex = state.P.ex[state.letter][idx];
-      
+
       const dicSubs = getSubstitutosPara(ex.name);
       let allSubs = [];
-      
+
       if (ex.substitutes) ex.substitutes.forEach(s => allSubs.push(s));
-      
+
       const key = String(ex.name).trim().toLowerCase();
       const globalSubs = state.globalSubstitutes ? (state.globalSubstitutes[key] || []) : [];
       globalSubs.forEach(g => {
@@ -435,9 +434,9 @@ export async function handleWorkoutAndConfig(t, D) {
 
       if (dicSubs.principais) dicSubs.principais.forEach(p => { if (!allSubs.find(s => s.name === p.name)) allSubs.push({ name: p.name, sets: ex.sets || '3x12', type: 'strength', f: '' }); });
       if (dicSubs.secundarios) dicSubs.secundarios.forEach(p => { if (!allSubs.find(s => s.name === p.name)) allSubs.push({ name: p.name, sets: ex.sets || '3x12', type: 'strength', f: '' }); });
-      
+
       if (allSubs.length === 0) { showToast("Nenhum substituto cadastrado.", "info"); return true; }
-      
+
       let listHtml = "";
       allSubs.forEach((sub, subIdx) => {
         listHtml += `<button class="link-choice-btn" data-do-swap="${idx}|${subIdx}"><span>${esc(sub.name)} <small style="color:var(--mu);">(${esc(sub.sets)})</small></span><span style="color:var(--water);">${Icons.swap}</span></button>`;
@@ -457,20 +456,20 @@ export async function handleWorkoutAndConfig(t, D) {
       const idx = +parts[0];
       const subIdx = +parts[1];
       const ex = state.P.ex[state.letter][idx];
-      
-      if (subIdx === -1) { delete state.activeSwaps[idx]; } 
-      else { 
+
+      if (subIdx === -1) { delete state.activeSwaps[idx]; }
+      else {
           const dicSubs = getSubstitutosPara(ex.name);
           let allSubs = [];
           if (ex.substitutes) ex.substitutes.forEach(s => allSubs.push(s));
-          
+
           const key = String(ex.name).trim().toLowerCase();
           const globalSubs = state.globalSubstitutes ? (state.globalSubstitutes[key] || []) : [];
           globalSubs.forEach(g => { if (!allSubs.find(s => s.name === g.name)) allSubs.push({ name: g.name, sets: g.sets, type: 'strength', f: g.f }); });
 
           if (dicSubs.principais) dicSubs.principais.forEach(p => { if (!allSubs.find(s => s.name === p.name)) allSubs.push({ name: p.name, sets: ex.sets || '3x12', type: 'strength', f: '' }); });
           if (dicSubs.secundarios) dicSubs.secundarios.forEach(p => { if (!allSubs.find(s => s.name === p.name)) allSubs.push({ name: p.name, sets: ex.sets || '3x12', type: 'strength', f: '' }); });
-          
+
           const sub = allSubs[subIdx];
           if (sub) {
               state.activeSwaps[idx] = sub;
@@ -511,9 +510,9 @@ export async function handleWorkoutAndConfig(t, D) {
       const setsText = ex.sets || "";
       state.editingIsCardio = false; state.editSets = ""; state.editReps = ""; state.editDuration = "";
       if (setsText.toLowerCase().includes("min")) {
-          state.editingIsCardio = true; state.editDuration = setsText.replace(/[^\d]/g, ''); 
+          state.editingIsCardio = true; state.editDuration = setsText.replace(/[[^\d]/g, '');
       } else {
-          const match = setsText.match(/(\d+)\s*[xX]\s*(\d+)/);
+          const match = setsText.match(/(\d+)\s*[[xX]\s*(\d+)/);
           if (match) { state.editSets = match[1]; state.editReps = match[2]; } else if (setsText) { state.editSets = setsText; }
       }
       renderConfigScreen();
@@ -594,9 +593,9 @@ export async function handleWorkoutAndConfig(t, D) {
           const weightVal = $("wInput").value.trim();
           const unitVal = $("wUnit").value;
 
-          if (swapped) { swapped.w = weightVal; swapped.wu = unitVal; } 
+          if (swapped) { swapped.w = weightVal; swapped.wu = unitVal; }
           else { const ex = state.P.ex[state.curExLetter][idx]; ex.w = weightVal; ex.wu = unitVal; }
-          
+
           persist({ ex: state.P.ex });
           fechaModal();
           refresh();
