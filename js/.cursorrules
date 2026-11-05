@@ -1,0 +1,8 @@
+# Idioma Padrão
+Always respond in Portuguese (pt-BR). All explanations, code comments, and chat responses must be in Portuguese (Brazil).
+
+# Automação de Git e Deploy
+Sempre que eu solicitar para enviar, commitar, fazer deploy ou subir as alterações:
+1. Execute o comando no terminal: git add .
+2. Crie uma mensagem de commit clara e descritiva em português resumindo o que foi alterado e execute: git commit -m "mensagem descritiva"
+3. Execute o comando no terminal: git push origin main

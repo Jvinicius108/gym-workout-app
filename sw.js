@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gym-workout-v202611051443';
+const CACHE_NAME = 'gym-workout-v202611051507';
 
 const ASSETS = [
   './',
