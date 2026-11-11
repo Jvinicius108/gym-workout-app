@@ -2,7 +2,6 @@ import { state } from '../state.js';
 import { $, key, vibrate } from '../utils.js';
 import { persist } from '../db.js';
 import { updateWaterUI, drawer } from '../ui.js';
-import { toggleWaterReminder, startWaterReminderTimer } from '../water-reminder.js';
 
 export async function handleWaterClicks(t, D) {
   if (t.id === "btnAddWater") {
@@ -58,19 +57,7 @@ export async function handleWaterClicks(t, D) {
     drawer();
     return true;
   }
-  if (t.id === "btnToggleReminder") {
-    toggleWaterReminder();
-    return true;
-  }
-  if (D.reminderTime) {
-    state.waterReminderTime = +D.reminderTime;
-    state.P.waterReminderTime = +D.reminderTime;
-    persist({ waterReminderTime: +D.reminderTime, waterReminder: state.waterReminder });
-    startWaterReminderTimer();
-    drawer();
-    return true;
-  }
-  if (t.id === "saveWaterDrawer") {
+      if (t.id === "saveWaterDrawer") {
     let newGoal = state.waterGoal, newSize = state.waterSize;
     if ($("waterGoalInput")) {
       const v = parseFloat($("waterGoalInput").value.replace(',', '.'));

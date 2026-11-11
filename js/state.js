@@ -37,6 +37,8 @@ const estadoInicial = {
   pendingWater: null,
   waterReminder: false,
   waterReminderTime: 60,
+  notifyWorkout: false,
+  notifyMotivation: false,
   lastWaterDate: "",
   showWaterSizeInput: false,
   showWaterGoalInput: false,
@@ -101,6 +103,8 @@ export function resetState() {
   state.pendingWater = null;
   state.waterReminder = false;
   state.waterReminderTime = 60;
+  state.notifyWorkout = false;
+  state.notifyMotivation = false;
   state.lastWaterDate = "";
   state.pendingEvolution = null;
   state.isUpdate = false;

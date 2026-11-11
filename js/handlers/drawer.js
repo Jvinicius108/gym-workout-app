@@ -6,6 +6,7 @@ import { theme, main, drawer, openEvolution, renderConfigScreen, renderMascotScr
 import { handleDeleteAccount } from '../auth.js';
 import { cleanupSubscriptions } from '../sync.js';
 import { stopWaterReminder } from '../water-reminder.js';
+import { toggleWaterReminder, toggleWorkoutReminder, toggleMotivationReminder, sendTestNotification, initNotifications, startWaterReminderTimer } from '../notifications.js';
 import { stopTimer, resetWorkoutTimer } from '../timers.js';
 import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { auth } from '../config.js';
@@ -158,6 +159,20 @@ export async function handleDrawerAndModals(t, D) {
     if (D.resttime) {
       state.P.restTime = +D.resttime;
       persist({ restTime: state.P.restTime });
+      drawer();
+      return true;
+    }
+    if (t.id === "btnNotifSettings") { $("dr").dataset.view = "notifications"; drawer(); return true; }
+    if (t.id === "btnNotifBack") { $("dr").dataset.view = "main"; drawer(); return true; }
+    if (t.id === "btnToggleWaterNotif") { toggleWaterReminder(); return true; }
+    if (t.id === "btnToggleWorkoutNotif") { toggleWorkoutReminder(); return true; }
+    if (t.id === "btnToggleMotivationNotif") { toggleMotivationReminder(); return true; }
+    if (t.id === "btnTestNotification") { sendTestNotification(); return true; }
+    if (D.reminderTime) {
+      state.waterReminderTime = +D.reminderTime;
+      state.P.waterReminderTime = +D.reminderTime;
+      persist({ waterReminderTime: +D.reminderTime, waterReminder: state.waterReminder });
+      startWaterReminderTimer();
       drawer();
       return true;
     }

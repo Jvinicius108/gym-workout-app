@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gym-workout-v202611051507';
+const CACHE_NAME = 'gym-workout-v202611111310';
 
 const ASSETS = [
   './',
@@ -30,6 +30,7 @@ const ASSETS = [
   './js/sync.js',
   './js/auth.js',
   './js/water-reminder.js',
+  './js/notifications.js',
   './js/handlers/water.js',
   './js/handlers/drawer.js',
   './js/handlers/workout.js',
@@ -69,6 +70,11 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
+  }
+  if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
+    event.waitUntil(
+      self.registration.showNotification(event.data.title, event.data.options)
+    );
   }
 });
 

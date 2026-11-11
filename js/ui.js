@@ -9,6 +9,7 @@ import { mascotQuotes } from './mascot_quotes.js';
 import { openEvolution, drawChart } from './ui-evolution.js';
 import { renderConfigScreen, renderMascotScreen, renderSubstitutesScreen, renderAllSubsScreen } from './ui-settings.js';
 import { getSubstitutosPara } from './substitutions.js';
+import { toggleWorkoutReminder, toggleMotivationReminder, sendTestNotification } from './notifications.js';
 
 let lottieAnimation = null;
 const dayAnimations = new Map();
@@ -608,6 +609,64 @@ export function drawer() {
   const dr = $("dr");
   let h = "";
 
+  if (dr.dataset.view === 'notifications') {
+    h = `
+      <div class="water-header">
+         <button class="ic" id="btnNotifBack" aria-label="Voltar">${Icons.arrowLeft}</button>
+         <h2 class="mt-0">Notificações</h2>
+      </div>
+
+      <div class="config-section">
+        <div class="notif-toggle-row">
+          <div class="notif-toggle-label">
+            <b>💧 Lembrete de Água</b>
+            <small>Avisa quando é hora de beber água</small>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="btnToggleWaterNotif" ${state.waterReminder ? 'checked' : ''}>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        ${state.waterReminder ? `
+          <div style="padding: 8px 0 16px; margin-left: 4px;">
+            <small style="color: var(--mu);">Avisar a cada:</small>
+            <div class="row mt-8">
+              ${[30, 60, 120, 180].map(m => `<button class="chip${state.waterReminderTime === m ? ' on' : ''}" data-reminder-time="${m}">${m >= 60 ? (m/60)+'h' : m+'min'}</button>`).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        <div class="notif-toggle-row">
+          <div class="notif-toggle-label">
+            <b>🔥 Alerta do Mascote</b>
+            <small>Avisa se ficar mais de 1 dia sem treinar</small>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="btnToggleWorkoutNotif" ${state.notifyWorkout ? 'checked' : ''}>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="notif-toggle-row">
+          <div class="notif-toggle-label">
+            <b>💡 Frase Motivacional</b>
+            <small>Receba uma frase inspiradora por dia</small>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="btnToggleMotivationNotif" ${state.notifyMotivation ? 'checked' : ''}>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <button class="btn btn-secondary mt-24" id="btnTestNotification" style="width: 100%;">🔔 Enviar Notificação de Teste</button>
+      </div>
+    `;
+
+    safeRender("dr", h);
+    return;
+  }
+
   if (dr.dataset.view === 'water') {
     const isCopo = state.waterType === 'copo';
     const currentLabel = state.waterGoal >= 1000 ? (state.waterGoal/1000).toFixed(1).replace('.0', '')+'L' : state.waterGoal+'ml';
@@ -634,20 +693,7 @@ export function drawer() {
     h += `
         <button class="btn btn-secondary btn-water-action" id="btnEditWaterMode">ALTERAR META DIÁRIA (ATUAL: ${currentLabel})</button>
 
-        <div class="water-separator">
-            <h3 class="mt-0">🔔 Lembrete de Água</h3>
-            <button class="btn btn-secondary btn-reminder-toggle" id="btnToggleReminder" style="color: ${state.waterReminder ? 'var(--success)' : 'var(--mu)'}; border-color: ${state.waterReminder ? 'var(--success)' : 'var(--bd)'}">
-                ${state.waterReminder ? '✅ Ativado' : '🔕 Ativar Lembrete'}
-            </button>
-
-            ${state.waterReminder ? `
-                <p class="water-reminder-text">Avisar a cada:</p>
-                <div class="row justify-center mt-8">
-                    ${[30, 60, 120, 180].map(m => `<button class="chip${state.waterReminderTime === m ? ' on' : ''}" data-reminder-time="${m}">${m >= 60 ? (m/60)+'h' : m+'min'}</button>`).join('')}
-                </div>
-            ` : ''}
-        </div>
-    `;
+        `;
 
     if (state.showWaterGoalInput) {
         const valGoal = isCopo ? state.waterGoal : (state.waterGoal / 1000).toFixed(2).replace(/\.?0+$/, "");
@@ -692,6 +738,10 @@ export function drawer() {
       <span class="menu-btn-content">${Icons.water} Meta de Água Diária</span> <span class="menu-btn-arrow">›</span>
     </button>
 
+    <button class="btn-menu" id="btnNotifSettings">
+      <span class="menu-btn-content">${Icons.bell} Notificações</span> <span class="menu-btn-arrow">›</span>
+    </button>
+
     <h3>Dias de repouso</h3>
     <div class="row">${DS.map((n, i) => `<button class="chip${state.P.rest.includes(i) ? " on" : ""}" data-rest2="${i}">${n}</button>`).join("")}</div>
 
@@ -707,7 +757,7 @@ export function drawer() {
     <button class="btn btn-ghost mt-12" id="btnDeleteAccount" style="font-size:12px;">Excluir Conta Permanentemente</button>
 
     <!-- ✅ VERSÃO VISÍVEL (O script update-version.js vai substituir isso) -->
-    <div style="text-align: center; font-size: 10px; color: var(--mu); margin-top: 20px; opacity: 0.5;">Versão: v202611051507</div>
+    <div style="text-align: center; font-size: 10px; color: var(--mu); margin-top: 20px; opacity: 0.5;">Versão: v202611111310</div>
   `;
 
   safeRender("dr", h);

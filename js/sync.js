@@ -5,7 +5,7 @@ import { persist, userDoc, processPhotoUploadQueue, resetPhotoCache } from './db
 import { calculateStreakAndMisses } from './streak.js';
 import { scheduleRender } from './helpers.js';
 import { show, showWelcome, theme, strip, main, drawer, updateWaterUI, updateMascotVisuals, showMascotSpeech } from './ui.js';
-import { startWaterReminderTimer } from './water-reminder.js';
+import { initNotifications as startWaterReminderTimer } from './notifications.js';
 import { collection, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 let unsubUser = null, unsubFeitos = null, unsubGlobalSubs = null;
@@ -67,6 +67,8 @@ async function ensureUserDoc(user) {
       waterGoal: 3000, waterCurrent: 0, waterSize: 250, waterType: "copo",
       waterReminder: false,
       waterReminderTime: 60,
+      notifyWorkout: false,
+      notifyMotivation: false,
       lastWaterDate: todayStr, animSeen: {}, lastWelcome: "",
       createdAt: Date.now()
     });
@@ -169,6 +171,8 @@ export async function boot(user) {
       state.waterType = state.P.waterType || "copo";
       state.waterReminder = state.P.waterReminder || false;
       state.waterReminderTime = state.P.waterReminderTime || 60;
+      state.notifyWorkout = state.P.notifyWorkout || false;
+      state.notifyMotivation = state.P.notifyMotivation || false;
       state.lastWaterDate = state.P.lastWaterDate || "";
 
       const todayKey = key(new Date());
