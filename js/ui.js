@@ -622,10 +622,9 @@ export function drawer() {
             <b>💧 Lembrete de Água</b>
             <small>Avisa quando é hora de beber água</small>
           </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="btnToggleWaterNotif" ${state.waterReminder ? 'checked' : ''}>
+          <button type="button" class="toggle-switch ${state.waterReminder ? 'active' : ''}" id="btnToggleWaterNotif" role="switch" aria-checked="${state.waterReminder ? 'true' : 'false'}" aria-label="Lembrete de Água">
             <span class="toggle-slider"></span>
-          </label>
+          </button>
         </div>
 
         ${state.waterReminder ? `
@@ -642,10 +641,9 @@ export function drawer() {
             <b>🔥 Alerta do Mascote</b>
             <small>Avisa se ficar mais de 1 dia sem treinar</small>
           </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="btnToggleWorkoutNotif" ${state.notifyWorkout ? 'checked' : ''}>
+          <button type="button" class="toggle-switch ${state.notifyWorkout ? 'active' : ''}" id="btnToggleWorkoutNotif" role="switch" aria-checked="${state.notifyWorkout ? 'true' : 'false'}" aria-label="Alerta do Mascote">
             <span class="toggle-slider"></span>
-          </label>
+          </button>
         </div>
 
         <div class="notif-toggle-row">
@@ -653,10 +651,9 @@ export function drawer() {
             <b>💡 Frase Motivacional</b>
             <small>Receba uma frase inspiradora por dia</small>
           </div>
-          <label class="toggle-switch">
-            <input type="checkbox" id="btnToggleMotivationNotif" ${state.notifyMotivation ? 'checked' : ''}>
+          <button type="button" class="toggle-switch ${state.notifyMotivation ? 'active' : ''}" id="btnToggleMotivationNotif" role="switch" aria-checked="${state.notifyMotivation ? 'true' : 'false'}" aria-label="Frase Motivacional">
             <span class="toggle-slider"></span>
-          </label>
+          </button>
         </div>
 
         <button class="btn btn-secondary mt-24" id="btnTestNotification" style="width: 100%;">🔔 Enviar Notificação de Teste</button>
@@ -757,7 +754,7 @@ export function drawer() {
     <button class="btn btn-ghost mt-12" id="btnDeleteAccount" style="font-size:12px;">Excluir Conta Permanentemente</button>
 
     <!-- ✅ VERSÃO VISÍVEL (O script update-version.js vai substituir isso) -->
-    <div style="text-align: center; font-size: 10px; color: var(--mu); margin-top: 20px; opacity: 0.5;">Versão: v202611111311</div>
+    <div style="text-align: center; font-size: 10px; color: var(--mu); margin-top: 20px; opacity: 0.5;">Versão: v202611111317</div>
   `;
 
   safeRender("dr", h);

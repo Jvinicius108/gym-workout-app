@@ -169,10 +169,10 @@ export async function boot(user) {
       state.waterGoal = state.P.waterGoal || 3000;
       state.waterSize = state.P.waterSize || 250;
       state.waterType = state.P.waterType || "copo";
-      state.waterReminder = state.P.waterReminder || false;
+            state.waterReminder = state.P.waterReminder !== undefined ? state.P.waterReminder : (localStorage.getItem("waterReminder_" + state.uid) === "true");
       state.waterReminderTime = state.P.waterReminderTime || 60;
-      state.notifyWorkout = state.P.notifyWorkout || false;
-      state.notifyMotivation = state.P.notifyMotivation || false;
+      state.notifyWorkout = state.P.notifyWorkout !== undefined ? state.P.notifyWorkout : (localStorage.getItem("notifyWorkout_" + state.uid) === "true");
+      state.notifyMotivation = state.P.notifyMotivation !== undefined ? state.P.notifyMotivation : (localStorage.getItem("notifyMotivation_" + state.uid) === "true");
       state.lastWaterDate = state.P.lastWaterDate || "";
 
       const todayKey = key(new Date());

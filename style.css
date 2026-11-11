@@ -821,39 +821,35 @@ body.theme-christmas .btn-secondary::after {
   width: 48px;
   height: 28px;
   flex-shrink: 0;
-}
-
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggle-slider {
-  position: absolute;
-  cursor: pointer;
-  inset: 0;
-  background: var(--bd);
   border-radius: 28px;
-  transition: 0.3s;
+  background: var(--bd);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  transition: background-color 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.toggle-slider::before {
-  content: "";
-  position: absolute;
-  height: 22px;
-  width: 22px;
-  left: 3px;
-  bottom: 3px;
-  background: white;
-  border-radius: 50%;
-  transition: 0.3s;
-}
-
-.toggle-switch input:checked + .toggle-slider {
+.toggle-switch.active,
+.toggle-switch[aria-checked="true"] {
   background: var(--ac);
 }
 
-.toggle-switch input:checked + .toggle-slider::before {
+.toggle-switch .toggle-slider {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.toggle-switch.active .toggle-slider,
+.toggle-switch[aria-checked="true"] .toggle-slider {
   transform: translateX(20px);
 }
