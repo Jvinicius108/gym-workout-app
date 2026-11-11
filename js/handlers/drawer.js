@@ -164,9 +164,9 @@ export async function handleDrawerAndModals(t, D) {
     }
     if (t.id === "btnNotifSettings") { $("dr").dataset.view = "notifications"; drawer(); return true; }
     if (t.id === "btnNotifBack") { $("dr").dataset.view = "main"; drawer(); return true; }
-    if (t.id === "btnToggleWaterNotif") { toggleWaterReminder(); return true; }
-    if (t.id === "btnToggleWorkoutNotif") { toggleWorkoutReminder(); return true; }
-    if (t.id === "btnToggleMotivationNotif") { toggleMotivationReminder(); return true; }
+    if (t.id === "btnToggleWaterNotif" || D.toggleNotif === "water") { toggleWaterReminder(); return true; }
+    if (t.id === "btnToggleWorkoutNotif" || D.toggleNotif === "workout") { toggleWorkoutReminder(); return true; }
+    if (t.id === "btnToggleMotivationNotif" || D.toggleNotif === "motivation") { toggleMotivationReminder(); return true; }
     if (t.id === "btnTestNotification") { sendTestNotification(); return true; }
     if (D.reminderTime) {
       state.waterReminderTime = +D.reminderTime;

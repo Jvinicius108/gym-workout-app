@@ -39,10 +39,13 @@ export function persist(fields) {
     misses: state.P.misses || 0, waterGoal: state.P.waterGoal ?? state.waterGoal ?? 3000,
     waterCurrent: state.P.waterCurrent ?? state.waterCurrent ?? 0, waterSize: state.P.waterSize ?? state.waterSize ?? 250,
     waterType: state.P.waterType ?? state.waterType ?? "copo", lastWaterDate: state.P.lastWaterDate || state.lastWaterDate || "",
-    notifyWorkout: state.P.notifyWorkout || false, notifyMotivation: state.P.notifyMotivation || false,
+    waterReminder: state.waterReminder ?? state.P.waterReminder ?? false,
+    waterReminderTime: state.waterReminderTime ?? state.P.waterReminderTime ?? 60,
+    notifyWorkout: state.notifyWorkout ?? state.P.notifyWorkout ?? false,
+    notifyMotivation: state.notifyMotivation ?? state.P.notifyMotivation ?? false,
     animSeen: state.P.animSeen || {}, lastWelcome: state.P.lastWelcome || "", createdAt: state.P.createdAt || Date.now()
   };
-  return updateDoc(userDoc(), data).catch(e => { console.error("persist:", e); });
+  return setDoc(userDoc(), data, { merge: true }).catch(e => { console.error("persist:", e); });
 }
 
 export function sanitizeName(name) {

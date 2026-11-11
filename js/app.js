@@ -128,7 +128,7 @@ document.addEventListener("click", async e => {
     return;
   }
 
-  const elementoClicado = target.closest('button, .ov, [data-start], [data-zoom="true"], #waterWidget');
+  const elementoClicado = target.closest('button, .ov, [data-start], [data-zoom="true"], #waterWidget, [data-toggle-notif]');
 
   if (!elementoClicado) return;
 

@@ -616,8 +616,8 @@ export function drawer() {
          <h2 class="mt-0">Notificações</h2>
       </div>
 
-      <div class="config-section">
-        <div class="notif-toggle-row">
+            <div class="config-section">
+        <div class="notif-toggle-row" data-toggle-notif="water">
           <div class="notif-toggle-label">
             <b>💧 Lembrete de Água</b>
             <small>Avisa quando é hora de beber água</small>
@@ -636,7 +636,7 @@ export function drawer() {
           </div>
         ` : ''}
 
-        <div class="notif-toggle-row">
+        <div class="notif-toggle-row" data-toggle-notif="workout">
           <div class="notif-toggle-label">
             <b>🔥 Alerta do Mascote</b>
             <small>Avisa se ficar mais de 1 dia sem treinar</small>
@@ -646,7 +646,7 @@ export function drawer() {
           </button>
         </div>
 
-        <div class="notif-toggle-row">
+        <div class="notif-toggle-row" data-toggle-notif="motivation">
           <div class="notif-toggle-label">
             <b>💡 Frase Motivacional</b>
             <small>Receba uma frase inspiradora por dia</small>
@@ -754,7 +754,7 @@ export function drawer() {
     <button class="btn btn-ghost mt-12" id="btnDeleteAccount" style="font-size:12px;">Excluir Conta Permanentemente</button>
 
     <!-- ✅ VERSÃO VISÍVEL (O script update-version.js vai substituir isso) -->
-    <div style="text-align: center; font-size: 10px; color: var(--mu); margin-top: 20px; opacity: 0.5;">Versão: v202611111318</div>
+    <div style="text-align: center; font-size: 10px; color: var(--mu); margin-top: 20px; opacity: 0.5;">Versão: v202611111401</div>
   `;
 
   safeRender("dr", h);

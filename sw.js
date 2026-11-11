@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gym-workout-v202611111318';
+const CACHE_NAME = 'gym-workout-v202611111401';
 
 const ASSETS = [
   './',
@@ -46,6 +46,7 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', (e) => {
+  self.skipWaiting();
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return Promise.allSettled(

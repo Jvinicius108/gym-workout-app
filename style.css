@@ -792,8 +792,11 @@ body.theme-christmas .btn-secondary::after {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 0;
+  padding: 14px 4px;
   border-bottom: 1px solid var(--bd);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .notif-toggle-row:last-child {
@@ -804,6 +807,8 @@ body.theme-christmas .btn-secondary::after {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  flex: 1;
+  padding-right: 12px;
 }
 
 .notif-toggle-label b {
@@ -818,38 +823,44 @@ body.theme-christmas .btn-secondary::after {
 
 .toggle-switch {
   position: relative;
-  width: 48px;
-  height: 28px;
+  width: 50px;
+  height: 30px;
   flex-shrink: 0;
-  border-radius: 28px;
-  background: var(--bd);
-  border: none;
+  border-radius: 30px;
+  background: var(--bd) !important;
+  border: none !important;
   cursor: pointer;
   padding: 0;
   outline: none;
   transition: background-color 0.25s ease;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   -webkit-tap-highlight-color: transparent;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .toggle-switch.active,
 .toggle-switch[aria-checked="true"] {
-  background: var(--ac);
+  background: var(--ac) !important;
 }
 
 .toggle-switch .toggle-slider {
   position: absolute;
   top: 3px;
   left: 3px;
-  width: 22px;
-  height: 22px;
-  background: #ffffff;
+  width: 24px;
+  height: 24px;
+  background: #ffffff !important;
   border-radius: 50%;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.25);
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
+  display: block;
 }
 
 .toggle-switch.active .toggle-slider,
 .toggle-switch[aria-checked="true"] .toggle-slider {
-  transform: translateX(20px);
+  transform: translateX(20px) !important;
 }

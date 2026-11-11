@@ -175,7 +175,7 @@ export async function toggleWaterReminder() {
       state.waterReminder = true;
       state.P.waterReminder = true;
       persist({ waterReminder: true });
-      localStorage.setItem("waterReminder_" + (state.uid || "local"), "true");
+      localStorage.setItem("waterReminder", "true"); localStorage.setItem("waterReminder_" + (state.uid || "local"), "true");
       showToast("Lembretes de água ativados!", "success");
       initNotifications();
     }
@@ -183,7 +183,7 @@ export async function toggleWaterReminder() {
     state.waterReminder = false;
     state.P.waterReminder = false;
     persist({ waterReminder: false });
-    localStorage.setItem("waterReminder_" + (state.uid || "local"), "false");
+    localStorage.setItem("waterReminder", "false"); localStorage.setItem("waterReminder_" + (state.uid || "local"), "false");
     if ('serviceWorker' in navigator) {
       try {
         const reg = await navigator.serviceWorker.ready;
@@ -203,7 +203,7 @@ export async function toggleWorkoutReminder() {
       state.notifyWorkout = true;
       state.P.notifyWorkout = true;
       persist({ notifyWorkout: true });
-      localStorage.setItem("notifyWorkout_" + (state.uid || "local"), "true");
+      localStorage.setItem("notifyWorkout", "true"); localStorage.setItem("notifyWorkout_" + (state.uid || "local"), "true");
       showToast("Alertas do mascote ativados!", "success");
       initNotifications();
     }
@@ -211,7 +211,7 @@ export async function toggleWorkoutReminder() {
     state.notifyWorkout = false;
     state.P.notifyWorkout = false;
     persist({ notifyWorkout: false });
-    localStorage.setItem("notifyWorkout_" + (state.uid || "local"), "false");
+    localStorage.setItem("notifyWorkout", "false"); localStorage.setItem("notifyWorkout_" + (state.uid || "local"), "false");
     showToast("Alertas do mascote desativados.", "info");
   }
   drawer();
@@ -224,7 +224,7 @@ export async function toggleMotivationReminder() {
       state.notifyMotivation = true;
       state.P.notifyMotivation = true;
       persist({ notifyMotivation: true });
-      localStorage.setItem("notifyMotivation_" + (state.uid || "local"), "true");
+      localStorage.setItem("notifyMotivation", "true"); localStorage.setItem("notifyMotivation_" + (state.uid || "local"), "true");
       showToast("Frases motivacionais ativadas!", "success");
       initNotifications();
     }
@@ -232,7 +232,7 @@ export async function toggleMotivationReminder() {
     state.notifyMotivation = false;
     state.P.notifyMotivation = false;
     persist({ notifyMotivation: false });
-    localStorage.setItem("notifyMotivation_" + (state.uid || "local"), "false");
+    localStorage.setItem("notifyMotivation", "false"); localStorage.setItem("notifyMotivation_" + (state.uid || "local"), "false");
     showToast("Frases motivacionais desativadas.", "info");
   }
   drawer();
